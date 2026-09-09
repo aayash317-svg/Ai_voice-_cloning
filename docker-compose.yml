@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: voice_integrity_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - LOG_LEVEL=INFO
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/voice_integrity
+      - FERNET_KEY=U3Zvb1JvYnVzdFNlY3JldEtleUZvclZvaWNlUHJpbnQxMjM0NTY3ODk=
+      - DEVICE=cpu
+      - AUDIO_SAMPLE_RATE=16000
+      - AUDIO_WINDOW_SECONDS=3.5
+      - RISK_ROUTINE_THRESHOLD=65.0
+      - RISK_HIGH_VALUE_THRESHOLD=45.0
+      - RISK_PRIVILEGED_THRESHOLD=30.0
+      - SAFETY_FLOOR_MEDIUM_CONFIDENCE=0.90
+      - SAFETY_FLOOR_HIGH_CONFIDENCE=0.97
+      - DATA_RETENTION_DAYS=30
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./edge_queue:/app/edge_queue
+
+  db:
+    image: postgres:16-alpine
+    container_name: voice_integrity_db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=voice_integrity
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

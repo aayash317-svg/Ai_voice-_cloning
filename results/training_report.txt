@@ -1,0 +1,25 @@
+============================================================
+VOICE INTEGRITY BASELINE MODEL EVALUATION REPORT
+============================================================
+
+1. EVALUATION METRICS SUMMARY:
+   * Accuracy               : 95.65%
+   * Precision              : 97.97%
+   * Recall                 : 96.15%
+   * F1-Score               : 97.05%
+   * ROC-AUC Score          : 0.9915
+   * Equal Error Rate (EER) : 4.77% (Threshold: 0.5350)
+   * False Acceptance Rate  : 5.79% (Bona fide falsely rejected)
+   * False Rejection Rate   : 3.85% (Spoof missed as bona fide)
+
+2. CONFUSION MATRIX:
+   * True Genuine Speech Detected   : 749
+   * False Spoof Alarms (Type I)   : 46
+   * Missed Spoofs (Type II)        : 89
+   * True Spoofed Audio Detected    : 2221
+
+3. TEST SET COMPOSITION:
+   * Total Test Audio Files         : 3105
+   * Genuine Human Samples          : 795 (25.6%)
+   * Synthetic / Spoof Samples      : 2310 (74.4%)
+============================================================

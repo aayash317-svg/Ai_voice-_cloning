@@ -1,0 +1,1384 @@
+[
+  {
+    "index": 0,
+    "timestamp": 1788875386.226183,
+    "event_type": "GENESIS",
+    "event_data": {
+      "msg": "Audit chain initialized"
+    },
+    "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "current_hash": "14f76e0f06d79618413fee01a27d9cb0fbcafd698d1f6d927d70dc668ee8962f"
+  },
+  {
+    "index": 1,
+    "timestamp": 1788876596.8344169,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "test_voice.wav",
+      "risk_score": 5.3,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "14f76e0f06d79618413fee01a27d9cb0fbcafd698d1f6d927d70dc668ee8962f",
+    "current_hash": "80ffaa771e979a5cb75f04a828523a258e4f574d30fc7d6ba7d2c25e98ba20b0"
+  },
+  {
+    "index": 2,
+    "timestamp": 1788879033.412802,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "ASV2019-nat-LA_E_8509707.wav",
+      "risk_score": 11.8,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "80ffaa771e979a5cb75f04a828523a258e4f574d30fc7d6ba7d2c25e98ba20b0",
+    "current_hash": "eab2f580c29a6f309ab7903ec12033053b10dec16d94eb3c43fbc471329450be"
+  },
+  {
+    "index": 3,
+    "timestamp": 1788879033.459136,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "ASV2019-A18-LA_E_4173885.wav",
+      "risk_score": 19.8,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "eab2f580c29a6f309ab7903ec12033053b10dec16d94eb3c43fbc471329450be",
+    "current_hash": "9160820ad1cfa414ff1aebbd6e85449a54ab9c392faab74cf448c85e39a01429"
+  },
+  {
+    "index": 4,
+    "timestamp": 1788879103.8411598,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "ASV2019-nat-LA_E_8509707.wav",
+      "risk_score": 8.6,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "9160820ad1cfa414ff1aebbd6e85449a54ab9c392faab74cf448c85e39a01429",
+    "current_hash": "a5b8318315924bc9463d4ca428cebc8a47956270ccd57bf22d495ba44f852bdb"
+  },
+  {
+    "index": 5,
+    "timestamp": 1788879103.9164312,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "ASV2019-A18-LA_E_4173885.wav",
+      "risk_score": 88.0,
+      "risk_level": "HIGH",
+      "alert_triggered": true
+    },
+    "previous_hash": "a5b8318315924bc9463d4ca428cebc8a47956270ccd57bf22d495ba44f852bdb",
+    "current_hash": "6d79b65751484e82c118486fd4ae2a764a6b779a7b68964818cb172f06044997"
+  },
+  {
+    "index": 6,
+    "timestamp": 1788882190.580524,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "soundtools-tts-am_michael-1788881731422.wav",
+      "risk_score": 51.0,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "6d79b65751484e82c118486fd4ae2a764a6b779a7b68964818cb172f06044997",
+    "current_hash": "c2d81cac0208f425af281f5bd1d6f7d3907cc02ab2797df51ecf8e8db634d815"
+  },
+  {
+    "index": 7,
+    "timestamp": 1788882279.8949802,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "soundtools-tts-am_michael-1788881731422.wav",
+      "risk_score": 51.0,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "c2d81cac0208f425af281f5bd1d6f7d3907cc02ab2797df51ecf8e8db634d815",
+    "current_hash": "a9e88cff1118f83f3bc853e9a7b9f5a4e9a8f59429dad1f1fde35008eb32a222"
+  },
+  {
+    "index": 8,
+    "timestamp": 1788884130.255737,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "Test .m4a",
+      "risk_score": 47.5,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "a9e88cff1118f83f3bc853e9a7b9f5a4e9a8f59429dad1f1fde35008eb32a222",
+    "current_hash": "9a59c75faf76604369bae50bc0743d15a3ae1d255dc5c56d8a5105cdee3af0cb"
+  },
+  {
+    "index": 9,
+    "timestamp": 1788884144.001428,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "test_genuine.m4a",
+      "risk_score": 16.3,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "9a59c75faf76604369bae50bc0743d15a3ae1d255dc5c56d8a5105cdee3af0cb",
+    "current_hash": "f75a6790b2a3e202113dba6814501b5faf3856a67e2b01360ac7c00c0c64fae3"
+  },
+  {
+    "index": 10,
+    "timestamp": 1788885220.077303,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "Test .m4a",
+      "risk_score": 47.5,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "f75a6790b2a3e202113dba6814501b5faf3856a67e2b01360ac7c00c0c64fae3",
+    "current_hash": "c72638a7fa3da71f677ad1cf1ca3182ce2d52982f9350fd94233d6ae8dc4522c"
+  },
+  {
+    "index": 11,
+    "timestamp": 1788887896.6401532,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 60.7,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "c72638a7fa3da71f677ad1cf1ca3182ce2d52982f9350fd94233d6ae8dc4522c",
+    "current_hash": "976dd222ee5f56740750f895a40bd47adf0453987454baf32fc6b4c696b030a5"
+  },
+  {
+    "index": 12,
+    "timestamp": 1788887905.3334138,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "976dd222ee5f56740750f895a40bd47adf0453987454baf32fc6b4c696b030a5",
+    "current_hash": "0637b2e3976d0f9ddc5f8907dab87700bc055f26d91a98ce8b0d843b10c947c0"
+  },
+  {
+    "index": 13,
+    "timestamp": 1788887905.591873,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "0637b2e3976d0f9ddc5f8907dab87700bc055f26d91a98ce8b0d843b10c947c0",
+    "current_hash": "cfaa5f3bf022efdd51d458c6deebe5ed3fad8fbfa54c819e2f94c87b98dd9d21"
+  },
+  {
+    "index": 14,
+    "timestamp": 1788887905.855754,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "cfaa5f3bf022efdd51d458c6deebe5ed3fad8fbfa54c819e2f94c87b98dd9d21",
+    "current_hash": "e75bfe769b54c6e1a5a94938763bf3c651b65c195d050848b98a2e876136535b"
+  },
+  {
+    "index": 15,
+    "timestamp": 1788887906.101363,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "e75bfe769b54c6e1a5a94938763bf3c651b65c195d050848b98a2e876136535b",
+    "current_hash": "b2e237bba57e62ec6c381e0dbe45e3d727fd73fb4003f47db95b76c51c00453d"
+  },
+  {
+    "index": 16,
+    "timestamp": 1788887906.34614,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "b2e237bba57e62ec6c381e0dbe45e3d727fd73fb4003f47db95b76c51c00453d",
+    "current_hash": "cf64ee49154329909e33912cb77adad18e0e3c2cb768d7cd6eeea09efb5a471f"
+  },
+  {
+    "index": 17,
+    "timestamp": 1788887906.613225,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "cf64ee49154329909e33912cb77adad18e0e3c2cb768d7cd6eeea09efb5a471f",
+    "current_hash": "b99d307fe812f53a21df68f6722db3b2c81aea50bd588cea65795ed04029d62a"
+  },
+  {
+    "index": 18,
+    "timestamp": 1788887906.858697,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "b99d307fe812f53a21df68f6722db3b2c81aea50bd588cea65795ed04029d62a",
+    "current_hash": "1386ea9a2d45295293046f5fb30076f7f0f793e8189e6209ae40a587c6c4e02e"
+  },
+  {
+    "index": 19,
+    "timestamp": 1788887907.115475,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "1386ea9a2d45295293046f5fb30076f7f0f793e8189e6209ae40a587c6c4e02e",
+    "current_hash": "7e5a75c5a3f517c6deb49719f3c0a45c6c86bbdf6f8a9801d8cf83a7b26c6386"
+  },
+  {
+    "index": 20,
+    "timestamp": 1788887907.3709939,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "7e5a75c5a3f517c6deb49719f3c0a45c6c86bbdf6f8a9801d8cf83a7b26c6386",
+    "current_hash": "48a21fcf2570ff47e6fb1a1d22d688d88a6614002b0bc058404494d1cf9dc4b4"
+  },
+  {
+    "index": 21,
+    "timestamp": 1788887907.6393259,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "48a21fcf2570ff47e6fb1a1d22d688d88a6614002b0bc058404494d1cf9dc4b4",
+    "current_hash": "029cadff2ef921998cef97f80a32752fb411290bfdc77ad54c70338ba5ed1421"
+  },
+  {
+    "index": 22,
+    "timestamp": 1788887908.138786,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "029cadff2ef921998cef97f80a32752fb411290bfdc77ad54c70338ba5ed1421",
+    "current_hash": "b8d20556f666cd8684494b30ee94cebc215386a6fb533edde4baf495c67c25fc"
+  },
+  {
+    "index": 23,
+    "timestamp": 1788887915.059419,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "b8d20556f666cd8684494b30ee94cebc215386a6fb533edde4baf495c67c25fc",
+    "current_hash": "fbd25c3bd00b38a46ee41d1d930898a9827723a66861db82a74022826c66d072"
+  },
+  {
+    "index": 24,
+    "timestamp": 1788887915.306924,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "fbd25c3bd00b38a46ee41d1d930898a9827723a66861db82a74022826c66d072",
+    "current_hash": "c4ad4ae22409616fc616e30adc81215951f50797cb1d51092733abca7aa0ce50"
+  },
+  {
+    "index": 25,
+    "timestamp": 1788887915.572636,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "c4ad4ae22409616fc616e30adc81215951f50797cb1d51092733abca7aa0ce50",
+    "current_hash": "fd60a5c794ed6ae4d4edca93c7da217af59455755425af414c4cd070f01ce44b"
+  },
+  {
+    "index": 26,
+    "timestamp": 1788887915.832567,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "fd60a5c794ed6ae4d4edca93c7da217af59455755425af414c4cd070f01ce44b",
+    "current_hash": "758b2ed8f8e690dd440b4bc5c7be99e283888671a165615d066d82bfdb5ba74d"
+  },
+  {
+    "index": 27,
+    "timestamp": 1788887916.0745852,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "758b2ed8f8e690dd440b4bc5c7be99e283888671a165615d066d82bfdb5ba74d",
+    "current_hash": "b7e4f274e6c7d5f5a7cc5c94436cd6c9e54d6f7728e5e6c021b74bf4c92948cd"
+  },
+  {
+    "index": 28,
+    "timestamp": 1788887916.34389,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "b7e4f274e6c7d5f5a7cc5c94436cd6c9e54d6f7728e5e6c021b74bf4c92948cd",
+    "current_hash": "b113b7ff6ed06923076531962bfa32b227223deff86e5ba24697261048d24c0b"
+  },
+  {
+    "index": 29,
+    "timestamp": 1788887916.588236,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "b113b7ff6ed06923076531962bfa32b227223deff86e5ba24697261048d24c0b",
+    "current_hash": "690f8965fbc721844e88ef9cfddab244fa8f804405d142eed907edd3dd9f1b6f"
+  },
+  {
+    "index": 30,
+    "timestamp": 1788887916.8542342,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "690f8965fbc721844e88ef9cfddab244fa8f804405d142eed907edd3dd9f1b6f",
+    "current_hash": "efcd4abd049a4ef0b161e86aa2b264d64e491860b746324ba7464da9a509f620"
+  },
+  {
+    "index": 31,
+    "timestamp": 1788887917.09885,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "efcd4abd049a4ef0b161e86aa2b264d64e491860b746324ba7464da9a509f620",
+    "current_hash": "2b539bec7dd46f86a6878e8920784d72cb18ec239dc397bf454b4eaec2efb32d"
+  },
+  {
+    "index": 32,
+    "timestamp": 1788887917.368364,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "2b539bec7dd46f86a6878e8920784d72cb18ec239dc397bf454b4eaec2efb32d",
+    "current_hash": "4d9d49449925b81b82bf0eb29b0a8599239360334d02a5802ba84b4d3a4acead"
+  },
+  {
+    "index": 33,
+    "timestamp": 1788887917.621098,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "4d9d49449925b81b82bf0eb29b0a8599239360334d02a5802ba84b4d3a4acead",
+    "current_hash": "88c9df357295716672e74d897953becee16d967dfbdf756642fff2d11e2d7cd5"
+  },
+  {
+    "index": 34,
+    "timestamp": 1788887917.866198,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "88c9df357295716672e74d897953becee16d967dfbdf756642fff2d11e2d7cd5",
+    "current_hash": "12a25178b085e8313c297a8a68a488cedd3267986168e741ea74b63892851450"
+  },
+  {
+    "index": 35,
+    "timestamp": 1788887918.133006,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "12a25178b085e8313c297a8a68a488cedd3267986168e741ea74b63892851450",
+    "current_hash": "e5f63d92d96562ce979b5ba578936f1b1a9c6f6e3153d362b7ee4efda7ffada5"
+  },
+  {
+    "index": 36,
+    "timestamp": 1788887918.389498,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "e5f63d92d96562ce979b5ba578936f1b1a9c6f6e3153d362b7ee4efda7ffada5",
+    "current_hash": "647264e6e6f4fa7d97922490a9ade8966f48761eb5dc4b61cd1084f8aed2a865"
+  },
+  {
+    "index": 37,
+    "timestamp": 1788887918.648011,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "647264e6e6f4fa7d97922490a9ade8966f48761eb5dc4b61cd1084f8aed2a865",
+    "current_hash": "3df6bb04c02c323b21c3c2335907ebc013a7d5685304599b0cf7d2d9f2324e6a"
+  },
+  {
+    "index": 38,
+    "timestamp": 1788887918.888911,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "3df6bb04c02c323b21c3c2335907ebc013a7d5685304599b0cf7d2d9f2324e6a",
+    "current_hash": "6ca5c74d920ae17e878b64b1eb9a26b5445a1126c80ec86eb43196163c0e11ef"
+  },
+  {
+    "index": 39,
+    "timestamp": 1788887919.1459572,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "6ca5c74d920ae17e878b64b1eb9a26b5445a1126c80ec86eb43196163c0e11ef",
+    "current_hash": "9749f5b6e40b335a5e978698a0714caefc6999f01095f94a22cbaca128576d8b"
+  },
+  {
+    "index": 40,
+    "timestamp": 1788887919.4007292,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "9749f5b6e40b335a5e978698a0714caefc6999f01095f94a22cbaca128576d8b",
+    "current_hash": "edb34790c43435f58ef57035fd4dffe5153d8de411188bfa5d968fd2f1d5675a"
+  },
+  {
+    "index": 41,
+    "timestamp": 1788887919.669489,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "edb34790c43435f58ef57035fd4dffe5153d8de411188bfa5d968fd2f1d5675a",
+    "current_hash": "9cd46398bb49417f0cd03004374cabcccfb442039d325a2962105199ea884add"
+  },
+  {
+    "index": 42,
+    "timestamp": 1788887919.9152808,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "9cd46398bb49417f0cd03004374cabcccfb442039d325a2962105199ea884add",
+    "current_hash": "0b6344f0c2c98e49febd106434c0c8992d84373e37ab244888ed98fd7294884a"
+  },
+  {
+    "index": 43,
+    "timestamp": 1788887920.1692128,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "0b6344f0c2c98e49febd106434c0c8992d84373e37ab244888ed98fd7294884a",
+    "current_hash": "27a9dfb846daa7f1817727037992aed765c3fd0ff7168dc13a223173f9be14ae"
+  },
+  {
+    "index": 44,
+    "timestamp": 1788887920.42412,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "27a9dfb846daa7f1817727037992aed765c3fd0ff7168dc13a223173f9be14ae",
+    "current_hash": "2e9d5ce05ab2a44d5bcbd3e637ddc9669f0c81ca8ffff14abce7298731a70a78"
+  },
+  {
+    "index": 45,
+    "timestamp": 1788887920.683834,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "2e9d5ce05ab2a44d5bcbd3e637ddc9669f0c81ca8ffff14abce7298731a70a78",
+    "current_hash": "bf83ee3acbbbaacf5c1a158bf37cc883a4f21f32727f0d76e37d6c8be38e1e48"
+  },
+  {
+    "index": 46,
+    "timestamp": 1788887920.949562,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "bf83ee3acbbbaacf5c1a158bf37cc883a4f21f32727f0d76e37d6c8be38e1e48",
+    "current_hash": "85e5f0d902dfb522a7e8753c84d541b010cd9453bab03a6611df782cf50e580f"
+  },
+  {
+    "index": 47,
+    "timestamp": 1788888138.323851,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "Test .m4a",
+      "risk_score": 47.5,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "85e5f0d902dfb522a7e8753c84d541b010cd9453bab03a6611df782cf50e580f",
+    "current_hash": "cea9fc63bf8ecfc8a5cd3778c3c4bd6d416828c444260e8c0fcd0324c9b1a9a8"
+  },
+  {
+    "index": 48,
+    "timestamp": 1788888544.4703639,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "test_genuine.m4a",
+      "risk_score": 16.3,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "cea9fc63bf8ecfc8a5cd3778c3c4bd6d416828c444260e8c0fcd0324c9b1a9a8",
+    "current_hash": "4fa1f218b04ad5414e77d55a6fa43a9491bbd7d174b1b818ab39e038373cf8bf"
+  },
+  {
+    "index": 49,
+    "timestamp": 1788888874.675787,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "Test .m4a",
+      "risk_score": 49.6,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "4fa1f218b04ad5414e77d55a6fa43a9491bbd7d174b1b818ab39e038373cf8bf",
+    "current_hash": "8c81c7d6aadcfd5375433c84a2e3b49139475af1bbc2f735eef13acc2133f191"
+  },
+  {
+    "index": 50,
+    "timestamp": 1788889048.8626518,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "Test .m4a",
+      "risk_score": 49.6,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "8c81c7d6aadcfd5375433c84a2e3b49139475af1bbc2f735eef13acc2133f191",
+    "current_hash": "a0a61f028e83ef689eabab92cffd2a39c01e64368d1c45918d0fcd323c0bec0e"
+  },
+  {
+    "index": 51,
+    "timestamp": 1788889068.0939069,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "soundtools-tts-am_michael-1788881731422.wav",
+      "risk_score": 53.3,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "a0a61f028e83ef689eabab92cffd2a39c01e64368d1c45918d0fcd323c0bec0e",
+    "current_hash": "f7793c8338996e8ef7ab0798b6023a48f49950e5d3d8094da7bc05938c65571d"
+  },
+  {
+    "index": 52,
+    "timestamp": 1788889421.3637161,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "soundtools-tts-am_michael-1788881731422.wav",
+      "risk_score": 51.0,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "f7793c8338996e8ef7ab0798b6023a48f49950e5d3d8094da7bc05938c65571d",
+    "current_hash": "d286387cfee1fe8e4e6cb7624e8bcd94337e01ec6a1052ca0d8f66e8bd8c36ea"
+  },
+  {
+    "index": 53,
+    "timestamp": 1788889866.600364,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "test_genuine.m4a",
+      "risk_score": 16.3,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "d286387cfee1fe8e4e6cb7624e8bcd94337e01ec6a1052ca0d8f66e8bd8c36ea",
+    "current_hash": "0e79151a13c40d21e4333ec69d9338b1da997467a50f20c74671c2d3b8033a72"
+  },
+  {
+    "index": 54,
+    "timestamp": 1788889884.061107,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "soundtools-tts-am_michael-1788881731422.wav",
+      "risk_score": 51.0,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "0e79151a13c40d21e4333ec69d9338b1da997467a50f20c74671c2d3b8033a72",
+    "current_hash": "2be1c8ab460ac3cbf4a3d683f40960932b9f9b9ebca7b3908e930b4c5523fb42"
+  },
+  {
+    "index": 55,
+    "timestamp": 1788889893.350877,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "soundtools-tts-am_michael-1788881731422.wav",
+      "risk_score": 51.0,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "2be1c8ab460ac3cbf4a3d683f40960932b9f9b9ebca7b3908e930b4c5523fb42",
+    "current_hash": "60018a696499227bd2f19581a8344220fcab206bb5e6a765f45e92c9daab706c"
+  },
+  {
+    "index": 56,
+    "timestamp": 1788889915.058608,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "Test .m4a",
+      "risk_score": 47.5,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "60018a696499227bd2f19581a8344220fcab206bb5e6a765f45e92c9daab706c",
+    "current_hash": "473e94a1c02955c3c279aa18ac4e409476dccc043be0fa150f971e33acc0d938"
+  },
+  {
+    "index": 57,
+    "timestamp": 1788891164.857662,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "Test .m4a",
+      "risk_score": 18.7,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "473e94a1c02955c3c279aa18ac4e409476dccc043be0fa150f971e33acc0d938",
+    "current_hash": "05d9352eebc139ba9115098cf0354698616097659f5ea628d0bbd7f143fd7186"
+  },
+  {
+    "index": 58,
+    "timestamp": 1788891177.923985,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "Test .m4a",
+      "risk_score": 18.7,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "05d9352eebc139ba9115098cf0354698616097659f5ea628d0bbd7f143fd7186",
+    "current_hash": "9a08ae09c9f986f52539ef87453830cdfdce6584d96747a2afe38e0934861d8e"
+  },
+  {
+    "index": 59,
+    "timestamp": 1788891196.777534,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "soundtools-tts-am_michael-1788881731422.wav",
+      "risk_score": 38.8,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "9a08ae09c9f986f52539ef87453830cdfdce6584d96747a2afe38e0934861d8e",
+    "current_hash": "b95bb32a3c3740a05d99193f71eff8a2a4ee2eea9544301356125fc1395a0e43"
+  },
+  {
+    "index": 60,
+    "timestamp": 1788891217.7096698,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "Test .m4a",
+      "risk_score": 18.7,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "b95bb32a3c3740a05d99193f71eff8a2a4ee2eea9544301356125fc1395a0e43",
+    "current_hash": "2cc527400461d80bcf3cb076f0df947cb3aebbb473565ea58f519da8116ccb1f"
+  },
+  {
+    "index": 61,
+    "timestamp": 1788891265.416215,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "live_recording_1788891265191.webm",
+      "risk_score": 28.6,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "2cc527400461d80bcf3cb076f0df947cb3aebbb473565ea58f519da8116ccb1f",
+    "current_hash": "68a714eb84e543c2e1892840bff9407ce7ddd261c859e47ea07beddff6941140"
+  },
+  {
+    "index": 62,
+    "timestamp": 1788891451.473411,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "live_recording_1788891451325.webm",
+      "risk_score": 32.9,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "68a714eb84e543c2e1892840bff9407ce7ddd261c859e47ea07beddff6941140",
+    "current_hash": "3c859e4ca11e56a63bba0b7684e80dfc5873b2a1ae33e862853aa3c4905c66e6"
+  },
+  {
+    "index": 63,
+    "timestamp": 1788891476.489828,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "live_recording_1788891476290.webm",
+      "risk_score": 29.1,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "3c859e4ca11e56a63bba0b7684e80dfc5873b2a1ae33e862853aa3c4905c66e6",
+    "current_hash": "5daaf7ea7f4f7e9eb6ff63a39b1cdf0af1946e7521fed9dc4b8ade6baf57691f"
+  },
+  {
+    "index": 64,
+    "timestamp": 1788891549.668861,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 63.2,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "5daaf7ea7f4f7e9eb6ff63a39b1cdf0af1946e7521fed9dc4b8ade6baf57691f",
+    "current_hash": "e6b277834fd9138dfc5ed921b17170b4b0c23f6cf6afc0acad998f2f0208ad8f"
+  },
+  {
+    "index": 65,
+    "timestamp": 1788891555.3024378,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 75.2,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "e6b277834fd9138dfc5ed921b17170b4b0c23f6cf6afc0acad998f2f0208ad8f",
+    "current_hash": "178a098973269423fbaa8c9b50ee568422b91ae2e7bba06b12566196a7bfe598"
+  },
+  {
+    "index": 66,
+    "timestamp": 1788891555.5585222,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 77.9,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "178a098973269423fbaa8c9b50ee568422b91ae2e7bba06b12566196a7bfe598",
+    "current_hash": "1aa7063ea62477033eb0dfdefe5623ad07586b131a294e61c2d5b6e20fa6e334"
+  },
+  {
+    "index": 67,
+    "timestamp": 1788891555.8096828,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 83.1,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "1aa7063ea62477033eb0dfdefe5623ad07586b131a294e61c2d5b6e20fa6e334",
+    "current_hash": "03a57d46d0907e08d098d40d33aa49cff305c239b146f305e6256e4af49c504f"
+  },
+  {
+    "index": 68,
+    "timestamp": 1788891556.071738,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 73.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "03a57d46d0907e08d098d40d33aa49cff305c239b146f305e6256e4af49c504f",
+    "current_hash": "cd08da2bcdfa1d3b8ec4a3ec81b51189297d1198cbf60920cf64500ae6c3704b"
+  },
+  {
+    "index": 69,
+    "timestamp": 1788891556.325469,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 69.6,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "cd08da2bcdfa1d3b8ec4a3ec81b51189297d1198cbf60920cf64500ae6c3704b",
+    "current_hash": "9ac337ba4d556ca6f5f5dbb4cfeaabedec4de75b5cf3cd78b30e3abdb6fad7a4"
+  },
+  {
+    "index": 70,
+    "timestamp": 1788891556.580241,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 71.1,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "9ac337ba4d556ca6f5f5dbb4cfeaabedec4de75b5cf3cd78b30e3abdb6fad7a4",
+    "current_hash": "ad8dc15627e200c2ecd456483bbe48238d759fc11b829b761fb9d1aaae2828be"
+  },
+  {
+    "index": 71,
+    "timestamp": 1788891556.838443,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 83.9,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "ad8dc15627e200c2ecd456483bbe48238d759fc11b829b761fb9d1aaae2828be",
+    "current_hash": "5cc52f9ea30029b7fb3adf93cf4165f4f27f9c7b4495837441740dd2273835ef"
+  },
+  {
+    "index": 72,
+    "timestamp": 1788891557.0950038,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 88.5,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "5cc52f9ea30029b7fb3adf93cf4165f4f27f9c7b4495837441740dd2273835ef",
+    "current_hash": "cc5f4dd3c7a59e8e05217a6b08fbfb55df8b69fa725684997bfaebea4d513d75"
+  },
+  {
+    "index": 73,
+    "timestamp": 1788891557.598439,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 65.3,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "cc5f4dd3c7a59e8e05217a6b08fbfb55df8b69fa725684997bfaebea4d513d75",
+    "current_hash": "eb2ab6fed84ed7204d8d452eef5c26c6d03ed685f5e3f5aa5430f2e93e595c8d"
+  },
+  {
+    "index": 74,
+    "timestamp": 1788891557.859904,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 65.2,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "eb2ab6fed84ed7204d8d452eef5c26c6d03ed685f5e3f5aa5430f2e93e595c8d",
+    "current_hash": "a3398013940059922c62027ecf7f831a97c2862b5e5257ec7eb20e3340940777"
+  },
+  {
+    "index": 75,
+    "timestamp": 1788891558.119083,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 62.5,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "a3398013940059922c62027ecf7f831a97c2862b5e5257ec7eb20e3340940777",
+    "current_hash": "9dedcd0004ee1a762d3d40cfb6a57bce4c7b6db633c4caf1017a673d0bab7f24"
+  },
+  {
+    "index": 76,
+    "timestamp": 1788891558.8865862,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 72.5,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "9dedcd0004ee1a762d3d40cfb6a57bce4c7b6db633c4caf1017a673d0bab7f24",
+    "current_hash": "ed735e7000479288847adf45aebf11bf94f906c46348baf22933f624aff6077e"
+  },
+  {
+    "index": 77,
+    "timestamp": 1788891559.817708,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "live_recording_1788891559358.webm",
+      "risk_score": 25.2,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "ed735e7000479288847adf45aebf11bf94f906c46348baf22933f624aff6077e",
+    "current_hash": "db2928360822c4a2402202234c92ad7bbb601ec4dd2e748878c01a7f74680b4e"
+  },
+  {
+    "index": 78,
+    "timestamp": 1788891940.674365,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "test_genuine.m4a",
+      "risk_score": 12.3,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "db2928360822c4a2402202234c92ad7bbb601ec4dd2e748878c01a7f74680b4e",
+    "current_hash": "b173038471c6f7cb7dc11c091cbf7fffb0d4d9a2c565d26dc38d26817ebbabd2"
+  },
+  {
+    "index": 79,
+    "timestamp": 1788892350.165206,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "spoof_sample.wav",
+      "risk_score": 43.7,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "b173038471c6f7cb7dc11c091cbf7fffb0d4d9a2c565d26dc38d26817ebbabd2",
+    "current_hash": "97944614e0267e05f929b26c21a9cd4c8431734c22eab6433b5ca5a919997889"
+  },
+  {
+    "index": 80,
+    "timestamp": 1788893530.111993,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "test_genuine.m4a",
+      "risk_score": 12.1,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "97944614e0267e05f929b26c21a9cd4c8431734c22eab6433b5ca5a919997889",
+    "current_hash": "f49cf01e4a76f8cf8c4e58025148fe330839fe7af124a96517fcfb0eedc4ce4d"
+  },
+  {
+    "index": 81,
+    "timestamp": 1788893534.786551,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "4853-27671-0036.wav",
+      "risk_score": 28.8,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "f49cf01e4a76f8cf8c4e58025148fe330839fe7af124a96517fcfb0eedc4ce4d",
+    "current_hash": "bb92f257d8b3c944441ad20a5b2f7205f554b5fb79d054b50aad238c4ce5d0bb"
+  },
+  {
+    "index": 82,
+    "timestamp": 1788893558.501971,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "Test .m4a",
+      "risk_score": 10.9,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "bb92f257d8b3c944441ad20a5b2f7205f554b5fb79d054b50aad238c4ce5d0bb",
+    "current_hash": "9b6ed9b2485bd9fe119e960fa466ecc6836dcfef4f6f4c51f2b0ed94807689c0"
+  },
+  {
+    "index": 83,
+    "timestamp": 1788893574.580545,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "soundtools-tts-am_michael-1788881731422.wav",
+      "risk_score": 49.6,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "9b6ed9b2485bd9fe119e960fa466ecc6836dcfef4f6f4c51f2b0ed94807689c0",
+    "current_hash": "5f2a7b436b180d0e85d637e448d5fb3150534e0c48ca2e0f4e4833c1a4f1f852"
+  },
+  {
+    "index": 84,
+    "timestamp": 1788893980.999989,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 63.5,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "5f2a7b436b180d0e85d637e448d5fb3150534e0c48ca2e0f4e4833c1a4f1f852",
+    "current_hash": "46eeb7cdda3722ca94cfda2abfce46b044ab33fa242c5aed94bc6e259edb1d8d"
+  },
+  {
+    "index": 85,
+    "timestamp": 1788893983.291471,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 84.9,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "46eeb7cdda3722ca94cfda2abfce46b044ab33fa242c5aed94bc6e259edb1d8d",
+    "current_hash": "36cf29bf9df83f6d04676b033717e087a251e396c9db16c91695f6e3868e9197"
+  },
+  {
+    "index": 86,
+    "timestamp": 1788893983.5651672,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 72.5,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "36cf29bf9df83f6d04676b033717e087a251e396c9db16c91695f6e3868e9197",
+    "current_hash": "f19838793a618af3413790ec78bd5c29a3c0824aa57b8e9d51619da173273499"
+  },
+  {
+    "index": 87,
+    "timestamp": 1788893983.8147001,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 71.7,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "f19838793a618af3413790ec78bd5c29a3c0824aa57b8e9d51619da173273499",
+    "current_hash": "a88bc04e8cc1b2c8f5e8c0818ec084e5a16cdb8f86c594de4779701740240bfb"
+  },
+  {
+    "index": 88,
+    "timestamp": 1788893984.06639,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 71.4,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "a88bc04e8cc1b2c8f5e8c0818ec084e5a16cdb8f86c594de4779701740240bfb",
+    "current_hash": "b15bd6c3a1e6edd94f28b7a2737bb7507d0c0bbbc12c1a09de1dcbe3be709fae"
+  },
+  {
+    "index": 89,
+    "timestamp": 1788893984.3218749,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 73.8,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "b15bd6c3a1e6edd94f28b7a2737bb7507d0c0bbbc12c1a09de1dcbe3be709fae",
+    "current_hash": "0c20500aaa911ccaf21e025d86dc8d5ba9976fd6263188c1ffcddc039f40b95d"
+  },
+  {
+    "index": 90,
+    "timestamp": 1788893984.574642,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 73.5,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "0c20500aaa911ccaf21e025d86dc8d5ba9976fd6263188c1ffcddc039f40b95d",
+    "current_hash": "361a914391c68d043cc78c0d54a65c2d64e1fadd9ce3766b443f39c0b2cd544b"
+  },
+  {
+    "index": 91,
+    "timestamp": 1788893984.846247,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 75.7,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "361a914391c68d043cc78c0d54a65c2d64e1fadd9ce3766b443f39c0b2cd544b",
+    "current_hash": "b2d15f2d985a19a31d52ee4e1ad15e4f4f70f21bf1f5470180990d94a80aecac"
+  },
+  {
+    "index": 92,
+    "timestamp": 1788893985.102983,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 75.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "b2d15f2d985a19a31d52ee4e1ad15e4f4f70f21bf1f5470180990d94a80aecac",
+    "current_hash": "7eb025dd6b7bd693c71e0716d6f7ffc8ee7816ae5079793a1606f8b9f1bd41ab"
+  },
+  {
+    "index": 93,
+    "timestamp": 1788893985.341346,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 73.9,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "7eb025dd6b7bd693c71e0716d6f7ffc8ee7816ae5079793a1606f8b9f1bd41ab",
+    "current_hash": "2bc0ec0f5e13c9d5eebb11c65146954abccaae446e48d5b29f36c05d1874fbb7"
+  },
+  {
+    "index": 94,
+    "timestamp": 1788893985.615047,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 73.5,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "2bc0ec0f5e13c9d5eebb11c65146954abccaae446e48d5b29f36c05d1874fbb7",
+    "current_hash": "ada6e23231d97d7bbcef90d15cc73497b488b3c06c21548f17bb9075dfa61b7e"
+  },
+  {
+    "index": 95,
+    "timestamp": 1788893985.8554938,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 76.1,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "ada6e23231d97d7bbcef90d15cc73497b488b3c06c21548f17bb9075dfa61b7e",
+    "current_hash": "906934b8798b9070942ad86a8a0de5b611de54388092fdff39c8a133d614f5d0"
+  },
+  {
+    "index": 96,
+    "timestamp": 1788893986.111522,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 73.2,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "906934b8798b9070942ad86a8a0de5b611de54388092fdff39c8a133d614f5d0",
+    "current_hash": "fbc167d70045c14e4bf142b66a5700731e0f1c0da8f8400060e9da2ad68a5360"
+  },
+  {
+    "index": 97,
+    "timestamp": 1788893988.174986,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 79.2,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "fbc167d70045c14e4bf142b66a5700731e0f1c0da8f8400060e9da2ad68a5360",
+    "current_hash": "c61b29d4c470c92c1728426a69e9fb294266843f0c67f1c395a5cd456a0f8fe9"
+  },
+  {
+    "index": 98,
+    "timestamp": 1788893988.417263,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 89.2,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "c61b29d4c470c92c1728426a69e9fb294266843f0c67f1c395a5cd456a0f8fe9",
+    "current_hash": "786293257c3216d42cba9c6163d79a6551cd24503f746262151f5be3f327c2aa"
+  },
+  {
+    "index": 99,
+    "timestamp": 1788893988.671045,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 91.5,
+      "risk_level": "CRITICAL"
+    },
+    "previous_hash": "786293257c3216d42cba9c6163d79a6551cd24503f746262151f5be3f327c2aa",
+    "current_hash": "b49306d795e81dba359d1567a0d8a518786c7ae572f338a48f40b4f8f29d4491"
+  },
+  {
+    "index": 100,
+    "timestamp": 1788893988.943329,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 90.0,
+      "risk_level": "CRITICAL"
+    },
+    "previous_hash": "b49306d795e81dba359d1567a0d8a518786c7ae572f338a48f40b4f8f29d4491",
+    "current_hash": "98c1319cb59623f48eb928330ed1d1d23906513ac24d3f20edab1ee72409cd16"
+  },
+  {
+    "index": 101,
+    "timestamp": 1788893989.183454,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 96.5,
+      "risk_level": "CRITICAL"
+    },
+    "previous_hash": "98c1319cb59623f48eb928330ed1d1d23906513ac24d3f20edab1ee72409cd16",
+    "current_hash": "faad6d386a507554804a48cf07c69b8a91d9aa7dc8450e4f8632b73eedfc38c2"
+  },
+  {
+    "index": 102,
+    "timestamp": 1788893989.4376981,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 99.2,
+      "risk_level": "CRITICAL"
+    },
+    "previous_hash": "faad6d386a507554804a48cf07c69b8a91d9aa7dc8450e4f8632b73eedfc38c2",
+    "current_hash": "272fd86fcaef9d11463815afecab740590ce8c829a179d63127d4238f399a5f3"
+  },
+  {
+    "index": 103,
+    "timestamp": 1788893989.711424,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 100.0,
+      "risk_level": "CRITICAL"
+    },
+    "previous_hash": "272fd86fcaef9d11463815afecab740590ce8c829a179d63127d4238f399a5f3",
+    "current_hash": "668b80d45c358a1c456b19805b2493c26539c99a8b58284563d309d22bccecf4"
+  },
+  {
+    "index": 104,
+    "timestamp": 1788893989.9691331,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 100.0,
+      "risk_level": "CRITICAL"
+    },
+    "previous_hash": "668b80d45c358a1c456b19805b2493c26539c99a8b58284563d309d22bccecf4",
+    "current_hash": "e2f46c06563e72f9a757be588f6fbe291c152659929a02c989e0a9a26c8ff01d"
+  },
+  {
+    "index": 105,
+    "timestamp": 1788893990.205293,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 100.0,
+      "risk_level": "CRITICAL"
+    },
+    "previous_hash": "e2f46c06563e72f9a757be588f6fbe291c152659929a02c989e0a9a26c8ff01d",
+    "current_hash": "f9961ca29569024cc95bce9fe35c02e62322fd28858aa1b430a7577a00ac47e8"
+  },
+  {
+    "index": 106,
+    "timestamp": 1788893990.478604,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 98.4,
+      "risk_level": "CRITICAL"
+    },
+    "previous_hash": "f9961ca29569024cc95bce9fe35c02e62322fd28858aa1b430a7577a00ac47e8",
+    "current_hash": "3d6062ad6b78096ec830cdae8e54fce49d8e7a12029f656089035c0cd271d4f1"
+  },
+  {
+    "index": 107,
+    "timestamp": 1788893992.261478,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 71.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "3d6062ad6b78096ec830cdae8e54fce49d8e7a12029f656089035c0cd271d4f1",
+    "current_hash": "d0bea953d71b0cd2ae369afb6aba722cc7046abfeb1c45f60a88577f6ee0b753"
+  },
+  {
+    "index": 108,
+    "timestamp": 1788893992.525624,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 67.7,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "d0bea953d71b0cd2ae369afb6aba722cc7046abfeb1c45f60a88577f6ee0b753",
+    "current_hash": "d3a6e75ec157a7e7ffce178e93aa9bf6800cb3f9e5fbbccf8349b28e5c03c312"
+  },
+  {
+    "index": 109,
+    "timestamp": 1788893992.768503,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 73.5,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "d3a6e75ec157a7e7ffce178e93aa9bf6800cb3f9e5fbbccf8349b28e5c03c312",
+    "current_hash": "49633873fb7dd83eed57586914ff4e1308e6808b399094ad0bfabf1c09c93ce7"
+  },
+  {
+    "index": 110,
+    "timestamp": 1788893993.024101,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 76.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "49633873fb7dd83eed57586914ff4e1308e6808b399094ad0bfabf1c09c93ce7",
+    "current_hash": "58360e382f7fbc7a5069dd1508587008275b5480b217ef5a853f264b07bae224"
+  },
+  {
+    "index": 111,
+    "timestamp": 1788893993.297056,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 74.9,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "58360e382f7fbc7a5069dd1508587008275b5480b217ef5a853f264b07bae224",
+    "current_hash": "00d5bd2fda13b6d4f397af65b659fc57b5c69fbce0f27977ef0c8660310e5476"
+  },
+  {
+    "index": 112,
+    "timestamp": 1788893993.532324,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 77.1,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "00d5bd2fda13b6d4f397af65b659fc57b5c69fbce0f27977ef0c8660310e5476",
+    "current_hash": "27fb2cd1184fc38c08303d283403e7e6d5470fabed2c71cfc4cb04450edd4598"
+  },
+  {
+    "index": 113,
+    "timestamp": 1788893993.8056939,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 78.6,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "27fb2cd1184fc38c08303d283403e7e6d5470fabed2c71cfc4cb04450edd4598",
+    "current_hash": "e9228cd407264f8f3ef61a895bd82cd9fa47fc3203d2618e2f57c18626cc450a"
+  },
+  {
+    "index": 114,
+    "timestamp": 1788893994.04745,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 82.0,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "e9228cd407264f8f3ef61a895bd82cd9fa47fc3203d2618e2f57c18626cc450a",
+    "current_hash": "d653c698f79ee626a53e83b9b10bac49797233f26cb1d4e58e1702a03e5c7552"
+  },
+  {
+    "index": 115,
+    "timestamp": 1788893994.3152041,
+    "event_type": "STREAM_ALERT",
+    "event_data": {
+      "risk_score": 79.7,
+      "risk_level": "HIGH"
+    },
+    "previous_hash": "d653c698f79ee626a53e83b9b10bac49797233f26cb1d4e58e1702a03e5c7552",
+    "current_hash": "c894f4f2652cac56b3fadcec98147881f534d1fa38eeab59df9ce91ae78b0013"
+  },
+  {
+    "index": 116,
+    "timestamp": 1788893995.101651,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "live_recording_1788893994475.webm",
+      "risk_score": 32.5,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "c894f4f2652cac56b3fadcec98147881f534d1fa38eeab59df9ce91ae78b0013",
+    "current_hash": "be12e95989ea16df4253a70aa80eafd0ccc6dd86be971939260d0557dc45809a"
+  },
+  {
+    "index": 117,
+    "timestamp": 1788894027.655007,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "Test .m4a",
+      "risk_score": 10.9,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "be12e95989ea16df4253a70aa80eafd0ccc6dd86be971939260d0557dc45809a",
+    "current_hash": "e44b91b65eff782f6472d6b492999b1eeb7b07eb802611c2f8f66cf235da6718"
+  },
+  {
+    "index": 118,
+    "timestamp": 1788894072.550862,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "filename": "soundtools-tts-am_michael-1788881731422.wav",
+      "risk_score": 49.6,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "e44b91b65eff782f6472d6b492999b1eeb7b07eb802611c2f8f66cf235da6718",
+    "current_hash": "73959fcc2c91e2767091bae9c17c6eed2dde9f82bfec2b715cf7da579c1d04d4"
+  }
+]

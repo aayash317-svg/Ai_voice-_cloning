@@ -1,0 +1,37 @@
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# macOS / OS artifacts
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Large Raw Audio Datasets (>100MB files blocked by GitHub)
+# Keep dataset folder structure and test_samples intact
+datasets/ASVspoof2019/*.tar
+datasets/ASVspoof2019/*.tar.gz
+datasets/librispeech/*.tar.gz
+datasets/librispeech/**/*.flac
+datasets/phonemedf_chatterboxtts/*.wav
+datasets/ASVspoof2019/**/*.wav
+datasets/ASVspoof2019/**/*.flac
+*.tar
+*.tar.gz
+*.download/
+
+# Logs & Temporary Files
+logs/*.log
+*.log
+.system_generated/
+scratch/

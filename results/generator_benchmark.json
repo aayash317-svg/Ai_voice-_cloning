@@ -1,0 +1,220 @@
+{
+  "calibrated_threshold": 0.4652,
+  "genuine_accuracy": 95.22,
+  "genuine_far": 4.78,
+  "known_spoofs_detected_pct": 99.62,
+  "unseen_spoofs_detected_pct": 76.47,
+  "generalization_gap_pct": 23.15,
+  "systems": {
+    "A07": {
+      "type": "TTS",
+      "split": "Known",
+      "profile": {
+        "type": "TTS",
+        "acoustic": "Tacotron 2 (Neural)",
+        "vocoder": "WaveRNN",
+        "split": "Known"
+      },
+      "samples": 190,
+      "mean_spoof_probability": 0.9441,
+      "error_rate": 0.0,
+      "correct": 190
+    },
+    "A08": {
+      "type": "TTS",
+      "split": "Known",
+      "profile": {
+        "type": "TTS",
+        "acoustic": "Neural Auto-encoder",
+        "vocoder": "Neural",
+        "split": "Known"
+      },
+      "samples": 167,
+      "mean_spoof_probability": 0.926,
+      "error_rate": 0.0,
+      "correct": 167
+    },
+    "A09": {
+      "type": "TTS",
+      "split": "Known",
+      "profile": {
+        "type": "TTS",
+        "acoustic": "Tacotron 2",
+        "vocoder": "WORLD Vocoder",
+        "split": "Known"
+      },
+      "samples": 159,
+      "mean_spoof_probability": 0.9643,
+      "error_rate": 0.0,
+      "correct": 159
+    },
+    "A10": {
+      "type": "TTS",
+      "split": "Known",
+      "profile": {
+        "type": "TTS",
+        "acoustic": "Transfer Learning",
+        "vocoder": "WORLD Vocoder",
+        "split": "Known"
+      },
+      "samples": 176,
+      "mean_spoof_probability": 0.8891,
+      "error_rate": 0.0227,
+      "correct": 172
+    },
+    "A11": {
+      "type": "VC",
+      "split": "Known",
+      "profile": {
+        "type": "VC",
+        "acoustic": "Spectral Mapping",
+        "vocoder": "WORLD Vocoder",
+        "split": "Known"
+      },
+      "samples": 180,
+      "mean_spoof_probability": 0.9186,
+      "error_rate": 0.0,
+      "correct": 180
+    },
+    "A12": {
+      "type": "VC",
+      "split": "Known",
+      "profile": {
+        "type": "VC",
+        "acoustic": "Neural Mapping",
+        "vocoder": "WORLD Vocoder",
+        "split": "Known"
+      },
+      "samples": 170,
+      "mean_spoof_probability": 0.8051,
+      "error_rate": 0.0118,
+      "correct": 168
+    },
+    "A13": {
+      "type": "VC",
+      "split": "Known",
+      "profile": {
+        "type": "VC",
+        "acoustic": "Moment Matching",
+        "vocoder": "WORLD Vocoder",
+        "split": "Known"
+      },
+      "samples": 186,
+      "mean_spoof_probability": 0.9567,
+      "error_rate": 0.0,
+      "correct": 186
+    },
+    "A14": {
+      "type": "VC",
+      "split": "Known",
+      "profile": {
+        "type": "VC",
+        "acoustic": "CycleGAN VC",
+        "vocoder": "WORLD Vocoder",
+        "split": "Known"
+      },
+      "samples": 156,
+      "mean_spoof_probability": 0.9498,
+      "error_rate": 0.0,
+      "correct": 156
+    },
+    "A15": {
+      "type": "VC",
+      "split": "Known",
+      "profile": {
+        "type": "VC",
+        "acoustic": "StarGAN VC",
+        "vocoder": "WORLD Vocoder",
+        "split": "Known"
+      },
+      "samples": 178,
+      "mean_spoof_probability": 0.916,
+      "error_rate": 0.0,
+      "correct": 178
+    },
+    "A16": {
+      "type": "TTS",
+      "split": "Unseen",
+      "profile": {
+        "type": "TTS",
+        "acoustic": "Waveform Concatenation",
+        "vocoder": "Direct Concatenation",
+        "split": "Unseen"
+      },
+      "samples": 181,
+      "mean_spoof_probability": 0.7989,
+      "error_rate": 0.0884,
+      "correct": 165
+    },
+    "A17": {
+      "type": "TTS",
+      "split": "Unseen",
+      "profile": {
+        "type": "TTS",
+        "acoustic": "Waveform Filtering",
+        "vocoder": "Linear Prediction",
+        "split": "Unseen"
+      },
+      "samples": 198,
+      "mean_spoof_probability": 0.5994,
+      "error_rate": 0.2475,
+      "correct": 149
+    },
+    "A18": {
+      "type": "TTS",
+      "split": "Unseen",
+      "profile": {
+        "type": "TTS",
+        "acoustic": "High-Res Vocoder",
+        "vocoder": "MagPhase Vocoder",
+        "split": "Unseen"
+      },
+      "samples": 174,
+      "mean_spoof_probability": 0.7953,
+      "error_rate": 0.0057,
+      "correct": 173
+    },
+    "A19": {
+      "type": "VC",
+      "split": "Unseen",
+      "profile": {
+        "type": "VC",
+        "acoustic": "Deep Neural VC",
+        "vocoder": "Neural WaveNet",
+        "split": "Unseen"
+      },
+      "samples": 195,
+      "mean_spoof_probability": 0.4586,
+      "error_rate": 0.5641,
+      "correct": 85
+    },
+    "librispeech_human": {
+      "type": "Human",
+      "split": "Genuine",
+      "profile": {
+        "type": "Human",
+        "acoustic": "LibriSpeech Clean Speech",
+        "vocoder": "Organic Human Vocal Tract",
+        "split": "Genuine"
+      },
+      "samples": 415,
+      "mean_spoof_probability": 0.0658,
+      "error_rate": 0.0193,
+      "correct": 407
+    },
+    "nat": {
+      "type": "Human",
+      "split": "Genuine",
+      "profile": {
+        "type": "Human",
+        "acoustic": "Studio Natural Speech",
+        "vocoder": "Organic Human Vocal Tract",
+        "split": "Genuine"
+      },
+      "samples": 380,
+      "mean_spoof_probability": 0.2473,
+      "error_rate": 0.0789,
+      "correct": 350
+    }
+  }
+}

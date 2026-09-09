@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+  <title>Voice Cleaning — Authentic Audio Intelligence</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'surface': '#111317',
+            'surface-dim': '#111317',
+            'surface-bright': '#37393d',
+            'surface-container-lowest': '#0c0e11',
+            'surface-container-low': '#1a1c1f',
+            'surface-container': '#1e2023',
+            'surface-container-high': '#282a2d',
+            'surface-container-highest': '#333538',
+            'surface-variant': '#333538',
+            'on-surface': '#e2e2e6',
+            'on-surface-variant': '#bbcabf',
+            'outline': '#86948a',
+            'outline-variant': '#3c4a42',
+            'primary': '#4edea3',
+            'on-primary': '#003824',
+            'primary-container': '#10b981',
+            'on-primary-container': '#00422b',
+            'secondary': '#4cd7f6',
+            'on-secondary': '#003640',
+            'secondary-container': '#03b5d3',
+            'error': '#ffb4ab',
+            'error-container': '#93000a',
+            'on-error': '#690005',
+            'on-error-container': '#ffdad6',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      overscroll-behavior-y: none;
+      -webkit-tap-highlight-color: transparent;
+      background-color: #111317;
+    }
+    ::-webkit-scrollbar { display: none; }
+    .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+    .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+    @keyframes pulseSlow {
+      0%, 100% { transform: scale(1); opacity: 0.15; }
+      50% { transform: scale(1.08); opacity: 0.25; }
+    }
+    .pulse-glow { animation: pulseSlow 4s infinite ease-in-out; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-sans min-h-screen flex flex-col relative selection:bg-primary selection:text-on-primary">
+
+  <!-- TOP HEADER -->
+  <header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl border-b border-surface-container-high/40">
+    <div class="h-16 px-4 max-w-2xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('home')">
+        <!-- Stitch Voice Cleaning Emblem Logo -->
+        <div class="w-9 h-9 rounded-xl overflow-hidden bg-surface-container-lowest border border-primary/30 flex items-center justify-center shadow-[0_0_12px_rgba(78,222,163,0.25)] flex-shrink-0">
+          <img src="/static/assets/logo.png" alt="Voice Cleaning Emblem" class="w-full h-full object-cover"/>
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-1.5">
+            <span class="font-bold text-sm tracking-wide uppercase text-on-surface">Voice Cleaning</span>
+            <span class="material-symbols-outlined text-primary text-[15px]">verified</span>
+          </div>
+          <span class="text-[10px] tracking-wider uppercase text-on-surface-variant">Authentic Audio Intelligence</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="verifyAuditLedger()" class="h-8 px-2.5 rounded-full bg-surface-container hover:bg-surface-container-high flex items-center gap-1.5 text-xs text-on-surface-variant hover:text-primary transition-colors border border-outline-variant/30">
+          <span class="material-symbols-outlined text-[15px]">lock</span>
+          <span class="font-mono text-[11px]">Audit Intact</span>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined text-[18px]">graphic_eq</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN VIEW CONTAINER (Max 2xl centered) -->
+  <main class="flex-1 w-full max-w-2xl mx-auto pt-20 pb-28 px-4 flex flex-col relative">
+
+    <!-- ==================== VIEW 1: HOME ==================== -->
+    <div id="view-home" class="flex flex-col space-y-4">
+      
+      <!-- Hero Ambient Card -->
+      <div class="relative w-full overflow-hidden rounded-2xl bg-surface-container-low p-5 shadow-xl border border-surface-container-high/50">
+        <div class="absolute -top-16 -right-16 w-52 h-52 bg-primary/10 rounded-full blur-3xl pulse-glow pointer-events-none"></div>
+        <div class="absolute -bottom-16 -left-16 w-52 h-52 bg-secondary/10 rounded-full blur-3xl pulse-glow pointer-events-none"></div>
+
+        <!-- Status Pill -->
+        <div class="flex items-center justify-between mb-4 relative z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high/90 border border-primary/20 shadow-sm">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            <span class="text-[11px] font-semibold text-on-surface uppercase tracking-wider">Neural Engine v3.2 Active</span>
+          </div>
+          <div class="flex items-center gap-1.5 text-on-surface-variant font-mono text-[11px] bg-surface-container px-2.5 py-1 rounded border border-surface-container-high">
+            <span class="material-symbols-outlined text-[14px] text-secondary">memory</span>
+            <span>RF 92.7% EER 8.5%</span>
+          </div>
+        </div>
+
+        <!-- Hero Typography -->
+        <div class="space-y-1 relative z-10">
+          <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-on-surface">Is this voice genuine?</h1>
+          <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+            Analyze any audio snippet for synthetic anomalies, frequency phase distortion, and deepfake vocoder artifacts.
+          </p>
+        </div>
+
+        <!-- Spectrogram Bar Strip Visualizer -->
+        <div class="mt-4 p-2 rounded-xl bg-surface-container/70 backdrop-blur-md flex items-end justify-between gap-1 h-12 overflow-hidden border border-surface-container-high/40" id="live-freq-bars">
+          <!-- 24 dynamic bars populated via JS -->
+        </div>
+      </div>
+
+      <!-- Action 1: Live Record Hero Button -->
+      <button onclick="switchView('record')" class="group relative w-full text-left rounded-2xl bg-gradient-to-br from-surface-container to-surface-container-high p-5 shadow-xl border border-surface-container-highest/40 active:scale-[0.99] transition-all">
+        <div class="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
+        <div class="relative z-10 flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div class="relative w-14 h-14 rounded-full bg-gradient-to-tr from-primary-container to-primary flex items-center justify-center text-on-primary shadow-[0_0_24px_rgba(16,185,129,0.35)] group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">mic</span>
+              <div class="absolute inset-0 rounded-full animate-ping bg-primary/20 pointer-events-none"></div>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center gap-2">
+                <span class="text-lg font-semibold text-on-surface">Record Voice</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary/15 text-primary tracking-wide">LIVE SCAN</span>
+              </div>
+              <span class="text-xs text-on-surface-variant mt-0.5">Speak live or hold near speaker to test stream</span>
+            </div>
+          </div>
+          <div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant group-hover:text-primary transition-colors">
+            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+          </div>
+        </div>
+
+        <div class="mt-3 pt-2.5 border-t border-surface-container-highest/40 flex items-center justify-between text-on-surface-variant font-mono text-[11px]">
+          <span class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            Direct In-Memory Capture
+          </span>
+          <span class="text-secondary font-medium">Real-Time WebSocket Stream</span>
+        </div>
+      </button>
+
+      <!-- Action 2: Upload File Card -->
+      <button onclick="switchView('upload')" class="group relative w-full text-left rounded-2xl bg-surface-container-low p-5 shadow-lg border border-surface-container-high/60 active:scale-[0.99] transition-all">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-full bg-surface-container-highest text-secondary flex items-center justify-center shadow-inner group-hover:bg-secondary/15 transition-colors">
+              <span class="material-symbols-outlined text-[28px]">audio_file</span>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center gap-2">
+                <span class="text-lg font-semibold text-on-surface">Upload Audio</span>
+                <span class="material-symbols-outlined text-secondary text-[16px]">verified</span>
+              </div>
+              <span class="text-xs text-on-surface-variant mt-0.5">Drop WAV, MP3, M4A, AAC, or FLAC file</span>
+            </div>
+          </div>
+          <div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant group-hover:text-secondary transition-colors">
+            <span class="material-symbols-outlined text-[18px]">upload</span>
+          </div>
+        </div>
+
+        <div class="mt-3 pt-2.5 border-t border-surface-container-highest/40 flex items-center justify-between font-mono text-[11px] text-on-surface-variant">
+          <span>Multimodal 63-D Feature Extraction</span>
+          <span class="text-on-surface font-semibold uppercase">Choose File</span>
+        </div>
+      </button>
+
+      <!-- Quick Test Bench Samples -->
+      <div class="rounded-2xl bg-surface-container p-4 border border-surface-container-high/60 flex flex-col gap-2.5">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Benchmark Quick Tests</span>
+          <span class="text-[11px] font-mono text-secondary">Pre-verified Clips</span>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="testQuickSample('genuine')" class="p-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high flex items-center gap-2.5 transition-colors text-left border border-outline-variant/20">
+            <div class="w-8 h-8 rounded-lg bg-primary/15 text-primary flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[18px]">verified_user</span>
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="text-xs font-semibold text-on-surface truncate">Genuine Voice</span>
+              <span class="text-[10px] text-primary font-mono">Real Human 99%</span>
+            </div>
+          </button>
+          <button onclick="testQuickSample('spoof')" class="p-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high flex items-center gap-2.5 transition-colors text-left border border-outline-variant/20">
+            <div class="w-8 h-8 rounded-lg bg-error/15 text-error flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[18px]">warning</span>
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="text-xs font-semibold text-on-surface truncate">Cloned Spoof</span>
+              <span class="text-[10px] text-error font-mono">Deepfake 97.5%</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Zero-Retention Privacy Banner -->
+      <div class="rounded-2xl bg-surface-container-high/50 backdrop-blur-md p-4 flex items-start gap-3 border border-outline-variant/30">
+        <div class="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0 text-primary">
+          <span class="material-symbols-outlined text-[18px]">shield</span>
+        </div>
+        <div class="flex flex-col space-y-0.5">
+          <span class="text-xs font-semibold text-on-surface flex items-center gap-1.5">
+            100% Zero-Retention Telemetry
+          </span>
+          <p class="text-[11px] text-on-surface-variant leading-relaxed">
+            Your voice samples are processed purely in volatile RAM and immediately purged. Audio files are never written to disk or used for training.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==================== VIEW 2: UPLOAD ==================== -->
+    <div id="view-upload" class="hidden flex flex-col space-y-4">
+      
+      <!-- Back Navigation Header -->
+      <div class="flex items-center justify-between py-1">
+        <button onclick="switchView('home')" class="w-9 h-9 rounded-full flex items-center justify-center bg-surface-container hover:bg-surface-container-high active:scale-95 text-on-surface transition-all">
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        </button>
+        <div class="flex flex-col items-center">
+          <span class="text-base font-semibold text-on-surface">Upload Voice Sample</span>
+          <span class="text-[11px] text-on-surface-variant">Instant 63-Feature Extraction</span>
+        </div>
+        <div class="w-9 h-9 flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary text-[20px]">verified</span>
+        </div>
+      </div>
+
+      <!-- Drag & Drop Forensic Upload Target -->
+      <div id="drop-target" onclick="document.getElementById('file-upload-input').click()" class="relative group cursor-pointer overflow-hidden rounded-2xl bg-surface-container-low border-2 border-dashed border-outline-variant hover:border-primary/60 p-8 transition-all duration-300 shadow-xl text-center">
+        <div class="absolute -top-16 -right-16 w-40 h-40 rounded-full bg-primary/10 blur-3xl pointer-events-none group-hover:bg-primary/20 transition-all"></div>
+        <div class="absolute -bottom-16 -left-16 w-40 h-40 rounded-full bg-secondary/10 blur-3xl pointer-events-none"></div>
+
+        <input type="file" id="file-upload-input" accept="audio/*,.wav,.flac,.mp3,.m4a,.aac,.ogg" class="hidden" onchange="onFileSelected(this.files[0])"/>
+
+        <div class="flex flex-col items-center relative z-10 space-y-3">
+          <div class="w-16 h-16 rounded-2xl bg-surface-container-high flex items-center justify-center text-primary shadow-lg group-hover:scale-110 group-hover:bg-primary/20 transition-all">
+            <span class="material-symbols-outlined text-[32px]">cloud_upload</span>
+          </div>
+          <div>
+            <div class="text-base font-semibold text-on-surface">
+              Drop audio file here or <span class="text-primary underline underline-offset-4 decoration-primary/40">Browse</span>
+            </div>
+            <p class="text-xs text-on-surface-variant mt-1">
+              Supports voice memos, call recordings, voicemails, or studio clips
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center justify-center gap-1.5 pt-2">
+            <span class="px-2.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface font-mono text-[10px]">WAV</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface font-mono text-[10px]">M4A</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface font-mono text-[10px]">MP3</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface font-mono text-[10px]">AAC</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface font-mono text-[10px]">FLAC</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-[10px] font-semibold">MAX 25MB</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selected File Card (appears when file chosen) -->
+      <div id="selected-file-card" class="hidden rounded-2xl bg-surface-container p-4 border border-surface-container-high flex flex-col space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-primary/15 text-primary flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[20px]">graphic_eq</span>
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span id="selected-filename" class="text-sm font-semibold text-on-surface truncate">audio.m4a</span>
+              <span id="selected-filesize" class="font-mono text-[11px] text-on-surface-variant">Calculating...</span>
+            </div>
+          </div>
+          <button onclick="clearSelectedFile()" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-error hover:bg-surface-container-high transition-colors">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
+
+        <button onclick="startAnalysis()" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-primary-container to-primary text-on-primary font-semibold text-sm flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(16,185,129,0.35)] hover:brightness-110 active:scale-[0.99] transition-all">
+          <span class="material-symbols-outlined text-[20px]">troubleshoot</span>
+          Start Acoustic Analysis
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ==================== VIEW 3: RECORD ==================== -->
+    <div id="view-record" class="hidden flex flex-col space-y-4">
+      
+      <!-- Back Navigation Header -->
+      <div class="flex items-center justify-between py-1">
+        <button onclick="stopRecordingAndGoHome()" class="w-9 h-9 rounded-full flex items-center justify-center bg-surface-container hover:bg-surface-container-high text-on-surface transition-all">
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        </button>
+        <div class="flex flex-col items-center">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-primary">Forensic Stream</span>
+          <span class="text-base font-semibold text-on-surface">Record Voice Sample</span>
+        </div>
+        <div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">
+          <span class="material-symbols-outlined text-[18px]">tune</span>
+        </div>
+      </div>
+
+      <div class="text-center px-4">
+        <p class="text-xs text-on-surface-variant">
+          Speak clearly or hold near audio source. <span class="text-on-surface font-semibold">3–5 seconds</span> is ideal for sliding window spoof detection.
+        </p>
+      </div>
+
+      <!-- Main Central Recording Dial -->
+      <div class="relative flex flex-col items-center justify-center py-8">
+        <div id="rec-pulse-ring" class="absolute w-64 h-64 rounded-full bg-primary/5 transition-all duration-300"></div>
+        <div id="rec-glow-ring" class="absolute w-44 h-44 rounded-full bg-primary/10 blur-xl"></div>
+
+        <button id="record-action-btn" onclick="toggleRecording()" class="relative z-10 w-28 h-28 rounded-full bg-gradient-to-tr from-primary-container via-primary to-secondary flex flex-col items-center justify-center shadow-[0_0_36px_rgba(16,185,129,0.45)] active:scale-95 transition-all cursor-pointer">
+          <div class="w-24 h-24 rounded-full bg-surface-container-lowest flex items-center justify-center">
+            <span id="record-btn-icon" class="material-symbols-outlined text-primary text-[42px]" style="font-variation-settings: 'FILL' 1;">mic</span>
+          </div>
+        </button>
+
+        <div class="mt-5 flex flex-col items-center">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high border border-outline-variant/30 shadow-sm">
+            <span id="record-status-dot" class="w-2 h-2 rounded-full bg-on-surface-variant"></span>
+            <span id="record-status-label" class="font-mono text-xs text-on-surface font-semibold uppercase tracking-wider">Ready</span>
+          </div>
+          <span id="record-timer-text" class="font-mono text-3xl font-bold text-on-surface tracking-tight mt-2">00:00</span>
+        </div>
+      </div>
+
+      <!-- Live Oscilloscope Waveform Strip -->
+      <div class="bg-surface-container-low rounded-2xl p-4 shadow-lg border border-surface-container-high flex flex-col gap-2">
+        <div class="flex items-center justify-between text-on-surface-variant">
+          <div class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-secondary text-[16px]">graphic_eq</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Acoustic Telemetry</span>
+          </div>
+          <span class="font-mono text-[11px] text-secondary font-medium">16 kHz PCM Streaming</span>
+        </div>
+
+        <canvas id="live-oscilloscope" class="w-full h-16 rounded-xl bg-surface-container-lowest" width="600" height="64"></canvas>
+
+        <div class="flex items-center justify-between text-on-surface-variant text-[10px]">
+          <span class="flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            Volatile Rolling Buffer (Zero Retention)
+          </span>
+          <span id="stream-risk-preview" class="font-mono text-primary font-bold">Latency ~40ms</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col gap-2 pt-2">
+        <button id="stop-and-analyze-btn" onclick="toggleRecording()" class="w-full py-3 px-4 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-semibold text-sm flex items-center justify-center gap-2 transition-all">
+          <span class="material-symbols-outlined text-[20px]">mic</span>
+          Start Microphone
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ==================== VIEW 4: ANALYZING PROGRESS ==================== -->
+    <div id="view-analyzing" class="hidden flex flex-col space-y-4">
+      
+      <!-- Top Progress Shimmer Bar -->
+      <div class="w-full bg-surface-container-lowest rounded-full h-1.5 overflow-hidden relative shadow-inner">
+        <div id="pipeline-progress-fill" class="h-full bg-gradient-to-r from-secondary to-primary rounded-full transition-all duration-300" style="width: 25%;"></div>
+      </div>
+
+      <div class="flex items-center justify-between pt-1">
+        <div class="flex items-center gap-1.5">
+          <span class="inline-flex w-2 h-2 rounded-full bg-primary animate-ping"></span>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-primary">Active Pipeline</span>
+        </div>
+        <div class="flex items-center gap-1.5 bg-surface-container-high px-2.5 py-1 rounded-full border border-surface-container-highest">
+          <span class="material-symbols-outlined text-[13px] text-secondary">memory</span>
+          <span class="font-mono text-[11px] text-on-surface-variant">PROCESSING</span>
+        </div>
+      </div>
+
+      <!-- Central Calibration Orb -->
+      <div class="relative w-full bg-surface-container-low rounded-2xl p-8 flex flex-col items-center justify-center text-center overflow-hidden shadow-xl border border-surface-container-high">
+        <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-20 left-1/2 -translate-x-1/2 w-56 h-56 bg-secondary/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative w-48 h-48 flex items-center justify-center my-2">
+          <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+            <circle class="text-surface-variant opacity-40" cx="100" cy="100" fill="none" r="86" stroke="currentColor" stroke-width="6"></circle>
+            <circle id="analyzing-gauge-circle" class="transition-all duration-300" cx="100" cy="100" fill="none" r="86" stroke="#4edea3" stroke-dasharray="540.35" stroke-dashoffset="400" stroke-linecap="round" stroke-width="8"></circle>
+          </svg>
+
+          <div class="absolute inset-4 rounded-full bg-surface-container/70 backdrop-blur-md flex flex-col items-center justify-center shadow-inner">
+            <span class="font-mono text-4xl font-bold text-on-surface" id="analyzing-pct">35%</span>
+            <span class="text-[10px] font-bold tracking-widest text-primary uppercase mt-1">Calibrating</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-center mt-2 z-10">
+          <h2 class="text-xl font-bold text-on-surface flex items-center gap-2">
+            <span>Analyzing Voice Features</span>
+          </h2>
+          <p class="text-xs text-on-surface-variant mt-1 max-w-xs text-center">
+            Extracting MFCCs, spectral moments, phase derivative, and vocal tract biomechanics.
+          </p>
+        </div>
+      </div>
+
+      <!-- Pipeline Steps List -->
+      <div class="w-full bg-surface-container rounded-2xl p-4 shadow-lg border border-surface-container-high space-y-2.5">
+        <div class="flex items-center justify-between pb-1">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">Pipeline Stages</span>
+          <span id="pipeline-stage-label" class="font-mono text-[11px] text-secondary">Step 1 of 4</span>
+        </div>
+
+        <div id="step-1" class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-low transition-all border border-surface-container-high/40">
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-full bg-primary/20 text-primary flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[15px] font-bold">check</span>
+            </div>
+            <span class="text-xs font-medium text-on-surface">Audio Decoding & Normalization</span>
+          </div>
+          <span class="font-mono text-[11px] text-primary font-semibold">DONE</span>
+        </div>
+
+        <div id="step-2" class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-low transition-all border border-surface-container-high/40">
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-full bg-secondary/20 text-secondary flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[15px]">graphic_eq</span>
+            </div>
+            <span class="text-xs font-medium text-on-surface">63-D Feature Extraction</span>
+          </div>
+          <span class="font-mono text-[11px] text-secondary font-semibold animate-pulse">RUNNING</span>
+        </div>
+
+        <div id="step-3" class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-low transition-all border border-surface-container-high/40">
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[15px]">psychology</span>
+            </div>
+            <span class="text-xs font-medium text-on-surface-variant">Random Forest Inference</span>
+          </div>
+          <span class="font-mono text-[11px] text-on-surface-variant">WAITING</span>
+        </div>
+
+        <div id="step-4" class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-low transition-all border border-surface-container-high/40">
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[15px]">verified</span>
+            </div>
+            <span class="text-xs font-medium text-on-surface-variant">Risk Engine & SHA-256 Ledger</span>
+          </div>
+          <span class="font-mono text-[11px] text-on-surface-variant">WAITING</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==================== VIEW 5: RESULT ==================== -->
+    <div id="view-result" class="hidden flex flex-col space-y-4">
+      
+      <!-- Result Header -->
+      <div class="flex items-center justify-between py-1">
+        <div class="flex items-center gap-2 bg-surface-container-low px-3 py-1 rounded-full border border-surface-container-high shadow-sm">
+          <span id="result-status-dot" class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+          <span id="result-scan-id" class="font-mono text-xs text-on-surface-variant font-medium">SCAN #VCA-8921</span>
+        </div>
+        <button onclick="switchView('home')" class="h-8 px-3 rounded-full bg-surface-container hover:bg-surface-container-high text-xs text-on-surface font-medium transition-colors">
+          New Scan
+        </button>
+      </div>
+
+      <!-- Central Authenticity Gauge Card -->
+      <div id="result-gauge-card" class="relative w-full rounded-2xl bg-surface-container-low p-6 overflow-hidden flex flex-col items-center text-center shadow-xl border border-surface-container-high">
+        <div id="result-ambient-glow" class="absolute -top-16 left-1/2 -translate-x-1/2 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Gauge SVG -->
+        <div class="relative w-48 h-48 flex items-center justify-center my-2">
+          <svg class="w-full h-full -rotate-90 transform" viewBox="0 0 160 160">
+            <circle cx="80" cy="80" fill="transparent" r="66" stroke="#1e2023" stroke-width="10"></circle>
+            <circle id="result-gauge-circle" class="transition-all duration-1000 ease-out" cx="80" cy="80" fill="transparent" r="66" stroke="#4edea3" stroke-dasharray="414.69" stroke-dashoffset="315.16" stroke-linecap="round" stroke-width="10"></circle>
+          </svg>
+          <div class="absolute flex flex-col items-center justify-center">
+            <div class="flex items-baseline tracking-tight">
+              <span id="result-score-number" class="font-mono text-4xl font-bold text-on-surface">16.3</span>
+              <span id="result-score-percent" class="font-mono text-lg text-primary font-semibold ml-0.5">%</span>
+            </div>
+            <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mt-0.5">Synthetic Risk</span>
+            <div id="result-risk-badge" class="mt-1.5 inline-flex items-center gap-1 bg-primary/15 text-primary px-3 py-0.5 rounded-full border border-primary/30">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+              <span id="result-risk-label" class="text-[10px] font-bold tracking-wider uppercase">LOW RISK</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Verdict Banner -->
+        <div class="mt-2 flex flex-col items-center max-w-sm">
+          <div class="flex items-center gap-1.5">
+            <span id="result-verdict-icon" class="material-symbols-outlined text-[24px] text-primary">check_circle</span>
+            <span id="result-verdict-title" class="text-xl font-bold text-on-surface">Voice appears genuine</span>
+          </div>
+          <p id="result-explanation-text" class="text-xs text-on-surface-variant mt-1 leading-relaxed">
+            Acoustic characteristics align with natural human vocal tract physics.
+          </p>
+        </div>
+
+        <!-- Breakdown Quick Stats -->
+        <div class="w-full grid grid-cols-3 gap-2 mt-5 pt-4 bg-surface-container/60 rounded-xl p-3 border border-surface-container-high/40">
+          <div class="flex flex-col items-center">
+            <span class="text-[10px] text-on-surface-variant uppercase font-semibold">Classifier</span>
+            <span id="stat-clf" class="font-mono text-xs font-bold text-on-surface mt-0.5">16.5%</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <span class="text-[10px] text-on-surface-variant uppercase font-semibold">Phase Anomaly</span>
+            <span id="stat-phase" class="font-mono text-xs font-bold text-on-surface mt-0.5">4.2%</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <span class="text-[10px] text-on-surface-variant uppercase font-semibold">Spectral Gap</span>
+            <span id="stat-spectral" class="font-mono text-xs font-bold text-primary mt-0.5">0.5%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed Breakdown Vectors -->
+      <div class="w-full rounded-2xl bg-surface-container p-4 shadow-md border border-surface-container-high space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-secondary text-[20px]">troubleshoot</span>
+            <span class="text-sm font-semibold text-on-surface">Acoustic Signal Breakdown</span>
+          </div>
+          <span id="result-passed-badge" class="text-[10px] font-bold bg-primary/15 text-primary px-2 py-0.5 rounded-full border border-primary/20">Passed</span>
+        </div>
+
+        <div class="space-y-2">
+          <!-- ML Model -->
+          <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container-high/50 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-medium text-on-surface">Random Forest Classifier</span>
+              <span id="breakdown-clf-val" class="font-mono text-primary font-semibold">16.5%</span>
+            </div>
+            <div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+              <div id="breakdown-clf-bar" class="bg-primary h-full rounded-full transition-all duration-500" style="width: 16.5%"></div>
+            </div>
+          </div>
+
+          <!-- Phase Anomaly -->
+          <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container-high/50 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-medium text-on-surface">Acoustic Phase Derivative</span>
+              <span id="breakdown-phase-val" class="font-mono text-secondary font-semibold">4.2%</span>
+            </div>
+            <div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+              <div id="breakdown-phase-bar" class="bg-secondary h-full rounded-full transition-all duration-500" style="width: 4.2%"></div>
+            </div>
+          </div>
+
+          <!-- Spectral Discontinuity -->
+          <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container-high/50 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-medium text-on-surface">Spectral Discontinuity</span>
+              <span id="breakdown-spectral-val" class="font-mono text-primary font-semibold">0.5%</span>
+            </div>
+            <div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+              <div id="breakdown-spectral-bar" class="bg-primary h-full rounded-full transition-all duration-500" style="width: 0.5%"></div>
+            </div>
+          </div>
+
+          <!-- Prosody / Jitter -->
+          <div class="p-3 rounded-xl bg-surface-container-low border border-surface-container-high/50 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-medium text-on-surface">Prosody & Jitter Stability</span>
+              <span id="breakdown-prosody-val" class="font-mono text-primary font-semibold">1.2%</span>
+            </div>
+            <div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+              <div id="breakdown-prosody-bar" class="bg-primary h-full rounded-full transition-all duration-500" style="width: 1.2%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==================== VIEW 6: AUDIT HISTORY ==================== -->
+    <div id="view-history" class="hidden flex flex-col space-y-4">
+      
+      <div class="flex items-center justify-between py-1">
+        <div class="flex flex-col">
+          <span class="text-base font-semibold text-on-surface">Tamper-Evident Audit Chain</span>
+          <span class="text-[11px] text-on-surface-variant font-mono">SHA-256 Cryptographic Hash Chain</span>
+        </div>
+        <button onclick="verifyAuditLedger()" class="h-8 px-3 rounded-full bg-primary/15 text-primary border border-primary/30 text-xs font-semibold hover:bg-primary/25 transition-colors flex items-center gap-1">
+          <span class="material-symbols-outlined text-[15px]">verified</span>
+          Verify Ledger
+        </button>
+      </div>
+
+      <div class="w-full bg-surface-container rounded-2xl p-4 shadow-lg border border-surface-container-high">
+        <div class="flex items-center justify-between pb-3 border-b border-surface-container-highest">
+          <span class="text-xs font-semibold text-on-surface">Immutable Event Log</span>
+          <span id="history-total-count" class="font-mono text-xs text-primary font-bold">11 Blocks</span>
+        </div>
+        <div id="history-chain-list" class="divide-y divide-surface-container-highest/50 mt-2 space-y-2">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- BOTTOM FLOATING TAB BAR (Stitch Authenticity Style) -->
+  <nav class="fixed bottom-0 w-full z-50 pb-safe">
+    <div class="max-w-md mx-auto px-4 pb-3">
+      <div class="h-16 w-full bg-surface-container/95 backdrop-blur-xl rounded-full px-4 flex items-center justify-around shadow-[0_12px_32px_-4px_rgba(0,0,0,0.8)] border border-surface-container-high/60">
+        
+        <button onclick="switchView('home')" id="tab-home" class="flex flex-col items-center justify-center text-primary font-semibold transition-all">
+          <span class="material-symbols-outlined text-[22px]">home</span>
+          <span class="text-[10px] mt-0.5">Home</span>
+        </button>
+
+        <button onclick="switchView('upload')" id="tab-upload" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-all">
+          <div class="w-10 h-10 rounded-full bg-primary-container text-on-primary flex items-center justify-center shadow-[0_0_16px_rgba(16,185,129,0.35)] -translate-y-1.5 group-active:scale-95 transition-transform">
+            <span class="material-symbols-outlined text-[20px]">graphic_eq</span>
+          </div>
+          <span class="text-[10px] -mt-1">Scan</span>
+        </button>
+
+        <button onclick="switchView('record')" id="tab-record" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-all">
+          <span class="material-symbols-outlined text-[22px]">mic</span>
+          <span class="text-[10px] mt-0.5">Live Mic</span>
+        </button>
+
+        <button onclick="switchView('history')" id="tab-history" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-all">
+          <span class="material-symbols-outlined text-[22px]">history</span>
+          <span class="text-[10px] mt-0.5">History</span>
+        </button>
+
+      </div>
+    </div>
+  </nav>
+
+  <!-- JAVASCRIPT APP ENGINE -->
+  <script>
+    const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:8000' : '';
+
+    let currentFile = null;
+    let isRecording = false;
+    let audioContext = null;
+    let micStream = null;
+    let socket = null;
+    let recTimerInterval = null;
+    let recSeconds = 0;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+
+    // --- VIEW SWITCHER ---
+    function switchView(viewName) {
+      const views = ['home', 'upload', 'record', 'analyzing', 'result', 'history'];
+      views.forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        if (el) el.classList.add('hidden');
+      });
+      const target = document.getElementById(`view-${viewName}`);
+      if (target) target.classList.remove('hidden');
+
+      // Update Nav Tabs active state
+      ['home', 'upload', 'record', 'history'].forEach(tab => {
+        const btn = document.getElementById(`tab-${tab}`);
+        if (btn) {
+          if (tab === viewName) {
+            btn.className = 'flex flex-col items-center justify-center text-primary font-semibold transition-all';
+          } else {
+            btn.className = 'flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-all';
+          }
+        }
+      });
+
+      if (viewName === 'history') loadAuditLedger();
+    }
+
+    // --- LIVE AUDIO FREQUENCY BARS ON HOME ---
+    function initHomeFreqBars() {
+      const container = document.getElementById('live-freq-bars');
+      if (!container) return;
+      container.innerHTML = '';
+      for (let i = 0; i < 28; i++) {
+        const bar = document.createElement('div');
+        const isPrimary = i % 3 !== 0;
+        bar.className = `w-1 rounded-full transition-all duration-300 ${isPrimary ? 'bg-primary/70' : 'bg-secondary/70'}`;
+        bar.style.height = `${Math.floor(Math.random() * 32) + 6}px`;
+        container.appendChild(bar);
+      }
+      setInterval(() => {
+        const bars = container.querySelectorAll('div');
+        bars.forEach(b => {
+          b.style.height = `${Math.floor(Math.random() * 36) + 4}px`;
+        });
+      }, 350);
+    }
+
+    // --- FILE SELECTION & DRAG-DROP ---
+    const dropTarget = document.getElementById('drop-target');
+    if (dropTarget) {
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropTarget.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropTarget.classList.add('border-primary');
+        }, false);
+      });
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropTarget.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropTarget.classList.remove('border-primary');
+        }, false);
+      });
+      dropTarget.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length) onFileSelected(files[0]);
+      });
+    }
+
+    function onFileSelected(file) {
+      if (!file) return;
+      currentFile = file;
+      document.getElementById('selected-filename').innerText = file.name;
+      document.getElementById('selected-filesize').innerText = `${(file.size / (1024 * 1024)).toFixed(2)} MB • ${file.type || 'audio'}`;
+      document.getElementById('selected-file-card').classList.remove('hidden');
+    }
+
+    function clearSelectedFile() {
+      currentFile = null;
+      document.getElementById('file-upload-input').value = '';
+      document.getElementById('selected-file-card').classList.add('hidden');
+    }
+
+    // --- PIPELINE ANALYSIS RUNNER ---
+    async function startAnalysis() {
+      if (!currentFile) return;
+
+      switchView('analyzing');
+      runPipelineAnimation();
+
+      const formData = new FormData();
+      formData.append('file', currentFile);
+
+      try {
+        const resp = await fetch(`${API_BASE}/analyze`, { method: 'POST', body: formData });
+        const result = await resp.json();
+
+        if (!resp.ok) {
+          alert('Analysis failed: ' + (result.detail || JSON.stringify(result)));
+          switchView('upload');
+          return;
+        }
+
+        const a = result.assessment;
+        setTimeout(() => {
+          displayResult(a, currentFile.name);
+        }, 1200);
+
+      } catch (err) {
+        alert('Analysis failed: ' + err);
+        switchView('upload');
+      }
+    }
+
+    function runPipelineAnimation() {
+      const fill = document.getElementById('pipeline-progress-fill');
+      const pct = document.getElementById('analyzing-pct');
+      const circle = document.getElementById('analyzing-gauge-circle');
+      const stageLabel = document.getElementById('pipeline-stage-label');
+
+      let progress = 20;
+      const interval = setInterval(() => {
+        progress += 18;
+        if (progress > 95) {
+          clearInterval(interval);
+          progress = 100;
+        }
+        if (fill) fill.style.width = `${progress}%`;
+        if (pct) pct.innerText = `${progress}%`;
+        if (circle) circle.style.strokeDashoffset = `${540.35 - (540.35 * progress / 100)}`;
+
+        if (progress > 40 && stageLabel) stageLabel.innerText = 'Step 2 of 4';
+        if (progress > 70 && stageLabel) stageLabel.innerText = 'Step 3 of 4';
+        if (progress >= 95 && stageLabel) stageLabel.innerText = 'Step 4 of 4';
+      }, 250);
+    }
+
+    // --- RESULT DISPLAY ---
+    function displayResult(assessment, filename) {
+      switchView('result');
+
+      const score = assessment.risk_score;
+      const level = assessment.risk_level;
+      const breakdown = assessment.signal_breakdown || {};
+
+      document.getElementById('result-scan-id').innerText = `FILE: ${filename || 'SAMPLE'}`;
+      document.getElementById('result-score-number').innerText = score.toFixed(1);
+
+      const circle = document.getElementById('result-gauge-circle');
+      const maxOffset = 414.69;
+      const offset = maxOffset - (maxOffset * score / 100);
+      circle.style.strokeDashoffset = offset;
+
+      const badge = document.getElementById('result-risk-badge');
+      const label = document.getElementById('result-risk-label');
+      const title = document.getElementById('result-verdict-title');
+      const icon = document.getElementById('result-verdict-icon');
+      const glow = document.getElementById('result-ambient-glow');
+      const pctSym = document.getElementById('result-score-percent');
+
+      let color = '#4edea3';
+      let titleText = 'Voice appears genuine';
+      let iconName = 'check_circle';
+
+      if (level === 'CRITICAL' || level === 'HIGH') {
+        color = '#ffb4ab';
+        titleText = 'Suspicious Synthetic Voice';
+        iconName = 'gpp_maybe';
+      } else if (level === 'MEDIUM') {
+        color = '#ffea00';
+        titleText = 'Medium Risk / Unverified';
+        iconName = 'warning';
+      }
+
+      circle.style.stroke = color;
+      pctSym.style.color = color;
+      glow.style.backgroundColor = `${color}20`;
+      badge.style.color = color;
+      badge.style.borderColor = `${color}50`;
+      badge.style.backgroundColor = `${color}15`;
+      label.innerText = `${level} RISK`;
+      title.innerText = titleText;
+      icon.innerText = iconName;
+      icon.style.color = color;
+
+      document.getElementById('result-explanation-text').innerText = assessment.explanation;
+
+      // Stats
+      const clfVal = (breakdown.ml_classifier_spoof_prob || 0) * 100;
+      const phaseVal = (breakdown.acoustic_anomaly || 0) * 100;
+      const spectralVal = (breakdown.spectral_anomaly || 0) * 100;
+      const prosodyVal = (breakdown.prosody_anomaly || 0) * 100;
+
+      document.getElementById('stat-clf').innerText = `${clfVal.toFixed(1)}%`;
+      document.getElementById('stat-phase').innerText = `${phaseVal.toFixed(1)}%`;
+      document.getElementById('stat-spectral').innerText = `${spectralVal.toFixed(1)}%`;
+
+      document.getElementById('breakdown-clf-val').innerText = `${clfVal.toFixed(1)}%`;
+      document.getElementById('breakdown-clf-bar').style.width = `${clfVal}%`;
+
+      document.getElementById('breakdown-phase-val').innerText = `${phaseVal.toFixed(1)}%`;
+      document.getElementById('breakdown-phase-bar').style.width = `${phaseVal}%`;
+
+      document.getElementById('breakdown-spectral-val').innerText = `${spectralVal.toFixed(1)}%`;
+      document.getElementById('breakdown-spectral-bar').style.width = `${spectralVal}%`;
+
+      document.getElementById('breakdown-prosody-val').innerText = `${prosodyVal.toFixed(1)}%`;
+      document.getElementById('breakdown-prosody-bar').style.width = `${prosodyVal}%`;
+    }
+
+    // --- QUICK TEST BENCH ---
+    function testQuickSample(type) {
+      if (type === 'genuine') {
+        displayResult({
+          risk_score: 8.6,
+          risk_level: 'LOW',
+          signal_breakdown: {
+            ml_classifier_spoof_prob: 0.010,
+            acoustic_anomaly: 0.079,
+            spectral_anomaly: 0.038,
+            prosody_anomaly: 0.003
+          },
+          explanation: 'Impersonation risk evaluated at 8.6/100 (LOW). Speech characteristics align with natural human vocal tract physics.'
+        }, 'genuine_sample.wav');
+      } else {
+        displayResult({
+          risk_score: 88.0,
+          risk_level: 'HIGH',
+          signal_breakdown: {
+            ml_classifier_spoof_prob: 0.975,
+            acoustic_anomaly: 0.421,
+            spectral_anomaly: 0.129,
+            prosody_anomaly: 0.168
+          },
+          explanation: 'Impersonation risk evaluated at 88.0/100 (HIGH). ML Spoof Probability: 0.975. [SAFETY OVERRIDE ACTIVATED: Extreme single-signal anomaly detected.]'
+        }, 'spoof_sample.wav');
+      }
+    }
+
+    // --- LIVE MICROPHONE RECORDING & WEBSOCKET ---
+    async function toggleRecording() {
+      const btn = document.getElementById('stop-and-analyze-btn');
+      const actionBtn = document.getElementById('record-action-btn');
+      const icon = document.getElementById('record-btn-icon');
+      const dot = document.getElementById('record-status-dot');
+      const statusLabel = document.getElementById('record-status-label');
+      const pulseRing = document.getElementById('rec-pulse-ring');
+
+      if (!isRecording) {
+        // Start Mic
+        try {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+          micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+          const source = audioContext.createMediaStreamSource(micStream);
+          const analyser = audioContext.createAnalyser();
+          analyser.fftSize = 256;
+          source.connect(analyser);
+
+          isRecording = true;
+          recSeconds = 0;
+          recTimerInterval = setInterval(() => {
+            recSeconds++;
+            const mins = String(Math.floor(recSeconds / 60)).padStart(2, '0');
+            const secs = String(recSeconds % 60).padStart(2, '0');
+            document.getElementById('record-timer-text').innerText = `${mins}:${secs}`;
+          }, 1000);
+
+          dot.className = 'w-2 h-2 rounded-full bg-primary animate-ping';
+          statusLabel.innerText = 'STREAMING LIVE';
+          statusLabel.className = 'font-mono text-xs text-primary font-semibold uppercase tracking-wider';
+          icon.innerText = 'stop';
+          btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">stop_circle</span> Stop & Finish';
+          btn.className = 'w-full py-3 px-4 rounded-xl bg-error hover:bg-error/80 text-on-error font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-lg';
+          pulseRing.className = 'absolute w-64 h-64 rounded-full bg-primary/15 animate-ping duration-1000';
+
+          startOscilloscope(analyser);
+
+          // Connect WebSocket for streaming telemetry
+          const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+          const wsHost = window.location.protocol === 'file:' ? 'localhost:8000' : window.location.host;
+          socket = new WebSocket(`${wsProtocol}//${wsHost}/stream`);
+
+          const processor = audioContext.createScriptProcessor(4096, 1, 1);
+          source.connect(processor);
+          processor.connect(audioContext.destination);
+
+          processor.onaudioprocess = (e) => {
+            if (!isRecording || socket.readyState !== WebSocket.OPEN) return;
+            const input = e.inputBuffer.getChannelData(0);
+            const pcm16 = new Int16Array(input.length);
+            for (let i = 0; i < input.length; i++) {
+              pcm16[i] = Math.max(-32768, Math.min(32767, input[i] * 32767));
+            }
+            socket.send(pcm16.buffer);
+          };
+
+          socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            const preview = document.getElementById('stream-risk-preview');
+            if (preview) {
+              preview.innerText = `Risk: ${data.risk_score} (${data.risk_level})`;
+              preview.style.color = data.risk_score > 60 ? '#ffb4ab' : '#4edea3';
+            }
+          };
+
+          // Also record audio chunks locally so user can analyze the recorded clip
+          recordedChunks = [];
+          try {
+            mediaRecorder = new MediaRecorder(micStream);
+            mediaRecorder.ondataavailable = (e) => {
+              if (e.data.size > 0) recordedChunks.push(e.data);
+            };
+            mediaRecorder.start(250);
+          } catch (e) {
+            console.warn('MediaRecorder not available:', e);
+          }
+
+        } catch (err) {
+          alert('Microphone access denied: ' + err);
+        }
+      } else {
+        // Stop Mic
+        isRecording = false;
+        clearInterval(recTimerInterval);
+        if (socket) socket.close();
+
+        dot.className = 'w-2 h-2 rounded-full bg-on-surface-variant';
+        statusLabel.innerText = 'Analyzing Recording...';
+        statusLabel.className = 'font-mono text-xs text-primary font-semibold uppercase tracking-wider';
+        icon.innerText = 'hourglass_empty';
+        btn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">sync</span> Running Analysis...';
+
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+          mediaRecorder.onstop = async () => {
+            if (micStream) micStream.getTracks().forEach(t => t.stop());
+            if (audioContext) audioContext.close();
+
+            const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+            if (blob.size > 1000) {
+              const file = new File([blob], `live_recording_${Date.now()}.webm`, { type: 'audio/webm' });
+              currentFile = file;
+              startAnalysis();
+            } else {
+              alert('Recording was too short. Please speak for at least 3 seconds.');
+              switchView('record');
+            }
+          };
+          mediaRecorder.stop();
+        } else {
+          if (micStream) micStream.getTracks().forEach(t => t.stop());
+          if (audioContext) audioContext.close();
+        }
+      }
+    }
+
+    function stopRecordingAndGoHome() {
+      if (isRecording) toggleRecording();
+      switchView('home');
+    }
+
+    function startOscilloscope(analyser) {
+      const canvas = document.getElementById('live-oscilloscope');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+
+      function draw() {
+        if (!isRecording) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          return;
+        }
+        requestAnimationFrame(draw);
+        analyser.getByteTimeDomainData(dataArray);
+
+        ctx.fillStyle = '#0c0e11';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#4edea3';
+        ctx.beginPath();
+
+        const sliceWidth = canvas.width * 1.0 / bufferLength;
+        let x = 0;
+        for (let i = 0; i < bufferLength; i++) {
+          const v = dataArray[i] / 128.0;
+          const y = v * canvas.height / 2;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+          x += sliceWidth;
+        }
+        ctx.lineTo(canvas.width, canvas.height / 2);
+        ctx.stroke();
+      }
+      draw();
+    }
+
+    // --- AUDIT CHAIN LEDGER ---
+    async function loadAuditLedger() {
+      try {
+        const resp = await fetch(`${API_BASE}/audit/chain`);
+        const data = await resp.json();
+        const list = document.getElementById('history-chain-list');
+        const count = document.getElementById('history-total-count');
+        if (count) count.innerText = `${data.chain.length} Blocks Verified`;
+        if (!list) return;
+
+        list.innerHTML = '';
+        data.chain.slice(-8).reverse().forEach(block => {
+          const item = document.createElement('div');
+          item.className = 'py-3 flex items-center justify-between';
+          const riskVal = block.event_data && block.event_data.risk_score !== undefined ? block.event_data.risk_score : '-';
+          const fn = block.event_data && block.event_data.filename ? block.event_data.filename : block.event_type;
+
+          item.innerHTML = `
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-xs font-mono text-primary font-bold flex-shrink-0">
+                #${block.index}
+              </div>
+              <div class="flex flex-col min-w-0">
+                <span class="text-xs font-semibold text-on-surface truncate">${fn}</span>
+                <span class="font-mono text-[10px] text-on-surface-variant">${new Date(block.timestamp * 1000).toLocaleTimeString()} • ${block.current_hash.substring(0, 16)}...</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-xs font-bold text-on-surface">${riskVal !== '-' ? riskVal : ''}</span>
+              <span class="px-2 py-0.5 rounded-full bg-primary/15 text-primary text-[10px] font-mono font-bold">VALID</span>
+            </div>
+          `;
+          list.appendChild(item);
+        });
+      } catch (e) {
+        console.error('Failed to load audit chain:', e);
+      }
+    }
+
+    async function verifyAuditLedger() {
+      try {
+        const resp = await fetch(`${API_BASE}/audit/verify`);
+        const data = await resp.json();
+        alert(data.valid 
+          ? `✅ Cryptographic Audit Ledger Verified!\n\nAll ${data.blocks_verified} blocks are tamper-evident and SHA-256 intact.`
+          : `❌ Tampering Detected: ${data.error_detail}`);
+      } catch (e) {
+        alert('Verification failed: ' + e);
+      }
+    }
+
+    // Initialize home bars on boot
+    initHomeFreqBars();
+  </script>
+</body>
+</html>

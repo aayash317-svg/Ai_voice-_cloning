@@ -1,0 +1,38 @@
+# Voice Integrity Verification Framework Dependencies
+
+# Audio Processing & Feature Extraction
+numpy>=1.26.0
+scipy>=1.12.0
+soundfile>=0.12.1
+librosa>=0.10.1
+pydub>=0.25.1
+
+# Machine Learning & Modeling
+scikit-learn>=1.4.0
+xgboost>=2.0.3
+joblib>=1.3.2
+
+# PyTorch & Neural Audio
+torch>=2.2.0
+torchaudio>=2.2.0
+
+# Metrics & Visualization
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# API, Streaming & Real-Time Server
+fastapi>=0.110.0
+uvicorn[standard]>=0.28.0
+websockets>=12.0
+python-multipart>=0.0.9
+pydantic>=2.6.0
+pydantic-settings>=2.2.0
+
+# Security, Encryption & Utilities
+cryptography>=42.0.0
+python-dotenv>=1.0.1
+requests>=2.31.0
+tqdm>=4.66.0
+
+# Testing
+pytest>=8.0.0

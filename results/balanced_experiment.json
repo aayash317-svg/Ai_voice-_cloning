@@ -1,0 +1,22 @@
+{
+  "experiment": "Option_A_Balanced_1to1",
+  "train_samples_balanced": 7420,
+  "calibrated_threshold": 0.4652,
+  "dev_eer": 0.065,
+  "test_metrics": {
+    "accuracy": 0.9291,
+    "precision": 0.9825,
+    "recall": 0.9212,
+    "f1_score": 0.9508,
+    "roc_auc": 0.9871,
+    "eer": 0.0643,
+    "false_alarm_rate_far": 0.0478,
+    "miss_rate_frr": 0.0788,
+    "confusion_matrix": {
+      "true_genuine": 757,
+      "false_spoof_alarm": 38,
+      "missed_spoof": 182,
+      "true_spoof_detected": 2128
+    }
+  }
+}
