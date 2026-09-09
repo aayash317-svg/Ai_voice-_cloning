@@ -390,6 +390,122 @@ Security, zero-trust privacy, and non-repudiation are foundational engineering r
 - When authorized speaker profiles are registered for comparison, voice audio is converted into mathematical embedding vectors and encrypted using `Fernet` (AES-128-CBC with HMAC-SHA256 authentication).
 - Raw enrollment audio is immediately shredded, storing only ciphertext embeddings.
 
+---
+
+### Raw Audio Ingestion & Cryptographic Encryption Flow
+
+The platform guarantees that sensitive raw human voice samples are **never retained on disk in plaintext**. Instead, audio passes through a one-way ephemeral ingestion pipeline:
+
+```
+[ Incoming Audio File / Stream Chunk ]
+                │
+                ▼
+[ In-Memory Transient Decode (io.BytesIO) ]  <── Never touches persistent disk
+                │
+                ▼
+[ Feature Extraction & Normalization ]       <── Converted to 63-D mathematical vector
+                │
+        ┌───────┴────────────────────────┐
+        ▼                                ▼
+[ Raw Audio Shredder ]         [ Voiceprint Vault ]
+• buffer.fill(0.0)             • Vector serialized to float32 byte array
+• Memory buffer purged         • Encrypted via AES-128-CBC + HMAC-SHA256
+• Zero disk remnants           • Output: Ciphertext Token (b'gAAAAABn...')
+```
+
+#### Step 1: Memory-Only Audio Ingestion
+Incoming audio bytes from HTTP uploads or WebSocket frames are decoded strictly in-memory using `io.BytesIO`. Temporary OS transcoding files (if needed for M4A/AAC conversion) are immediately deleted in `finally:` blocks before responses are returned.
+
+#### Step 2: Irreversible Mathematical Vectorization
+Audio waveforms are transformed into fixed-length 63-dimensional statistical feature vectors (MFCC moments, spectral rolloff, phase derivative variance). These numerical moments cannot be inverted to reconstruct the original speech recording.
+
+#### Step 3: Military-Grade Symmetric Encryption (Fernet)
+When saving authorized speaker profiles, the resulting numerical embedding is encrypted using `VoiceprintVault`. Fernet guarantees:
+- **AES-128-CBC Encryption**: Strong symmetric confidentiality.
+- **HMAC-SHA256 Authentication**: Prevents tampering or ciphertext manipulation.
+- **Timestamp & IV Randomization**: Distinct ciphertexts produced even for identical voiceprints.
+
+---
+
+### Code Examples & Hands-On Demonstrations
+
+#### Example 1: Encrypting and Decrypting Voice Vectors in Python
+```python
+import numpy as np
+from backend.privacy import VoiceprintVault
+
+# Initialize the secure vault (loads ENCRYPTION_KEY or generates random 256-bit key)
+vault = VoiceprintVault()
+
+# 1. Simulate a 63-dimensional extracted acoustic voiceprint vector
+sample_voiceprint = np.array([
+    0.1247, 0.4195, 0.0488, 1732.59, 1667.57, -373.97, 85.79, 6.41, 39.40
+], dtype=np.float32)
+
+print("Original Voiceprint Vector:\n", sample_voiceprint[:4])
+
+# 2. Encrypt vector to secure ciphertext
+encrypted_token = vault.encrypt_embedding(sample_voiceprint)
+print("\nEncrypted Ciphertext Stored in Database:")
+print(encrypted_token[:60] + b"...")
+# Output: b'gAAAAABn0Q8-A4l9xK3z1Y8vQ2mP9k...'
+
+# 3. Decrypt vector during live caller authentication (no raw audio involved)
+decrypted_voiceprint = vault.decrypt_embedding(encrypted_token)
+print("\nDecrypted Vector for Cosine Similarity:")
+print(decrypted_voiceprint[:4])
+
+# 4. Verify exact mathematical equality
+assert np.allclose(sample_voiceprint, decrypted_voiceprint)
+print("\n[+] Verification Successful: Zero audio stored, 100% cryptographic recovery.")
+```
+
+#### Example 2: In-Memory Volatile Buffer & Audio Shredding
+```python
+import numpy as np
+from backend.privacy import AudioPrivacyBuffer
+
+# Create ephemeral ring buffer configured for 3.0-second sliding windows (48,000 samples at 16kHz)
+buffer = AudioPrivacyBuffer(max_seconds=3.0, sr=16000)
+
+# Simulate receiving live streaming PCM call audio chunks
+pcm_chunk_1 = np.ones(16000, dtype=np.float32) * 0.1  # 1.0 second of audio
+pcm_chunk_2 = np.ones(32000, dtype=np.float32) * 0.2  # 2.0 seconds of audio
+
+buffer.append_chunk(pcm_chunk_1)
+buffer.append_chunk(pcm_chunk_2)
+
+# Extract analysis window for model inference
+window = buffer.get_window(num_samples=48000)
+print(f"Window extracted for inference: {len(window)} samples ({len(window)/16000:.1f}s)")
+
+# Immediately shred raw audio from RAM upon call hangup or window evaluation
+buffer.purge()
+print(f"Buffer samples remaining after purge: {len(buffer._buffer)} (RAM zeroed)")
+assert len(buffer._buffer) == 0
+```
+
+#### Example 3: Verifying the Immutable Audit Ledger via cURL
+Every batch analysis or live call detection logs an event into the cryptographic ledger without saving any voice data:
+
+```bash
+# Verify the entire audit ledger integrity
+curl http://localhost:8000/audit/verify
+```
+
+**Response**:
+```json
+{
+  "valid": true,
+  "blocks_verified": 82,
+  "genesis_hash": "63f82029bbf8a594896e053a473b64bc7d6363ceea51296c05d762f03314da12",
+  "latest_hash": "9c1a5b8f7e2d3c4b5a6f7e8d9c0b1a2f3e4d5c6b7a8f9e0d1c2b3a4f5e6d7c8b",
+  "tamper_detected": false
+}
+```
+
+---
+
 ### 4. Edge-First / Air-Gapped Operation
 - All inference pipelines (FastAPI, PyTorch MPS, Scikit-Learn) run 100% locally on-premise or on edge gateways.
 - **No External Cloud Calls**: Audio is never transmitted to third-party proprietary APIs (e.g. OpenAI, ElevenLabs, Google Cloud), eliminating man-in-the-middle (MitM) eavesdropping risks.
