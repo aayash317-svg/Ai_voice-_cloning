@@ -222,10 +222,6 @@ Or with Uvicorn:
 uvicorn backend.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-- **Interactive Web UI**: Open [http://localhost:8000](http://localhost:8000)
-- **API Swagger Documentation**: Open [http://localhost:8000/docs](http://localhost:8000/docs)
-- **System Health & Active Ensemble Status**: [http://localhost:8000/health](http://localhost:8000/health)
-
 ---
 
 ## Testing with Packaged Sample Data
