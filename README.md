@@ -2,6 +2,9 @@
 
 > **Voice Integrity Verification is a real-time AI security engine that detects deepfakes, synthetic speech, and cloned voices. Powered by a dual ensemble of SincNet neural raw-waveform filters and spectral-acoustic classifiers, it delivers dynamic risk scoring with zero-retention privacy and a tamper-evident cryptographic audit ledger.**
 
+> [!TIP]
+> 📖 **Master Technical Documentation**: For the exhaustive architectural specification, acoustic physics formulas, dataset inventory, anti-leakage training methodology, and operations runbook, refer to [docs/PROJECT_DOCUMENTATION.md](docs/PROJECT_DOCUMENTATION.md).
+
 ---
 
 ## Application Interface & Visual Walkthrough
