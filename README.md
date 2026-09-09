@@ -203,8 +203,8 @@ To guarantee scientific honesty, prevent data leakage, and eliminate false alarm
 ### 2. Installation
 Clone the repository and set up a virtual environment:
 ```bash
-git clone https://github.com/aayash317-svg/Ai_voice-_cloning_deduction-.git
-cd Ai_voice-_cloning_deduction-
+git clone https://github.com/aayash317-svg/Ai_voice-_cloning.git
+cd Ai_voice-_cloning
 
 python3 -m venv .venv
 source .venv/bin/activate
