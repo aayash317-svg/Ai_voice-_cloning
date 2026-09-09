@@ -92,6 +92,61 @@ The framework implements a layered defense-in-depth architecture designed for hi
 
 ---
 
+## How the Model Finds Cloned Voices (Forensic & Acoustic Mechanics)
+
+Voice cloning systems (e.g. ElevenLabs, ChatterboxTTS, VITS, WaveNet, Tacotron, HiFi-GAN) construct speech by predicting intermediate representations (Mel-spectrograms or linguistic tokens) and synthesizing pressure waves via neural vocoders. While cloned voices sound convincing to the human ear, they leave distinct mathematical and physical traces in the acoustic and phase domains:
+
+```
+Human Vocal Tract (Physical Air Flow)          AI Voice Cloner (Neural Vocoder)
+├─ Glottal pulses & continuous phase           ├─ Reconstructed phase & mathematical jumps
+├─ Involuntary micro-tremors (Jitter/Shimmer)  ├─ Rigid, unnatural prosodic stability
+├─ Natural resonant formants (F1-F4)           ├─ Non-linear co-articulation artifacts
+└─ Wide harmonic energy distribution           └─ Abrupt high-frequency spectral cutoff (>4-6kHz)
+```
+
+Our dual-model ensemble exploits six forensic anomalies to identify deepfakes:
+
+### 1. Instantaneous Phase Derivative Variance (Hilbert Transform Analysis)
+- **Physical Mechanism**: Human vocal fold vibrations and acoustic radiation from the lips create smoothly continuous phase transitions governed by biomechanical aerodynamics.
+- **Cloning Artifact**: Generative vocoders estimate phase synthetically (Griffin-Lim or learned vocoder upsampling layers). This produces unnatural, jagged instantaneous phase transitions across consecutive time frames.
+- **Detection Algorithm**: The engine computes the analytic signal using the Hilbert transform:
+  $$y_{\text{analytic}}[t] = y[t] + i \cdot \mathcal{H}(y[t])$$
+  Unwrapping the instantaneous phase angle $\phi[t] = \operatorname{unwrap}(\arg(y_{\text{analytic}}[t]))$ and calculating the variance of the first derivative:
+  $$\text{Phase Variance} = \operatorname{Var}\left(\frac{\Delta \phi}{\Delta t}\right)$$
+  Spikes in phase derivative variance strongly correlate with synthetic vocoder reconstruction.
+
+### 2. High-Frequency Spectral Cutoffs & Mel Shelf Artifacts
+- **Physical Mechanism**: Uncompressed human vocal speech naturally radiates acoustic energy into the 4,000–8,000 Hz spectrum through consonant friction and oral cavity resonances.
+- **Cloning Artifact**: To reduce compute, neural TTS architectures almost universally operate on 80-band Mel filterbanks capped at 4 kHz or 8 kHz. Above this cutoff, neural vocoders either truncate energy completely or produce synthetic checkerboard upsampling artifacts.
+- **Detection Algorithm**: Evaluates high-frequency energy ratios above 4 kHz against total spectral power:
+  $$\text{HF Energy Ratio} = \frac{\sum_{f \ge 4000 \text{ Hz}} |X(f)|^2}{\sum_{f} |X(f)|^2}$$
+  Abrupt spectral rolloff shelves or unnatural energy voids trigger immediate spectral anomaly flags.
+
+### 3. Glottal Prosodic Dynamics: Micro-Jitter & Shimmer
+- **Physical Mechanism**: Biological human speech contains continuous, involuntary micro-fluctuations in vocal fold cycle length (pitch **Jitter**) and cycle amplitude (**Shimmer**).
+- **Cloning Artifact**: Cloned speech is either *mathematically too smooth* (robotic stability without micro-perturbations) or *erratic across phoneme transitions*.
+- **Detection Algorithm**: Extracts Fundamental Frequency ($F_0$) pitch tracks via parabolic peak interpolation, measuring relative perturbation:
+  $$\text{Jitter} = \frac{\frac{1}{N-1} \sum_{i=1}^{N-1} |T_i - T_{i+1}|}{\frac{1}{N} \sum_{i=1}^N T_i}, \quad \text{Shimmer} = \frac{\frac{1}{N-1} \sum_{i=1}^{N-1} |A_i - A_{i+1}|}{\frac{1}{N} \sum_{i=1}^N A_i}$$
+
+### 4. Vocal Tract Resonances & Formant Inconsistencies (20 MFCC Dimensions)
+- **Physical Mechanism**: The human vocal tract acts as a biological acoustic filter, continuously shifting formants ($F_1$ through $F_4$) during co-articulation (e.g. transitioning from plosives like /p/ or /k/ into vowels).
+- **Cloning Artifact**: Generative models struggle with non-linear formant trajectories, creating spectral smearing or unnatural energy contrast between formant peaks and spectral valleys.
+- **Detection Algorithm**: Computes 20 Mel-Frequency Cepstral Coefficients (MFCCs) across 1,024-point FFT frames, extracting temporal mean, standard deviation, and sub-band spectral contrast across octave bands.
+
+### 5. Deep Raw-Waveform SincNet Time-Domain Filtering
+- **Physical Mechanism**: Spectrogram-based classifiers discard phase and compress audio into discrete frequency bins, losing temporal micro-artifacts.
+- **Cloning Artifact**: Neural vocoder upsamplers introduce waveform-level quantization noise and sample interpolation errors in the time domain.
+- **Detection Algorithm**: SincNet directly convolves the raw pressure signal $x[t]$ with parameterized learnable bandpass filters:
+  $$g[t, f_1, f_2] = 2f_2 \operatorname{sinc}(2\pi f_2 t) - 2f_1 \operatorname{sinc}(2\pi f_1 t)$$
+  The filter cutoffs $f_1, f_2$ are updated during backpropagation, autonomously isolating adversarial frequency bands that differentiate human glottal pulses from synthetic neural vocoding.
+
+### 6. Dual Ensemble Consensus Decision
+- Handcrafted acoustic features are evaluated by the calibrated Random Forest.
+- Raw time-domain waveforms are evaluated by SincNet on Apple Silicon MPS.
+- Individual probabilities are blended ($P_{\text{ensemble}} = 0.50 \cdot P_{\text{RF}} + 0.50 \cdot P_{\text{Neural}}$), ensuring that if an attacker circumvents spectral features, the raw-waveform network catches the attack (and vice versa).
+
+---
+
 ## Complete List of Datasets (38,239 Total Audio Clips)
 
 The framework is trained, calibrated, and evaluated across four comprehensive speech corpora:
@@ -315,5 +370,30 @@ python scripts/download_asvspoof2019.py
 
 ---
 
-## Security & Ethical Disclosure
-This project is engineered strictly for **defensive biometric integrity and voice impersonation protection**. All audio data processed in live streams is handled exclusively in transient RAM buffers and purged immediately upon analysis.
+## Enterprise Security & Privacy Architecture
+
+Security, zero-trust privacy, and non-repudiation are foundational engineering requirements of the Voice Integrity Verification platform:
+
+### 1. Zero-Retention Audio Policy (RAM-Only Volatile Processing)
+- **Zero Disk Spooling**: In live call streaming (`/stream`), audio chunks are received over secure WebSockets directly into transient memory. No raw audio is ever written to disk, databases, or temporary cache files.
+- **Volatile Ring Buffering**: Implemented via `AudioPrivacyBuffer`, which holds an ephemeral 3.0-second sliding window. Once features are extracted, the buffer is zeroed with `buffer.fill(0.0)` and discarded.
+- **GDPR & HIPAA Compliance Alignment**: Because voice recordings are classified as biometric personal identifiable information (PII), our zero-retention guarantee ensures that intercepted or stored voice data cannot be leaked, breached, or subpoenaed from server disk drives.
+
+### 2. Tamper-Evident SHA-256 Cryptographic Audit Ledger
+- All security verdicts, model probabilities, and alert triggers are sealed into an immutable blockchain-style audit ledger (`AuditChain`).
+- **Cryptographic Hash Chain Structure**:
+  $$\text{Block Hash}_n = \operatorname{SHA-256}\Big(\text{Index}_n \parallel \text{Timestamp}_n \parallel \text{EventType}_n \parallel \text{PayloadHash}_n \parallel \text{Block Hash}_{n-1}\Big)$$
+- **Non-Biometric Metadata Guarantee**: Audit blocks record event metrics (e.g. `{"risk_score": 12.1, "risk_level": "LOW", "alert_triggered": false}`), but **never store raw audio or speaker biometric embeddings**.
+- **Tamper Detection**: The built-in `/audit/verify` endpoint verifies the mathematical hash continuity of all blocks. Any retrospective modification or deletion of an audit record instantly breaks the cryptographic chain and raises an alert.
+
+### 3. Encrypted Voiceprint Vault (AES-128 / Fernet)
+- When authorized speaker profiles are registered for comparison, voice audio is converted into mathematical embedding vectors and encrypted using `Fernet` (AES-128-CBC with HMAC-SHA256 authentication).
+- Raw enrollment audio is immediately shredded, storing only ciphertext embeddings.
+
+### 4. Edge-First / Air-Gapped Operation
+- All inference pipelines (FastAPI, PyTorch MPS, Scikit-Learn) run 100% locally on-premise or on edge gateways.
+- **No External Cloud Calls**: Audio is never transmitted to third-party proprietary APIs (e.g. OpenAI, ElevenLabs, Google Cloud), eliminating man-in-the-middle (MitM) eavesdropping risks.
+- If network connection to a central SIEM server drops, `EdgeQueueService` spools signed ledger hashes locally on disk and reconciles upon reconnection.
+
+### 5. Defensive Biometric Integrity Scope
+This system is engineered strictly for **defensive biometric verification and voice impersonation protection**. It is designed to safeguard banking call centers, executive authorization lines, and everyday individuals from voice cloning fraud, CEO gift card scams, and deepfake social engineering.
