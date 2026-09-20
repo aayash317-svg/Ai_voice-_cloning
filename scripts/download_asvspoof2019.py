@@ -40,7 +40,11 @@ def download_file_resumable(url: str, dest_path: Path, force_redownload: bool = 
             temp_path.unlink()
 
     initial_pos = temp_path.stat().st_size if temp_path.exists() else 0
-    headers = {"Range": f"bytes={initial_pos}-"} if initial_pos > 0 else {}
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    }
+    if initial_pos > 0:
+        headers["Range"] = f"bytes={initial_pos}-"
 
     print(f"Downloading from: {url}")
     print(f"Destination     : {dest_path}")
@@ -216,30 +220,20 @@ def main():
         extract_archive(archive, dest_path)
 
     elif args.download:
-        print("[*] Downloading ASVspoof 2019 LA partition via Kaggle CDN (7.2 GB)...")
-        try:
-            import kagglehub
-            k_path = kagglehub.dataset_download("anishsarkar22/asvpoof-2019-dataset-la")
-            print(f"[+] Downloaded to: {k_path}")
-            # Link or copy into dest_path if needed
-            k_p = Path(k_path)
-            for sub in k_p.iterdir():
-                target = dest_path / sub.name
-                if not target.exists():
-                    if sub.is_dir():
-                        os.symlink(sub, target)
-                    else:
-                        import shutil
-                        shutil.copy2(sub, target)
-            print(f"[+] Linked dataset contents into {dest_path}")
-        except Exception as e:
-            print(f"[!] Kaggle download error ({e}), falling back to direct URL...")
-            archive_path = dest_path.parent / "LA.zip"
-            if not archive_path.exists() or not verify_zip_integrity(archive_path) or args.redownload:
-                download_file_resumable(OFFICIAL_URLS["LA"], archive_path, force_redownload=args.redownload)
-            extract_archive(archive_path, dest_path)
+        print("[*] Downloading ASVspoof 2019 LA partition (7.2 GB)...")
+        archive_path = dest_path.parent / "LA.zip"
+        if not archive_path.exists() or not verify_zip_integrity(archive_path) or args.redownload:
+            download_file_resumable(OFFICIAL_URLS["LA"], archive_path, force_redownload=args.redownload)
+        extract_archive(archive_path, dest_path)
 
-    inspect_asvspoof2019(dest_path)
+    else:
+        # If user ran script without flags on an empty folder
+        report = inspect_asvspoof2019(dest_path)
+        if not report.get("valid"):
+            print("\n[!] ASVspoof 2019 LA dataset is not installed yet.")
+            print("[*] To start the 7.1 GB download automatically, run:")
+            print("    python scripts/download_asvspoof2019.py --download\n")
+        return
 
 
 if __name__ == "__main__":

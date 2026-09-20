@@ -8,7 +8,9 @@ The **Voice Integrity Verification Framework** is trained, calibrated, and evalu
 | **ASVspoof 2019 (LA Bonafide)** | Genuine Human | **2,680** clips | 16 kHz WAV | Telephone & voice verification bonafide human recordings. |
 | **ASVspoof 2019 (LA Spoofs A07–A19)** | Synthetic Spoofs | **15,399** clips | 16 kHz WAV | 13 diverse algorithms: neural vocoders, waveform concatenation, WaveNet, deep neural voice conversion. |
 | **PhonemeDF (ChatterboxTTS)** | Modern Neural TTS | **17,540** clips | 16 kHz WAV | Modern phoneme-level neural text-to-speech synthetic voices. |
-| **Total Active Dataset** | **Multi-Source** | **38,239** clips | **16 kHz PCM** | **5,300 Genuine Human / 32,939 Synthetic Spoof Clips** |
+| **ASVspoof 2021 DF (Deepfake Track)** | Multi-Codec Spoof Benchmark | **611,829** trials | 16 kHz FLAC | Deepfake & compressed speech evaluation across 9 codecs (MP3, M4A, OGG, etc.) and varied vocoders. |
+| **Total Active Protocol Universe** | **Multi-Source** | **650,068** trials | **16 kHz Multi-Format** | **Comprehensive benchmark spanning raw acoustic, phone-level neural, and compressed deepfakes.** |
+
 
 ---
 
@@ -81,3 +83,19 @@ python scripts/download_asvspoof2019.py
 curl -O https://www.openslr.org/resources/12/test-clean.tar.gz
 tar -xzf test-clean.tar.gz -C datasets/librispeech/
 ```
+
+### 4. ASVspoof 2021 DF (Deepfake Track)
+```bash
+# Fetch official 611k keys and setup starter sample audio
+python scripts/download_asvspoof2021_df.py --fetch-keys --sample-subset 100
+
+# Inspect directory and protocol breakdown
+python scripts/download_asvspoof2021_df.py --inspect-only
+
+# (Optional) Download specific Zenodo partition (e.g. Part 0, ~13 GB)
+python scripts/download_asvspoof2021_df.py --download-part 0
+
+# (Optional) Extract an existing local archive (.tar.gz / .zip)
+python scripts/download_asvspoof2021_df.py --extract-from /path/to/archive.tar.gz
+```
+

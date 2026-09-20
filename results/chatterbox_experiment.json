@@ -2,25 +2,25 @@
   "dataset": "Merged (ASVspoof 2019 + LibriSpeech + PhonemeDF ChatterboxTTS)",
   "train_samples": 7420,
   "test_samples": 3405,
-  "dev_optimal_threshold": 0.39850856306264,
-  "dev_eer": 0.07312224390949179,
-  "dev_auc": 0.9826482565844961,
+  "dev_optimal_threshold": 0.39854207185071666,
+  "dev_eer": 0.0726848839731078,
+  "dev_auc": 0.9826390997373431,
   "test_metrics": {
-    "accuracy": 0.9212922173274596,
-    "precision": 0.9818930041152263,
-    "recall": 0.9141762452107279,
-    "f1": 0.9468253968253968,
-    "roc_auc": 0.9827292223909009,
-    "eer": 0.07046916793175739,
-    "far_real_to_fake": 0.055345911949685536,
-    "frr_fake_to_real": 0.08582375478927202,
+    "accuracy": 0.9224669603524229,
+    "precision": 0.9823190789473685,
+    "recall": 0.9153256704980843,
+    "f1": 0.9476398254660849,
+    "roc_auc": 0.9826974143955276,
+    "eer": 0.07066073881298346,
+    "far_real_to_fake": 0.05408805031446541,
+    "frr_fake_to_real": 0.08467432950191571,
     "confusion_matrix": {
-      "true_negative_real": 751,
-      "false_positive_fake": 44,
-      "false_negative_real": 224,
-      "true_positive_fake": 2386
+      "true_negative_real": 752,
+      "false_positive_fake": 43,
+      "false_negative_real": 221,
+      "true_positive_fake": 2389
     },
     "chatterbox_detection_rate": 1.0,
-    "chatterbox_mean_spoof_prob": 0.9596902281746096
+    "chatterbox_mean_spoof_prob": 0.9596905138093276
   }
 }

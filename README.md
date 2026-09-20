@@ -160,7 +160,9 @@ The framework is trained, calibrated, and evaluated across four comprehensive sp
 | **ASVspoof 2019 LA (Bonafide)** | Genuine Human | **2,680** clips | 16 kHz WAV | Telephone & voice verification bonafide speech recorded in controlled acoustic environments. |
 | **ASVspoof 2019 LA (Spoof A07–A19)** | Synthetic Spoofs | **15,399** clips | 16 kHz WAV | 13 distinct voice generation systems: neural vocoders, waveform concatenation, WaveNet, deep neural voice conversion. |
 | **PhonemeDF (ChatterboxTTS)** | Modern Neural TTS | **17,540** clips | 16 kHz WAV | State-of-the-art contemporary phoneme-level neural text-to-speech synthetic voices. |
-| **Total Active Dataset** | **Multi-Source** | **38,239** clips | **16 kHz PCM** | **5,300 Genuine Human / 32,939 Synthetic Spoof Clips** |
+| **ASVspoof 2021 DF (Deepfake)** | Compressed Spoof Benchmark | **611,829** trials | 16 kHz FLAC | Deepfake & compressed speech evaluation across 9 lossy codecs and unknown vocoders. |
+| **Total Active Dataset Universe** | **Multi-Source** | **650,068** items | **16 kHz PCM** | **Comprehensive multi-modal benchmark spanning raw acoustic, neural TTS, and compressed deepfakes.** |
+
 
 ### Bundled Test Samples (`test_samples/`)
 For instant verification without downloading multi-gigabyte files, pre-packaged samples are included in the repository:
@@ -336,6 +338,9 @@ python scripts/install_phonemedf.py --max-samples 0
 
 # Download ASVspoof 2019 LA
 python scripts/download_asvspoof2019.py
+
+# Download / Setup ASVspoof 2021 DF (keys + starter subset)
+python scripts/download_asvspoof2021_df.py --fetch-keys --sample-subset 100
 ```
 
 ---
@@ -354,7 +359,7 @@ python scripts/download_asvspoof2019.py
 │   ├── risk_engine.py                # Multi-signal threat scoring engine
 │   ├── privacy.py                    # Zero-retention circular privacy buffer
 │   ├── audit_chain.py                # SHA-256 immutable audit ledger
-│   ├── dataset_loader.py             # ASVspoof, LibriSpeech & Chatterbox loader
+│   ├── dataset_loader.py             # ASVspoof 2019/2021, LibriSpeech & Chatterbox loader
 │   ├── train_with_chatterbox.py      # Balanced multi-generator training
 │   └── train_neural.py               # MPS-accelerated deep neural training
 ├── frontend/
@@ -365,11 +370,13 @@ python scripts/download_asvspoof2019.py
 ├── test_samples/                     # Packaged testing audio files
 ├── docs/images/                      # Application screenshots and benchmark charts
 ├── scripts/
-│   ├── download_asvspoof2019.py      # ASVspoof automated downloader
+│   ├── download_asvspoof2019.py      # ASVspoof 2019 automated downloader
+│   ├── download_asvspoof2021_df.py   # ASVspoof 2021 DF downloader & installer
 │   └── install_phonemedf.py          # PhonemeDF ChatterboxTTS installer
 ├── requirements.txt                  # Python dependencies
 └── README.md                         # Project documentation
 ```
+
 
 ---
 

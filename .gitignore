@@ -21,14 +21,27 @@ __pycache__/
 # Keep dataset folder structure and test_samples intact
 datasets/ASVspoof2019/*.tar
 datasets/ASVspoof2019/*.tar.gz
+datasets/ASVspoof2019/**/*.wav
+datasets/ASVspoof2019/**/*.flac
+datasets/ASVspoof2019/LA/
+datasets/ASVspoof2021_DF/
+datasets/download_cache/
+datasets/cache/
+datasets/indic_synth/
+datasets/indic_tts/
+datasets/additional_genuine/
 datasets/librispeech/*.tar.gz
 datasets/librispeech/**/*.flac
 datasets/phonemedf_chatterboxtts/*.wav
-datasets/ASVspoof2019/**/*.wav
-datasets/ASVspoof2019/**/*.flac
+datasets/dataset /
 *.tar
 *.tar.gz
+*.zip
 *.download/
+test-clean.tar.gz
+
+# Testing media exceeding GitHub file size limits
+testing video/
 
 # Logs & Temporary Files
 logs/*.log

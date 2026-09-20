@@ -1,0 +1,179 @@
+{
+  "model_evaluated": "multilingual_random_forest.pkl",
+  "calibrated_threshold": 0.7327,
+  "total_test_samples": 3000,
+  "overall": {
+    "samples": 3000,
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "roc_auc": 1.0,
+    "eer": 0.0,
+    "false_alarm_rate_far": 0.0,
+    "miss_rate_frr": 0.0,
+    "confusion_matrix": {
+      "true_genuine": 0,
+      "false_spoof": 0,
+      "missed_spoof": 0,
+      "true_spoof": 3000
+    }
+  },
+  "languages": {
+    "hindi": {
+      "samples": 534,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0,
+      "eer": 0.0,
+      "false_alarm_rate_far": 0.0,
+      "miss_rate_frr": 0.0,
+      "confusion_matrix": {
+        "true_genuine": 0,
+        "false_spoof": 0,
+        "missed_spoof": 0,
+        "true_spoof": 534
+      }
+    },
+    "tamil": {
+      "samples": 468,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0,
+      "eer": 0.0,
+      "false_alarm_rate_far": 0.0,
+      "miss_rate_frr": 0.0,
+      "confusion_matrix": {
+        "true_genuine": 0,
+        "false_spoof": 0,
+        "missed_spoof": 0,
+        "true_spoof": 468
+      }
+    },
+    "telugu": {
+      "samples": 365,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0,
+      "eer": 0.0,
+      "false_alarm_rate_far": 0.0,
+      "miss_rate_frr": 0.0,
+      "confusion_matrix": {
+        "true_genuine": 0,
+        "false_spoof": 0,
+        "missed_spoof": 0,
+        "true_spoof": 365
+      }
+    },
+    "bengali": {
+      "samples": 543,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0,
+      "eer": 0.0,
+      "false_alarm_rate_far": 0.0,
+      "miss_rate_frr": 0.0,
+      "confusion_matrix": {
+        "true_genuine": 0,
+        "false_spoof": 0,
+        "missed_spoof": 0,
+        "true_spoof": 543
+      }
+    },
+    "kannada": {
+      "samples": 558,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0,
+      "eer": 0.0,
+      "false_alarm_rate_far": 0.0,
+      "miss_rate_frr": 0.0,
+      "confusion_matrix": {
+        "true_genuine": 0,
+        "false_spoof": 0,
+        "missed_spoof": 0,
+        "true_spoof": 558
+      }
+    },
+    "marathi": {
+      "samples": 532,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0,
+      "eer": 0.0,
+      "false_alarm_rate_far": 0.0,
+      "miss_rate_frr": 0.0,
+      "confusion_matrix": {
+        "true_genuine": 0,
+        "false_spoof": 0,
+        "missed_spoof": 0,
+        "true_spoof": 532
+      }
+    }
+  },
+  "generators": {
+    "xttsv2": {
+      "samples": 850,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0,
+      "eer": 0.0,
+      "false_alarm_rate_far": 0.0,
+      "miss_rate_frr": 0.0,
+      "confusion_matrix": {
+        "true_genuine": 0,
+        "false_spoof": 0,
+        "missed_spoof": 0,
+        "true_spoof": 850
+      }
+    },
+    "vits": {
+      "samples": 1056,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0,
+      "eer": 0.0,
+      "false_alarm_rate_far": 0.0,
+      "miss_rate_frr": 0.0,
+      "confusion_matrix": {
+        "true_genuine": 0,
+        "false_spoof": 0,
+        "missed_spoof": 0,
+        "true_spoof": 1056
+      }
+    },
+    "freevc24": {
+      "samples": 1094,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0,
+      "eer": 0.0,
+      "false_alarm_rate_far": 0.0,
+      "miss_rate_frr": 0.0,
+      "confusion_matrix": {
+        "true_genuine": 0,
+        "false_spoof": 0,
+        "missed_spoof": 0,
+        "true_spoof": 1094
+      }
+    }
+  }
+}

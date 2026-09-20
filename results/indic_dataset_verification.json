@@ -1,0 +1,49 @@
+{
+  "status": "PASSED",
+  "sample_rate_hz": 16000,
+  "total_valid_utterances": 2640,
+  "genuine_count": 1200,
+  "spoof_count": 1440,
+  "genuine_percentage": 45.45,
+  "spoof_percentage": 54.55,
+  "is_balanced_1to1": true,
+  "indictts_audit": {
+    "exists": true,
+    "total_files": 1200,
+    "valid_files": 1200,
+    "corrupted_files": [],
+    "avg_duration_sec": 3.72,
+    "total_duration_hours": 1.239,
+    "language_counts": {
+      "bengali": 200,
+      "hindi": 200,
+      "kannada": 200,
+      "marathi": 200,
+      "tamil": 200,
+      "telugu": 200
+    },
+    "generator_counts": {}
+  },
+  "indicsynth_audit": {
+    "exists": true,
+    "total_files": 1440,
+    "valid_files": 1440,
+    "corrupted_files": [],
+    "avg_duration_sec": 3.76,
+    "total_duration_hours": 1.504,
+    "language_counts": {
+      "bengali": 240,
+      "hindi": 240,
+      "kannada": 240,
+      "marathi": 240,
+      "tamil": 240,
+      "telugu": 240
+    },
+    "generator_counts": {
+      "freevc24": 360,
+      "vits": 360,
+      "xttsv2": 360,
+      "yourtts": 360
+    }
+  }
+}

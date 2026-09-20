@@ -27,19 +27,24 @@ from backend.config import (
     SAMPLE_RATE, BASELINE_MODEL_PATH, RESULTS_DIR, FEATURES_DIR
 )
 from backend.dataset_loader import DatasetLoader, AudioSample
-from backend.audio_preprocessing import AudioPreprocessor
+from backend.preprocess import AudioPreprocessor
 from backend.features import FeatureExtractor
 from backend.classifier import AntiSpoofClassifier
 
+
+import concurrent.futures
+import argparse
 
 def extract_or_load_split(
     samples: List[AudioSample],
     preprocessor: AudioPreprocessor,
     extractor: FeatureExtractor,
-    cache_path: Path
+    cache_path: Path,
+    max_workers: int = 8,
+    force_recompute: bool = False
 ) -> Tuple[np.ndarray, np.ndarray, List[str], List[str]]:
     """Extract or load cached features with system_id tracking."""
-    if cache_path.exists():
+    if cache_path.exists() and not force_recompute:
         print(f"Loading cached features from: {cache_path}")
         data = np.load(cache_path, allow_pickle=True)
         return (
@@ -49,27 +54,46 @@ def extract_or_load_split(
             list(data["system_ids"])
         )
 
-    print(f"Extracting features from {len(samples)} audio files -> {cache_path.name}...")
+    print(f"Extracting features from {len(samples)} audio files -> {cache_path.name} (using {max_workers} worker threads)...")
+    
+    # Pre-extract canon feature names from dummy signal
+    dummy_feat = extractor.extract_all(np.zeros(SAMPLE_RATE, dtype=np.float32))
+    feature_names = sorted(dummy_feat.keys())
+
+    def _process_one(sample):
+        try:
+            audio = preprocessor.load_audio(sample.file_path)
+
+            # Robust acoustic generalization: 35% of genuine speech is augmented
+            # with subtle ambient room/mic noise (SNR 18 - 32 dB) so the model
+            # learns that real-world room noise and echo do NOT indicate AI cloning!
+            if sample.label == 0 and np.random.rand() < 0.35:
+                noise_amp = np.random.uniform(0.003, 0.015) * max(0.05, float(np.max(np.abs(audio))))
+                audio = audio + np.random.randn(len(audio)).astype(np.float32) * noise_amp
+
+            # Apply Voice Activity Detection (VAD)
+            voiced = preprocessor.apply_vad(audio, top_db=28.0)
+            if len(voiced) >= int(0.5 * SAMPLE_RATE):
+                audio = voiced
+            audio = preprocessor.normalize_audio(audio)
+
+            feat_dict = extractor.extract_all(audio)
+            vec = extractor.to_vector(feat_dict, feature_names)
+            return vec, sample.label, sample.system_id
+        except Exception:
+            return None
+
     feature_list = []
     labels = []
     system_ids = []
-    feature_names = None
 
-    for sample in tqdm(samples, desc=f"Processing {cache_path.stem}"):
-        try:
-            audio = preprocessor.load_audio(sample.file_path)
-            audio = preprocessor.normalize_amplitude(audio)
-            feat_dict = extractor.extract_all(audio)
-
-            if feature_names is None:
-                feature_names = sorted(feat_dict.keys())
-
-            vec = extractor.to_vector(feat_dict, feature_names)
-            feature_list.append(vec)
-            labels.append(sample.label)
-            system_ids.append(sample.system_id)
-        except Exception as e:
-            print(f"[!] Error processing {sample.file_path.name}: {e}")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        for result in tqdm(executor.map(_process_one, samples), total=len(samples), desc=f"Processing {cache_path.stem}"):
+            if result is not None:
+                vec, label, sys_id = result
+                feature_list.append(vec)
+                labels.append(label)
+                system_ids.append(sys_id)
 
     X = np.array(feature_list, dtype=np.float32)
     y = np.array(labels, dtype=np.int32)
@@ -83,7 +107,7 @@ def extract_or_load_split(
         feature_names=feature_names,
         system_ids=system_ids
     )
-    print(f"Saved feature matrix to: {cache_path}")
+    print(f"Saved feature matrix ({X.shape}) to: {cache_path}")
     return X, y, feature_names, system_ids
 
 
@@ -94,42 +118,61 @@ def create_balanced_train_subset(
     random_state: int = 42
 ) -> Tuple[np.ndarray, np.ndarray, List[str]]:
     """
-    Sub-samples the majority spoof class to exactly match genuine count (1:1 ratio),
+    Sub-samples the majority class to achieve an exact 1:1 ratio between genuine and spoof clips,
     stratifying evenly across all spoof attack generators.
+    Gracefully handles whether genuine or spoof is the larger class.
     """
     rng = np.random.RandomState(random_state)
     genuine_indices = np.where(y_train == 0)[0]
     spoof_indices = np.where(y_train == 1)[0]
 
     n_genuine = len(genuine_indices)
-    print(f"\n[Balancing] Genuine count in Train: {n_genuine}")
-    print(f"[Balancing] Original Spoof count: {len(spoof_indices)}")
+    n_spoof = len(spoof_indices)
+    target_count = min(n_genuine, n_spoof)
 
-    # Stratified sampling across spoof systems
+    print(f"\n[Balancing] Genuine count in Train: {n_genuine}")
+    print(f"[Balancing] Original Spoof count: {n_spoof}")
+    print(f"[Balancing] Target balanced count per class: {target_count}")
+
+    # 1. Genuine selection: subsample to target_count if needed
+    if n_genuine > target_count:
+        selected_genuine_indices = rng.choice(genuine_indices, size=target_count, replace=False)
+    else:
+        selected_genuine_indices = genuine_indices
+
+    # 2. Spoof selection: stratified across spoof attack systems to target_count
     spoof_systems = np.array(sys_train)[spoof_indices]
     unique_systems, sys_counts = np.unique(spoof_systems, return_counts=True)
 
     selected_spoof_indices = []
-    samples_per_sys = n_genuine // len(unique_systems)
-    remainder = n_genuine % len(unique_systems)
+    if len(unique_systems) > 0:
+        samples_per_sys = target_count // len(unique_systems)
+        remainder = target_count % len(unique_systems)
 
-    for i, sys_name in enumerate(unique_systems):
-        cur_sys_mask = (spoof_systems == sys_name)
-        cur_indices = spoof_indices[cur_sys_mask]
-        quota = samples_per_sys + (1 if i < remainder else 0)
-        n_take = min(quota, len(cur_indices))
-        chosen = rng.choice(cur_indices, size=n_take, replace=False)
-        selected_spoof_indices.extend(chosen)
+        for i, sys_name in enumerate(unique_systems):
+            cur_sys_mask = (spoof_systems == sys_name)
+            cur_indices = spoof_indices[cur_sys_mask]
+            quota = samples_per_sys + (1 if i < remainder else 0)
+            n_take = min(quota, len(cur_indices))
+            if n_take > 0:
+                chosen = rng.choice(cur_indices, size=n_take, replace=False)
+                selected_spoof_indices.extend(chosen)
 
-    # If still short due to small categories, fill remainder uniformly
-    if len(selected_spoof_indices) < n_genuine:
-        needed = n_genuine - len(selected_spoof_indices)
+    # If still short due to unequal attack categories, fill remainder from remaining spoof pool
+    if len(selected_spoof_indices) < target_count:
+        needed = target_count - len(selected_spoof_indices)
         pool = list(set(spoof_indices) - set(selected_spoof_indices))
-        extra = rng.choice(pool, size=needed, replace=False)
-        selected_spoof_indices.extend(extra)
+        if len(pool) > 0:
+            n_fill = min(needed, len(pool))
+            extra = rng.choice(pool, size=n_fill, replace=False)
+            selected_spoof_indices.extend(extra)
 
-    selected_spoof_indices = np.array(selected_spoof_indices)
-    combined_indices = np.concatenate([genuine_indices, selected_spoof_indices])
+    # Ensure precise matching 1:1 pair count
+    final_pairs = min(len(selected_genuine_indices), len(selected_spoof_indices))
+    selected_genuine_indices = np.array(selected_genuine_indices[:final_pairs], dtype=int)
+    selected_spoof_indices = np.array(selected_spoof_indices[:final_pairs], dtype=int)
+
+    combined_indices = np.concatenate([selected_genuine_indices, selected_spoof_indices])
     rng.shuffle(combined_indices)
 
     X_balanced = X_train[combined_indices]
@@ -154,14 +197,50 @@ def find_optimal_dev_threshold(y_dev: np.ndarray, y_dev_prob: np.ndarray) -> Tup
     return best_threshold, dev_eer
 
 
-def run_balanced_experiment():
+def run_balanced_experiment(max_samples: int = 10000, force_recompute: bool = False, max_workers: int = 8):
     print("=" * 70)
-    print("OPTION A: CONTROLLED 1:1 CLASS BALANCING & DEV THRESHOLD CALIBRATION")
+    print("CONTROLLED 1:1 CLASS BALANCING & DEV THRESHOLD CALIBRATION")
     print("=" * 70)
 
     # 1. Dataset Loading
     loader = DatasetLoader()
     samples = loader.load_samples()
+    print(f"Discovered total dataset universe: {len(samples)} audio files.")
+
+    # Stratified sub-sampling if requested
+    if max_samples > 0 and len(samples) > max_samples:
+        print(f"\n[*] Sub-sampling dataset from {len(samples)} to {max_samples} balanced clips...")
+        rng = np.random.RandomState(42)
+        gen_s = [s for s in samples if s.label == 0]
+        spoof_s = [s for s in samples if s.label == 1]
+
+        target_gen = max_samples // 2
+        target_spoof = max_samples - target_gen
+
+        chosen_gen = [gen_s[i] for i in rng.choice(len(gen_s), size=min(target_gen, len(gen_s)), replace=False)]
+
+        sys_dict = {}
+        for idx, s in enumerate(spoof_s):
+            sys_dict.setdefault(s.system_id, []).append(idx)
+
+        chosen_spoof_indices = []
+        per_sys = max(1, target_spoof // len(sys_dict))
+        for sys_id, idx_list in sys_dict.items():
+            take = min(per_sys, len(idx_list))
+            chosen_spoof_indices.extend(rng.choice(idx_list, size=take, replace=False))
+
+        rem = target_spoof - len(chosen_spoof_indices)
+        if rem > 0:
+            chosen_set = set(chosen_spoof_indices)
+            remaining_indices = [i for i in range(len(spoof_s)) if i not in chosen_set]
+            chosen_spoof_indices.extend(rng.choice(remaining_indices, size=min(rem, len(remaining_indices)), replace=False))
+
+        chosen_spoof = [spoof_s[i] for i in chosen_spoof_indices]
+        samples = chosen_gen + chosen_spoof
+        rng.shuffle(samples)
+        print(f"[+] Prepared training universe: {len(samples)} clips ({len(chosen_gen)} genuine, {len(chosen_spoof)} spoof)")
+        loader.samples = samples
+
     splits = loader.create_splits(train_ratio=0.70, dev_ratio=0.15, test_ratio=0.15)
     split_stats = loader.get_split_stats()
 
@@ -169,13 +248,20 @@ def run_balanced_experiment():
     extractor = FeatureExtractor(sample_rate=SAMPLE_RATE)
 
     # 2. Extract or Load Caches
-    train_cache = FEATURES_DIR / "features_merged_train.npz"
-    dev_cache = FEATURES_DIR / "features_merged_dev.npz"
-    test_cache = FEATURES_DIR / "features_merged_test.npz"
+    cache_tag = f"asv_merged_robust_{max_samples}" if max_samples > 0 else "asv_merged_robust_full"
+    train_cache = FEATURES_DIR / f"features_{cache_tag}_train.npz"
+    dev_cache = FEATURES_DIR / f"features_{cache_tag}_dev.npz"
+    test_cache = FEATURES_DIR / f"features_{cache_tag}_test.npz"
 
-    X_train, y_train, feat_names, sys_train = extract_or_load_split(splits["train"], preprocessor, extractor, train_cache)
-    X_dev, y_dev, _, sys_dev = extract_or_load_split(splits["dev"], preprocessor, extractor, dev_cache)
-    X_test, y_test, _, sys_test = extract_or_load_split(splits["test"], preprocessor, extractor, test_cache)
+    X_train, y_train, feat_names, sys_train = extract_or_load_split(
+        splits["train"], preprocessor, extractor, train_cache, max_workers=max_workers, force_recompute=force_recompute
+    )
+    X_dev, y_dev, _, sys_dev = extract_or_load_split(
+        splits["dev"], preprocessor, extractor, dev_cache, max_workers=max_workers, force_recompute=force_recompute
+    )
+    X_test, y_test, _, sys_test = extract_or_load_split(
+        splits["test"], preprocessor, extractor, test_cache, max_workers=max_workers, force_recompute=force_recompute
+    )
 
     # 3. Controlled 1:1 Balanced Train Set Creation
     X_train_bal, y_train_bal, _ = create_balanced_train_subset(X_train, y_train, sys_train)
@@ -297,4 +383,9 @@ def run_balanced_experiment():
 
 
 if __name__ == "__main__":
-    run_balanced_experiment()
+    parser = argparse.ArgumentParser(description="Retrain Voice Integrity Model with Balanced 1:1 Sampling")
+    parser.add_argument("--max-samples", type=int, default=10000, help="Maximum total samples to extract (0 for all 125k)")
+    parser.add_argument("--force-recompute", action="store_true", help="Force recomputing feature extraction cache")
+    parser.add_argument("--workers", type=int, default=8, help="Parallel worker threads")
+    args = parser.parse_args()
+    run_balanced_experiment(max_samples=args.max_samples, force_recompute=args.force_recompute, max_workers=args.workers)

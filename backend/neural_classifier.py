@@ -5,15 +5,28 @@ followed by temporal residual convolutions, self-attention pooling,
 and binary classification head with Apple Silicon MPS hardware acceleration.
 """
 
+from __future__ import annotations
+
 import math
+
 import time
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Any
 import numpy as np
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils.data import Dataset, DataLoader
+
+try:
+    import torch
+    import torch.nn as nn
+    import torch.nn.functional as F
+    from torch.utils.data import Dataset, DataLoader
+    TORCH_AVAILABLE = True
+except ImportError:
+    torch = None
+    nn = None
+    F = None
+    Dataset = object
+    DataLoader = None
+    TORCH_AVAILABLE = False
 
 # Ensure project root is on sys.path
 import sys
@@ -24,16 +37,19 @@ from backend.config import SAMPLE_RATE, MODELS_DIR
 NEURAL_MODEL_PATH = MODELS_DIR / "neural_sincnet.pt"
 
 
-def get_device() -> torch.device:
+def get_device():
     """Select best available device: Apple Silicon MPS -> CUDA -> CPU."""
-    if torch.backends.mps.is_available():
+    if not TORCH_AVAILABLE or torch is None:
+        return None
+    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
         return torch.device("mps")
     elif torch.cuda.is_available():
         return torch.device("cuda")
     return torch.device("cpu")
 
 
-class SincConv1d(nn.Module):
+class SincConv1d(nn.Module if TORCH_AVAILABLE else object):
+
     """
     Parameterized Sinc-based bandpass filter convolution layer.
     Directly operates on raw audio samples and learns bandpass cutoffs.
@@ -87,15 +103,19 @@ class SincConv1d(nn.Module):
         return F.conv1d(x, filters, stride=4, padding=self.kernel_size // 2)
 
 
-class SincNetClassifier(nn.Module):
+class SincNetClassifier(nn.Module if TORCH_AVAILABLE else object):
     """
     Lightweight Deep Raw-Audio Anti-Spoofing Architecture.
     SincConv1d -> 3x ConvBlocks -> Attentive Statistics Pooling -> Dense -> Spoof Prob.
     """
 
     def __init__(self, sample_rate: int = 16000):
+        if not TORCH_AVAILABLE:
+            self.sample_rate = sample_rate
+            return
         super().__init__()
         self.sample_rate = sample_rate
+
 
         self.sinc_conv = SincConv1d(out_channels=48, kernel_size=129, sample_rate=sample_rate)
         self.bn0 = nn.BatchNorm1d(48)
@@ -170,7 +190,9 @@ class SincNetClassifier(nn.Module):
         }, filepath)
 
     @classmethod
-    def load(cls, filepath: Path = NEURAL_MODEL_PATH, device: Optional[torch.device] = None) -> "SincNetClassifier":
+    def load(cls, filepath: Path = NEURAL_MODEL_PATH, device=None) -> Optional["SincNetClassifier"]:
+        if not TORCH_AVAILABLE or torch is None:
+            return None
         if device is None:
             device = get_device()
         checkpoint = torch.load(filepath, map_location=device)
@@ -179,3 +201,4 @@ class SincNetClassifier(nn.Module):
         model.to(device)
         model.eval()
         return model
+

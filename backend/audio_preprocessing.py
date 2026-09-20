@@ -61,6 +61,9 @@ class AudioPreprocessor:
             return (audio / max_val) * target_peak
         return audio
 
+    # Compatibility alias
+    normalize_audio = normalize_amplitude
+
     def remove_silence(self, audio: np.ndarray, top_db: float = 30.0) -> np.ndarray:
         """Trim silence intervals using energy-based threshold."""
         if len(audio) == 0:

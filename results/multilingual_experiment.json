@@ -1,0 +1,27 @@
+{
+  "experiment": "Multilingual_Indic_ASVspoof_1to1",
+  "train_samples_balanced": 35000,
+  "calibrated_threshold": 0.4997,
+  "dev_eer": 0.0397,
+  "test_metrics": {
+    "accuracy": 0.9599,
+    "precision": 0.9593,
+    "recall": 0.9605,
+    "f1_score": 0.9599,
+    "roc_auc": 0.9958,
+    "eer": 0.0401,
+    "false_alarm_rate_far": 0.0408,
+    "miss_rate_frr": 0.0395,
+    "confusion_matrix": {
+      "true_genuine": 3597,
+      "false_spoof_alarm": 153,
+      "missed_spoof": 148,
+      "true_spoof_detected": 3602
+    },
+    "indic_languages_breakdown": {
+      "test_samples": 5980,
+      "accuracy": 0.9997,
+      "roc_auc": 1.0
+    }
+  }
+}

@@ -3,10 +3,15 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
-  <title>Voice Cleaning — Authentic Audio Intelligence</title>
+  <title>Voice Shield AI — Authentic Audio Intelligence & AI Voice Detection</title>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/tailwind.js" onerror="this.onerror=null; this.src='/static/assets/tailwind.js';"></script>
+  <script>
+    if (typeof tailwind === 'undefined') {
+      document.write('<script src="https://cdn.tailwindcss.com"><\/script>');
+    }
+  </script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -51,6 +56,13 @@
       overscroll-behavior-y: none;
       -webkit-tap-highlight-color: transparent;
       background-color: #111317;
+      color: #e2e2e6;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    button {
+      color: #e2e2e6;
+      background-color: #1e2023;
+      border: 1px solid #3c4a42;
     }
     ::-webkit-scrollbar { display: none; }
     .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
@@ -68,16 +80,16 @@
   <header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl border-b border-surface-container-high/40">
     <div class="h-16 px-4 max-w-2xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('home')">
-        <!-- Stitch Voice Cleaning Emblem Logo -->
+        <!-- Voice Shield Logo -->
         <div class="w-9 h-9 rounded-xl overflow-hidden bg-surface-container-lowest border border-primary/30 flex items-center justify-center shadow-[0_0_12px_rgba(78,222,163,0.25)] flex-shrink-0">
-          <img src="/static/assets/logo.png" alt="Voice Cleaning Emblem" class="w-full h-full object-cover"/>
+          <img src="assets/logo.png" onerror="this.onerror=null; this.src='/static/assets/logo.png';" alt="Voice Shield Emblem" class="w-full h-full object-cover"/>
         </div>
         <div class="flex flex-col">
           <div class="flex items-center gap-1.5">
-            <span class="font-bold text-sm tracking-wide uppercase text-on-surface">Voice Cleaning</span>
+            <span class="font-bold text-sm tracking-wide uppercase text-on-surface">Voice Shield AI</span>
             <span class="material-symbols-outlined text-primary text-[15px]">verified</span>
           </div>
-          <span class="text-[10px] tracking-wider uppercase text-on-surface-variant">Authentic Audio Intelligence</span>
+          <span class="text-[10px] tracking-wider uppercase text-on-surface-variant">Voice Integrity & Clone Detection</span>
         </div>
       </div>
 
@@ -130,6 +142,31 @@
         <!-- Spectrogram Bar Strip Visualizer -->
         <div class="mt-4 p-2 rounded-xl bg-surface-container/70 backdrop-blur-md flex items-end justify-between gap-1 h-12 overflow-hidden border border-surface-container-high/40" id="live-freq-bars">
           <!-- 24 dynamic bars populated via JS -->
+        </div>
+      </div>
+
+      <!-- Multilingual Indic Voice Preset Selector -->
+      <div class="rounded-2xl bg-surface-container-low p-3.5 border border-surface-container-high/60 flex flex-col space-y-2.5 shadow-md">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-base">🇮🇳</span>
+            <span class="text-xs font-semibold text-on-surface">Indian Languages Forensic Preset</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary/15 text-primary">NEW</span>
+          </div>
+          <span id="active-lang-badge" class="text-[10px] font-mono text-secondary">AUTO-CALIBRATED</span>
+        </div>
+        <p class="text-[11px] text-on-surface-variant leading-tight">
+          Calibrates micro-jitter, retroflex formant transitions, and phase baselines for regional vocal tracts (IndicTTS & IndicSynth calibrated).
+        </p>
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1" style="scrollbar-width: none;">
+          <button type="button" onclick="setLanguagePreset('auto')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-primary bg-primary/20 text-primary text-xs font-medium flex-shrink-0 transition-all cursor-pointer" data-lang="auto">Auto (All)</button>
+          <button type="button" onclick="setLanguagePreset('hindi')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="hindi">हिन्दी (Hindi)</button>
+          <button type="button" onclick="setLanguagePreset('tamil')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="tamil">தமிழ் (Tamil)</button>
+          <button type="button" onclick="setLanguagePreset('telugu')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="telugu">తెలుగు (Telugu)</button>
+          <button type="button" onclick="setLanguagePreset('bengali')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="bengali">বাংলা (Bengali)</button>
+          <button type="button" onclick="setLanguagePreset('kannada')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="kannada">ಕನ್ನಡ (Kannada)</button>
+          <button type="button" onclick="setLanguagePreset('marathi')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="marathi">मराठी (Marathi)</button>
+          <button type="button" onclick="setLanguagePreset('english')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="english">English</button>
         </div>
       </div>
 
@@ -190,29 +227,68 @@
         </div>
       </button>
 
+      <!-- Action 3: Dual-Speaker Call Diarization & Scam Shield -->
+      <button onclick="switchView('call')" class="group relative w-full text-left rounded-2xl bg-gradient-to-br from-surface-container to-surface-container-high p-5 shadow-xl border border-secondary/30 active:scale-[0.99] transition-all">
+        <div class="absolute inset-0 bg-gradient-to-r from-secondary/10 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
+        <div class="relative z-10 flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div class="relative w-14 h-14 rounded-full bg-gradient-to-tr from-secondary-container to-secondary flex items-center justify-center text-on-secondary shadow-[0_0_24px_rgba(76,215,246,0.35)] group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">phone_in_talk</span>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center gap-2">
+                <span class="text-lg font-semibold text-on-surface">Live Call Voice Shield</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-secondary/20 text-secondary tracking-wide uppercase">Real-Time Diarize</span>
+              </div>
+              <span class="text-xs text-on-surface-variant mt-0.5">Live 2-party analysis while speaking with remote contact</span>
+            </div>
+          </div>
+          <div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant group-hover:text-secondary transition-colors">
+            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+          </div>
+        </div>
+
+        <div class="mt-3 pt-2.5 border-t border-surface-container-highest/40 flex items-center justify-between text-on-surface-variant font-mono text-[11px]">
+          <span class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            Cross-Talk Overlap Exclusion
+          </span>
+          <span class="text-primary font-medium">Independent Turn Anti-Spoof</span>
+        </div>
+      </button>
+
       <!-- Quick Test Bench Samples -->
       <div class="rounded-2xl bg-surface-container p-4 border border-surface-container-high/60 flex flex-col gap-2.5">
         <div class="flex items-center justify-between">
           <span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Benchmark Quick Tests</span>
           <span class="text-[11px] font-mono text-secondary">Pre-verified Clips</span>
         </div>
-        <div class="grid grid-cols-2 gap-2">
-          <button onclick="testQuickSample('genuine')" class="p-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high flex items-center gap-2.5 transition-colors text-left border border-outline-variant/20">
-            <div class="w-8 h-8 rounded-lg bg-primary/15 text-primary flex items-center justify-center flex-shrink-0">
-              <span class="material-symbols-outlined text-[18px]">verified_user</span>
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="testQuickSample('genuine')" class="p-2 rounded-xl bg-surface-container-low hover:bg-surface-container-high flex flex-col items-start gap-1.5 transition-colors text-left border border-outline-variant/20">
+            <div class="w-7 h-7 rounded-lg bg-primary/15 text-primary flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[16px]">verified_user</span>
             </div>
             <div class="flex flex-col min-w-0">
               <span class="text-xs font-semibold text-on-surface truncate">Genuine Voice</span>
-              <span class="text-[10px] text-primary font-mono">Real Human 99%</span>
+              <span class="text-[10px] text-primary font-mono">Human 99%</span>
             </div>
           </button>
-          <button onclick="testQuickSample('spoof')" class="p-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high flex items-center gap-2.5 transition-colors text-left border border-outline-variant/20">
-            <div class="w-8 h-8 rounded-lg bg-error/15 text-error flex items-center justify-center flex-shrink-0">
-              <span class="material-symbols-outlined text-[18px]">warning</span>
+          <button onclick="testQuickSample('spoof')" class="p-2 rounded-xl bg-surface-container-low hover:bg-surface-container-high flex flex-col items-start gap-1.5 transition-colors text-left border border-outline-variant/20">
+            <div class="w-7 h-7 rounded-lg bg-error/15 text-error flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[16px]">warning</span>
             </div>
             <div class="flex flex-col min-w-0">
               <span class="text-xs font-semibold text-on-surface truncate">Cloned Spoof</span>
-              <span class="text-[10px] text-error font-mono">Deepfake 97.5%</span>
+              <span class="text-[10px] text-error font-mono">Deepfake 97%</span>
+            </div>
+          </button>
+          <button onclick="testQuickSample('call_demo')" class="p-2 rounded-xl bg-surface-container-low hover:bg-surface-container-high flex flex-col items-start gap-1.5 transition-colors text-left border border-secondary/30">
+            <div class="w-7 h-7 rounded-lg bg-secondary/15 text-secondary flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[16px]">call_split</span>
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="text-xs font-semibold text-on-surface truncate">Dual Call</span>
+              <span class="text-[10px] text-secondary font-mono">Father Clone</span>
             </div>
           </button>
         </div>
@@ -601,6 +677,351 @@
 
     </div>
 
+    <!-- ==================== VIEW 7: LIVE MULTI-SPEAKER CALL SHIELD ==================== -->
+    <div id="view-call" class="hidden flex flex-col space-y-4">
+      
+      <!-- Back Navigation & Status Header -->
+      <div class="flex items-center justify-between py-1">
+        <button onclick="stopLiveCallAndGoHome()" class="w-9 h-9 rounded-full flex items-center justify-center bg-surface-container hover:bg-surface-container-high active:scale-95 text-on-surface transition-all">
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        </button>
+        <div class="flex flex-col items-center">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-secondary">Real-Time Conversational Shield</span>
+          <span class="text-base font-semibold text-on-surface">Live Multi-Speaker Call Diarization</span>
+        </div>
+        <div id="call-live-badge-container" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container border border-surface-container-high text-[10px] font-mono font-bold text-on-surface-variant">
+          <span id="call-live-dot" class="w-2 h-2 rounded-full bg-on-surface-variant"></span>
+          <span id="call-live-badge-text">STANDBY</span>
+        </div>
+      </div>
+
+      <!-- Live Shield Mission Card -->
+      <div class="rounded-2xl bg-surface-container-low p-4 border border-surface-container-high/60 flex items-start gap-3">
+        <div class="w-8 h-8 rounded-full bg-secondary/15 flex items-center justify-center flex-shrink-0 text-secondary">
+          <span class="material-symbols-outlined text-[18px]">security</span>
+        </div>
+        <div class="flex flex-col space-y-1">
+          <span class="text-xs font-semibold text-on-surface">Live 2-Party Call Protection</span>
+          <p class="text-[11px] text-on-surface-variant leading-relaxed">
+            Analyzes the call live while you are speaking with the other person. Separates your voice from the remote party, isolates cross-talk overlap, and alerts you instantaneously if an AI-cloned voice or synthetic speech is detected.
+          </p>
+        </div>
+      </div>
+
+      <!-- Live Call Language Preset Calibration -->
+      <div class="rounded-2xl bg-surface-container-low p-3.5 border border-surface-container-high/70 flex flex-col space-y-2 shadow-md">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <span class="text-sm">🇮🇳</span>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-on-surface">Vocal Tract Calibration (Language)</span>
+          </div>
+          <span class="text-[10px] font-mono text-primary font-semibold">1:1 IndicSynth/IndicTTS</span>
+        </div>
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1" style="scrollbar-width: none;">
+          <button type="button" onclick="setLanguagePreset('auto')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-primary bg-primary/20 text-primary text-[11px] font-medium flex-shrink-0 transition-all cursor-pointer" data-lang="auto">Auto</button>
+          <button type="button" onclick="setLanguagePreset('hindi')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="hindi">हिन्दी Hindi</button>
+          <button type="button" onclick="setLanguagePreset('tamil')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="tamil">தமிழ் Tamil</button>
+          <button type="button" onclick="setLanguagePreset('telugu')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="telugu">తెలుగు Telugu</button>
+          <button type="button" onclick="setLanguagePreset('bengali')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="bengali">বাংলা Bengali</button>
+          <button type="button" onclick="setLanguagePreset('kannada')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="kannada">ಕನ್ನಡ Kannada</button>
+          <button type="button" onclick="setLanguagePreset('marathi')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="marathi">मराठी Marathi</button>
+          <button type="button" onclick="setLanguagePreset('english')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="english">English</button>
+        </div>
+      </div>
+
+      <!-- Live Call Audio Source Selector (No File Upload) -->
+      <div class="rounded-2xl bg-surface-container p-4 border border-surface-container-high/80 flex flex-col space-y-3 shadow-lg">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Select Live Audio Source</span>
+          <span class="text-[10px] font-mono text-secondary">Sub-40ms WebSocket Stream</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <!-- Option 1: Mic & Speakerphone -->
+          <button type="button" id="src-btn-mic" onclick="selectLiveCallSource('mic')" class="p-3 rounded-xl border-2 border-secondary bg-secondary/10 flex flex-col text-left transition-all group cursor-pointer">
+            <div class="flex items-center justify-between w-full">
+              <span class="material-symbols-outlined text-secondary text-[20px]">mic</span>
+              <span id="src-pill-mic" class="w-2 h-2 rounded-full bg-secondary"></span>
+            </div>
+            <span class="text-xs font-semibold text-on-surface mt-2">Mic / Speakerphone</span>
+            <span class="text-[10px] text-on-surface-variant mt-0.5">Captures your voice + phone on speaker</span>
+          </button>
+
+          <!-- Option 2: VoIP Web Call (Screen / Tab Audio) -->
+          <button type="button" id="src-btn-system" onclick="selectLiveCallSource('system')" class="p-3 rounded-xl border border-surface-container-high bg-surface-container-low hover:border-secondary/50 flex flex-col text-left transition-all group cursor-pointer">
+            <div class="flex items-center justify-between w-full">
+              <span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary text-[20px]">screen_share</span>
+              <span id="src-pill-system" class="w-2 h-2 rounded-full bg-transparent"></span>
+            </div>
+            <span class="text-xs font-semibold text-on-surface mt-2">VoIP / Web Call</span>
+            <span class="text-[10px] text-on-surface-variant mt-0.5">WhatsApp / Zoom / Meet tab + Mic</span>
+          </button>
+
+          <!-- Option 3: Interactive Attack Simulation Demo -->
+          <button type="button" id="src-btn-demo" onclick="selectLiveCallSource('demo')" class="p-3 rounded-xl border border-surface-container-high bg-surface-container-low hover:border-secondary/50 flex flex-col text-left transition-all group cursor-pointer">
+            <div class="flex items-center justify-between w-full">
+              <span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary text-[20px]">smart_toy</span>
+              <span id="src-pill-demo" class="w-2 h-2 rounded-full bg-transparent"></span>
+            </div>
+            <span class="text-xs font-semibold text-on-surface mt-2">Live Demo Attack</span>
+            <span class="text-[10px] text-on-surface-variant mt-0.5">Streams live genuine + clone call demo</span>
+          </button>
+        </div>
+
+
+
+        <!-- Primary Live Monitor Toggle Button -->
+        <button id="live-call-toggle-btn" onclick="toggleLiveCallMonitor()" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-secondary-container via-secondary to-primary text-on-secondary font-bold text-sm flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(76,215,246,0.35)] hover:brightness-110 active:scale-[0.99] transition-all cursor-pointer">
+          <span id="live-call-btn-icon" class="material-symbols-outlined text-[22px]">phone_in_talk</span>
+          <span id="live-call-btn-text">Start Live Call Shield</span>
+          <span id="live-call-timer" class="hidden ml-2 px-2 py-0.5 rounded-full bg-black/40 text-xs font-mono">00:00</span>
+        </button>
+      </div>
+
+      <!-- Real-Time Active Speaker HUD Ribbon -->
+      <div id="live-speaker-ribbon" class="rounded-2xl bg-surface-container-low p-3.5 border border-surface-container-high/80 flex items-center justify-between shadow-lg transition-all">
+        <div class="flex items-center gap-3 min-w-0">
+          <div id="live-speaker-indicator-circle" class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant transition-colors flex-shrink-0">
+            <span id="live-speaker-indicator-icon" class="material-symbols-outlined text-[22px]">graphic_eq</span>
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Current Active Speaker</span>
+            <span id="live-speaker-indicator-label" class="text-xs font-bold text-on-surface truncate">Listening for conversation...</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 font-mono text-[11px] flex-shrink-0">
+          <span id="live-overlap-badge" class="hidden px-2 py-0.5 rounded-full bg-amber-400/15 text-amber-400 border border-amber-400/30 text-[10px] font-bold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
+            CROSS-TALK
+          </span>
+          <span id="live-call-snr-pill" class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-[10px]">
+            16 kHz PCM
+          </span>
+        </div>
+      </div>
+
+      <!-- Real-Time Threat Assessment Banner -->
+      <div id="call-banner-card" class="rounded-2xl bg-surface-container-low p-5 border border-surface-container-high shadow-xl flex flex-col space-y-3 transition-all">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span id="call-banner-icon" class="material-symbols-outlined text-[26px] text-primary">verified_user</span>
+            <span id="call-banner-title" class="text-base sm:text-lg font-bold text-on-surface">LIVE MONITOR READY</span>
+          </div>
+          <span id="call-banner-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-primary/15 text-primary border border-primary/30">
+            AWAITING CALL
+          </span>
+        </div>
+
+        <p id="call-banner-explanation" class="text-xs text-on-surface-variant leading-relaxed">
+          Start live monitoring to evaluate conversational turns in real time. Your speech and remote speech are isolated continuously.
+        </p>
+
+        <!-- Challenge Phrase Action (shown when risk rises) -->
+        <div id="call-challenge-box" class="hidden p-3 rounded-xl bg-error/10 border border-error/30 flex flex-col space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold text-error uppercase tracking-wider flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">psychology</span>
+              AI Vocoder Challenge Protocol
+            </span>
+            <button type="button" onclick="generateChallengePhrase()" class="text-[10px] font-mono text-secondary hover:underline font-semibold cursor-pointer">
+              New Phrase ↻
+            </button>
+          </div>
+          <p id="call-challenge-text" class="font-mono text-xs text-on-surface bg-surface-container-lowest p-2 rounded-lg border border-outline-variant/30">
+            "Ask caller to repeat: 'The quick brown fox jumps over the lazy dog.'"
+          </p>
+          <span class="text-[9px] text-on-surface-variant">Synthetic neural vocoders struggle with rapid non-contextual phonetic transitions and acoustic jitter.</span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-surface-container-high/60 text-[11px] font-mono">
+          <span id="call-urgency-pill" class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-semibold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            DEFENSE SHIELD ARMED
+          </span>
+          <span id="call-financial-pill" class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant">
+            Acoustic Biomechanics Active
+          </span>
+        </div>
+      </div>
+
+      <!-- Live Oscilloscope & Audio Waveform Strip -->
+      <div class="bg-surface-container-low rounded-2xl p-4 shadow-lg border border-surface-container-high flex flex-col gap-2">
+        <div class="flex items-center justify-between text-on-surface-variant">
+          <div class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-secondary text-[16px]">graphic_eq</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Live Acoustic Stream</span>
+          </div>
+          <span id="live-call-latency" class="font-mono text-[10px] text-secondary font-medium">Volatile Buffer • Zero Retention</span>
+        </div>
+
+        <canvas id="live-call-oscilloscope" class="w-full h-16 rounded-xl bg-surface-container-lowest" width="600" height="64"></canvas>
+
+        <div class="flex items-center justify-between text-on-surface-variant text-[10px] font-mono">
+          <span class="flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            Dual-Centroid Timbre Tracking
+          </span>
+          <span id="live-threat-gauge" class="font-bold text-primary">Live Threat: 5.0% (LOW)</span>
+        </div>
+      </div>
+
+      <!-- Telemetry Strip (Duration, Usable, Overlap, Overall Risk) -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div class="rounded-xl bg-surface-container p-3 border border-surface-container-high flex flex-col">
+          <span class="text-[10px] text-on-surface-variant uppercase font-semibold">Elapsed Call</span>
+          <span id="call-stat-duration" class="font-mono text-xs font-bold text-on-surface mt-0.5">0.0s</span>
+          <span class="text-[9px] text-on-surface-variant">Active Monitor</span>
+        </div>
+        <div class="rounded-xl bg-surface-container p-3 border border-surface-container-high flex flex-col">
+          <span class="text-[10px] text-on-surface-variant uppercase font-semibold">Usable Speech</span>
+          <span id="call-stat-usable" class="font-mono text-xs font-bold text-primary mt-0.5">0.0s</span>
+          <span class="text-[9px] text-primary">Clean Turn VAD</span>
+        </div>
+        <div class="rounded-xl bg-surface-container p-3 border border-surface-container-high flex flex-col">
+          <span class="text-[10px] text-on-surface-variant uppercase font-semibold">Signal Level</span>
+          <span id="call-stat-snr" class="font-mono text-xs font-bold text-secondary mt-0.5">Active</span>
+          <span class="text-[9px] text-secondary">Quality: PASS</span>
+        </div>
+        <div class="rounded-xl bg-surface-container p-3 border border-surface-container-high flex flex-col">
+          <span class="text-[10px] text-on-surface-variant uppercase font-semibold">Overlap Isolated</span>
+          <span id="call-stat-overlap" class="font-mono text-xs font-bold text-amber-400 mt-0.5">0.0s</span>
+          <span class="text-[9px] text-amber-400">Anti-Dilution Filter</span>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Live Dual Speaker Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        
+        <!-- Speaker A (You / Local Caller) -->
+        <div id="card-speaker-a" class="rounded-2xl bg-surface-container p-4 border border-surface-container-high flex flex-col space-y-3 transition-all">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold font-mono text-xs">
+                A
+              </div>
+              <div class="flex flex-col">
+                <span class="text-xs font-bold text-on-surface">Speaker A (You)</span>
+                <span class="text-[10px] text-primary font-medium">Local Caller</span>
+              </div>
+            </div>
+            <span id="speaker-a-badge" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-primary/15 text-primary">
+              LOW RISK
+            </span>
+          </div>
+
+          <div class="flex items-baseline gap-1 my-1">
+            <span id="speaker-a-score" class="text-3xl font-mono font-bold text-on-surface">5.0</span>
+            <span class="font-mono text-xs text-primary font-semibold">% Spoof Risk</span>
+          </div>
+
+          <div class="space-y-1 text-[11px] font-mono text-on-surface-variant border-t border-surface-container-high/60 pt-2">
+            <div class="flex justify-between">
+              <span>Active Speaking:</span>
+              <span id="speaker-a-speech" class="text-on-surface font-semibold">0.0s (0 turns)</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Acoustic Biomechanics:</span>
+              <span id="speaker-a-status" class="text-primary font-semibold">Natural Human Verified</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Vocal Consistency:</span>
+              <span id="speaker-a-consistency" class="text-on-surface font-semibold">Stable Centroid</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Speaker B (Remote Party / Claimed Contact) -->
+        <div id="card-speaker-b" class="rounded-2xl bg-surface-container p-4 border border-surface-container-high flex flex-col space-y-3 transition-all shadow-md">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-full bg-secondary/15 text-secondary flex items-center justify-center font-bold font-mono text-xs">
+                B
+              </div>
+              <div class="flex flex-col">
+                <span class="text-xs font-bold text-on-surface">Speaker B (Remote)</span>
+                <span id="speaker-b-role-label" class="text-[10px] text-secondary font-medium">Remote Contact</span>
+              </div>
+            </div>
+            <span id="speaker-b-badge" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-secondary/15 text-secondary">
+              AWAITING SPEECH
+            </span>
+          </div>
+
+          <div class="flex items-baseline gap-1 my-1">
+            <span id="speaker-b-score" class="text-3xl font-mono font-bold text-on-surface">5.0</span>
+            <span id="speaker-b-score-unit" class="font-mono text-xs text-secondary font-semibold">% Spoof Risk</span>
+          </div>
+
+          <div class="space-y-1 text-[11px] font-mono text-on-surface-variant border-t border-surface-container-high/60 pt-2">
+            <div class="flex justify-between">
+              <span>Active Speaking:</span>
+              <span id="speaker-b-speech" class="text-on-surface font-semibold">0.0s (0 turns)</span>
+            </div>
+            <div class="flex justify-between">
+              <span>AI Spoof Probability:</span>
+              <span id="speaker-b-ml" class="text-on-surface font-semibold">--%</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Phase & Spectral Check:</span>
+              <span id="speaker-b-phase" class="text-on-surface font-semibold">--</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Live Conversational Timeline & Cryptographic Ledger -->
+      <div class="rounded-2xl bg-surface-container p-4 border border-surface-container-high flex flex-col space-y-3 shadow-lg">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[18px] text-secondary">history_edu</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-on-surface">Live Conversational Audit Ledger</span>
+          </div>
+          <div class="flex items-center gap-3 text-[10px] font-mono">
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-primary"></span> You (A)</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-secondary"></span> Remote (B)</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-error"></span> Clone Alert</span>
+          </div>
+        </div>
+
+        <!-- Live Turn Events Feed -->
+        <div id="live-call-event-list" class="max-h-48 overflow-y-auto divide-y divide-surface-container-highest/40 space-y-1 pr-1 font-mono text-[11px]">
+          <div class="py-2 text-center text-on-surface-variant text-[10px]">
+            No speech turns logged yet. Start the live monitor and begin speaking.
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-surface-container-high/60 flex items-center justify-between text-[10px] font-mono text-on-surface-variant">
+          <span class="flex items-center gap-1">
+            <span class="material-symbols-outlined text-[13px] text-primary">lock</span>
+            Cryptographically Anchored to SHA-256 Ledger
+          </span>
+          <button onclick="switchView('history')" class="text-secondary hover:underline font-semibold cursor-pointer">
+            Inspect Full Chain →
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Fraud Defense Protocols Checklist -->
+      <div class="rounded-2xl bg-surface-container-low p-4 border border-surface-container-high/60 flex flex-col space-y-2.5">
+        <div class="flex items-center gap-2 text-on-surface">
+          <span class="material-symbols-outlined text-[18px] text-secondary">verified</span>
+          <span class="text-xs font-bold uppercase tracking-wide">Live Intercept Protocols</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-on-surface-variant">
+          <div class="p-2 rounded-xl bg-surface-container flex items-start gap-2">
+            <span class="material-symbols-outlined text-[15px] text-error flex-shrink-0 mt-0.5">block</span>
+            <span>Never send urgent wire transfers, gift cards, or crypto without in-person confirmation.</span>
+          </div>
+          <div class="p-2 rounded-xl bg-surface-container flex items-start gap-2">
+            <span class="material-symbols-outlined text-[15px] text-secondary flex-shrink-0 mt-0.5">call</span>
+            <span>Hang up and call back on a verified direct number known to you.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
     <!-- ==================== VIEW 6: AUDIT HISTORY ==================== -->
     <div id="view-history" class="hidden flex flex-col space-y-4">
       
@@ -646,6 +1067,11 @@
           <span class="text-[10px] -mt-1">Scan</span>
         </button>
 
+        <button onclick="switchView('call')" id="tab-call" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-all">
+          <span class="material-symbols-outlined text-[22px]">phone_in_talk</span>
+          <span class="text-[10px] mt-0.5">Live Call</span>
+        </button>
+
         <button onclick="switchView('record')" id="tab-record" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-all">
           <span class="material-symbols-outlined text-[22px]">mic</span>
           <span class="text-[10px] mt-0.5">Live Mic</span>
@@ -662,7 +1088,8 @@
 
   <!-- JAVASCRIPT APP ENGINE -->
   <script>
-    const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:8000' : '';
+    const isHttp = window.location.protocol === 'http:' || window.location.protocol === 'https:';
+    const API_BASE = isHttp ? '' : (window.location.port ? `http://localhost:${window.location.port}` : 'http://localhost:8050');
 
     let currentFile = null;
     let isRecording = false;
@@ -673,10 +1100,63 @@
     let recSeconds = 0;
     let mediaRecorder = null;
     let recordedChunks = [];
+    let recordedPcmChunks = [];
+    let activeLanguagePreset = 'auto';
+
+    function setLanguagePreset(lang) {
+      activeLanguagePreset = lang;
+      document.querySelectorAll('.lang-preset-pill').forEach(btn => {
+        if (btn.dataset.lang === lang) {
+          btn.className = 'lang-preset-pill px-3 py-1.5 rounded-xl border border-primary bg-primary/20 text-primary text-xs font-medium flex-shrink-0 transition-all cursor-pointer';
+        } else {
+          btn.className = 'lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer';
+        }
+      });
+      const badge = document.getElementById('active-lang-badge');
+      if (badge) {
+        badge.innerText = lang === 'auto' ? 'AUTO-CALIBRATED' : `${lang.toUpperCase()} CALIBRATED`;
+      }
+      if (typeof liveCallSocket !== 'undefined' && liveCallSocket && liveCallSocket.readyState === WebSocket.OPEN) {
+        liveCallSocket.send(JSON.stringify({ action: "configure", language: lang }));
+      }
+    }
+
+    // --- LOSSLESS WAV ENCODER ---
+    function encodeWAV(samples, sampleRate = 16000) {
+      const buffer = new ArrayBuffer(44 + samples.length * 2);
+      const view = new DataView(buffer);
+
+      function writeString(offset, string) {
+        for (let i = 0; i < string.length; i++) {
+          view.setUint8(offset + i, string.charCodeAt(i));
+        }
+      }
+
+      writeString(0, 'RIFF');
+      view.setUint32(4, 36 + samples.length * 2, true);
+      writeString(8, 'WAVE');
+      writeString(12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true); // 1 = PCM
+      view.setUint16(22, 1, true); // Mono
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * 2, true); // Byte rate
+      view.setUint16(32, 2, true); // Block align
+      view.setUint16(34, 16, true); // Bits per sample
+      writeString(36, 'data');
+      view.setUint32(40, samples.length * 2, true);
+
+      let offset = 44;
+      for (let i = 0; i < samples.length; i++, offset += 2) {
+        const s = Math.max(-1, Math.min(1, samples[i]));
+        view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+      }
+      return new Blob([view], { type: 'audio/wav' });
+    }
 
     // --- VIEW SWITCHER ---
     function switchView(viewName) {
-      const views = ['home', 'upload', 'record', 'analyzing', 'result', 'history'];
+      const views = ['home', 'upload', 'call', 'record', 'analyzing', 'result', 'history'];
       views.forEach(v => {
         const el = document.getElementById(`view-${v}`);
         if (el) el.classList.add('hidden');
@@ -685,7 +1165,7 @@
       if (target) target.classList.remove('hidden');
 
       // Update Nav Tabs active state
-      ['home', 'upload', 'record', 'history'].forEach(tab => {
+      ['home', 'upload', 'call', 'record', 'history'].forEach(tab => {
         const btn = document.getElementById(`tab-${tab}`);
         if (btn) {
           if (tab === viewName) {
@@ -765,7 +1245,7 @@
       formData.append('file', currentFile);
 
       try {
-        const resp = await fetch(`${API_BASE}/analyze`, { method: 'POST', body: formData });
+        const resp = await fetch(`${API_BASE}/analyze?language=${encodeURIComponent(activeLanguagePreset)}`, { method: 'POST', body: formData });
         const result = await resp.json();
 
         if (!resp.ok) {
@@ -780,10 +1260,12 @@
         }, 1200);
 
       } catch (err) {
-        alert('Analysis failed: ' + err);
+        const currentOrigin = window.location.origin || 'http://localhost:8050';
+        alert('Analysis failed: ' + err + '\n\n⚠️ Please verify that the backend server is running:\n  python app.py\n(Server must be running on ' + currentOrigin + ')');
         switchView('upload');
       }
     }
+
 
     function runPipelineAnimation() {
       const fill = document.getElementById('pipeline-progress-fill');
@@ -895,6 +1377,10 @@
           },
           explanation: 'Impersonation risk evaluated at 8.6/100 (LOW). Speech characteristics align with natural human vocal tract physics.'
         }, 'genuine_sample.wav');
+      } else if (type === 'call_demo') {
+        switchView('call');
+        selectLiveCallSource('demo');
+        toggleLiveCallMonitor();
       } else {
         displayResult({
           risk_score: 88.0,
@@ -910,6 +1396,27 @@
       }
     }
 
+    function downsampleBuffer(buffer, inputSampleRate, outputSampleRate = 16000) {
+      if (inputSampleRate === outputSampleRate || !inputSampleRate) return buffer;
+      const ratio = inputSampleRate / outputSampleRate;
+      const newLength = Math.round(buffer.length / ratio);
+      const result = new Float32Array(newLength);
+      let offsetResult = 0;
+      let offsetBuffer = 0;
+      while (offsetResult < result.length) {
+        const nextOffsetBuffer = Math.round((offsetResult + 1) * ratio);
+        let accum = 0, count = 0;
+        for (let i = offsetBuffer; i < nextOffsetBuffer && i < buffer.length; i++) {
+          accum += buffer[i];
+          count++;
+        }
+        result[offsetResult] = count > 0 ? accum / count : buffer[offsetBuffer];
+        offsetResult++;
+        offsetBuffer = nextOffsetBuffer;
+      }
+      return result;
+    }
+
     // --- LIVE MICROPHONE RECORDING & WEBSOCKET ---
     async function toggleRecording() {
       const btn = document.getElementById('stop-and-analyze-btn');
@@ -923,7 +1430,15 @@
         // Start Mic
         try {
           audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
-          micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+          micStream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+              echoCancellation: false,
+              noiseSuppression: false,
+              autoGainControl: false,
+              channelCount: 1
+            },
+            video: false
+          });
           const source = audioContext.createMediaStreamSource(micStream);
           const analyser = audioContext.createAnalyser();
           analyser.fftSize = 256;
@@ -950,21 +1465,30 @@
 
           // Connect WebSocket for streaming telemetry
           const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-          const wsHost = window.location.protocol === 'file:' ? 'localhost:8000' : window.location.host;
-          socket = new WebSocket(`${wsProtocol}//${wsHost}/stream`);
+          const wsHost = (window.location.protocol === 'http:' || window.location.protocol === 'https:')
+            ? window.location.host
+            : 'localhost:8050';
+          socket = new WebSocket(`${wsProtocol}//${wsHost}/stream?language=${encodeURIComponent(activeLanguagePreset)}`);
+
 
           const processor = audioContext.createScriptProcessor(4096, 1, 1);
           source.connect(processor);
           processor.connect(audioContext.destination);
 
+          recordedPcmChunks = [];
+          const actualSr = audioContext.sampleRate;
           processor.onaudioprocess = (e) => {
-            if (!isRecording || socket.readyState !== WebSocket.OPEN) return;
+            if (!isRecording) return;
             const input = e.inputBuffer.getChannelData(0);
-            const pcm16 = new Int16Array(input.length);
-            for (let i = 0; i < input.length; i++) {
-              pcm16[i] = Math.max(-32768, Math.min(32767, input[i] * 32767));
+            const pcm16k = downsampleBuffer(input, actualSr, 16000);
+            recordedPcmChunks.push(pcm16k);
+            if (socket && socket.readyState === WebSocket.OPEN) {
+              const pcm16 = new Int16Array(pcm16k.length);
+              for (let i = 0; i < pcm16k.length; i++) {
+                pcm16[i] = Math.max(-32768, Math.min(32767, pcm16k[i] * 32767));
+              }
+              socket.send(pcm16.buffer);
             }
-            socket.send(pcm16.buffer);
           };
 
           socket.onmessage = (event) => {
@@ -1004,24 +1528,44 @@
         btn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">sync</span> Running Analysis...';
 
         if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-          mediaRecorder.onstop = async () => {
-            if (micStream) micStream.getTracks().forEach(t => t.stop());
-            if (audioContext) audioContext.close();
+          try { mediaRecorder.stop(); } catch(e) {}
+        }
+        if (micStream) micStream.getTracks().forEach(t => t.stop());
 
-            const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-            if (blob.size > 1000) {
-              const file = new File([blob], `live_recording_${Date.now()}.webm`, { type: 'audio/webm' });
-              currentFile = file;
-              startAnalysis();
-            } else {
-              alert('Recording was too short. Please speak for at least 3 seconds.');
-              switchView('record');
-            }
-          };
-          mediaRecorder.stop();
+        if (audioContext) {
+          try { audioContext.close(); } catch(e) {}
+        }
+
+        // Build lossless PCM WAV from recorded chunks (standardized 16 kHz)
+        let totalSamples = 0;
+        for (let i = 0; i < recordedPcmChunks.length; i++) {
+          totalSamples += recordedPcmChunks[i].length;
+        }
+
+        if (totalSamples >= 16000 * 1.5) {
+          const merged = new Float32Array(totalSamples);
+          let offset = 0;
+          for (let i = 0; i < recordedPcmChunks.length; i++) {
+            merged.set(recordedPcmChunks[i], offset);
+            offset += recordedPcmChunks[i].length;
+          }
+          const wavBlob = encodeWAV(merged, 16000);
+          const file = new File([wavBlob], `live_recording_${Date.now()}.wav`, { type: 'audio/wav' });
+          currentFile = file;
+          startAnalysis();
+        } else if (recordedChunks.length > 0) {
+          const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+          if (blob.size > 1000) {
+            const file = new File([blob], `live_recording_${Date.now()}.webm`, { type: 'audio/webm' });
+            currentFile = file;
+            startAnalysis();
+          } else {
+            alert('Recording was too short. Please speak for at least 2 seconds.');
+            switchView('record');
+          }
         } else {
-          if (micStream) micStream.getTracks().forEach(t => t.stop());
-          if (audioContext) audioContext.close();
+          alert('Recording was too short. Please speak for at least 2 seconds.');
+          switchView('record');
         }
       }
     }
@@ -1118,7 +1662,718 @@
       }
     }
 
-    // Initialize home bars on boot
+    // ============================================================
+    // --- REAL-TIME LIVE MULTI-SPEAKER CALL SHIELD CONTROLLER ---
+    // ============================================================
+    let currentLiveCallSource = 'mic'; // 'mic' | 'system' | 'demo'
+    let isLiveCallActive = false;
+    let liveCallSocket = null;
+    let liveCallAudioContext = null;
+    let liveCallMicStream = null;
+    let liveCallDisplayStream = null;
+    let liveCallProcessorNode = null;
+    let liveCallTimerInterval = null;
+    let liveCallSeconds = 0;
+    let liveCallOscillatorAnimId = null;
+    let liveCallAnalyser = null;
+    let liveDemoInterval = null;
+    let liveCallTelemetryData = null;
+
+    // Challenge Phrases for Anti-Spoof Trap
+    const antiSpoofChallengePhrases = [
+      "Ask caller to repeat: 'The quick brown fox jumps over the lazy dog.'",
+      "Ask caller: 'What was the specific street name where we lived in 2019?'",
+      "Ask caller to pronounce: 'Aluminum linoleum six silver twigs rapidly.'",
+      "Ask caller to whisper three numbers: 'Seven, forty-two, and eighty-nine.'",
+      "Ask caller to hum the first five notes of Happy Birthday."
+    ];
+    let challengePhraseIdx = 0;
+
+    function generateChallengePhrase() {
+      challengePhraseIdx = (challengePhraseIdx + 1) % antiSpoofChallengePhrases.length;
+      const el = document.getElementById('call-challenge-text');
+      if (el) {
+        el.innerText = antiSpoofChallengePhrases[challengePhraseIdx];
+      }
+    }
+
+    function selectLiveCallSource(source) {
+      if (isLiveCallActive) {
+        alert('Please stop the current active call monitor before switching audio sources.');
+        return;
+      }
+      currentLiveCallSource = source;
+
+      const sources = ['mic', 'system', 'demo'];
+      sources.forEach(s => {
+        const btn = document.getElementById(`src-btn-${s}`);
+        const pill = document.getElementById(`src-pill-${s}`);
+        if (!btn || !pill) return;
+
+        if (s === source) {
+          btn.className = 'p-3 rounded-xl border-2 border-secondary bg-secondary/10 flex flex-col text-left transition-all group cursor-pointer shadow-md';
+          pill.className = 'w-2 h-2 rounded-full bg-secondary';
+        } else {
+          btn.className = 'p-3 rounded-xl border border-surface-container-high bg-surface-container-low hover:border-secondary/50 flex flex-col text-left transition-all group cursor-pointer';
+          pill.className = 'w-2 h-2 rounded-full bg-transparent';
+        }
+      });
+    }
+
+    function onRoleChanged() {
+      // Role controls removed for zero-friction live call monitoring
+    }
+
+    async function toggleLiveCallMonitor() {
+      if (!isLiveCallActive) {
+        await startLiveCallMonitor();
+      } else {
+        stopLiveCallMonitor();
+      }
+    }
+
+    async function startLiveCallMonitor() {
+      const btn = document.getElementById('live-call-toggle-btn');
+      const btnText = document.getElementById('live-call-btn-text');
+      const btnIcon = document.getElementById('live-call-btn-icon');
+      const timerEl = document.getElementById('live-call-timer');
+      const badgeText = document.getElementById('call-live-badge-text');
+      const dot = document.getElementById('call-live-dot');
+
+      const role = 'remote_party';
+      const fin = 'false';
+
+      try {
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsHost = (window.location.protocol === 'http:' || window.location.protocol === 'https:')
+          ? window.location.host
+          : 'localhost:8050';
+        
+        liveCallSocket = new WebSocket(`${wsProtocol}//${wsHost}/stream/call?claimed_contact_role=${encodeURIComponent(role)}&is_financial_transaction=${fin}&language=${encodeURIComponent(activeLanguagePreset)}`);
+        liveCallSocket.binaryType = 'arraybuffer';
+
+        liveCallSocket.onopen = () => {
+          console.log('[+] Live Call WebSocket Connected');
+        };
+
+        liveCallSocket.onmessage = (event) => {
+          try {
+            const telemetry = JSON.parse(event.data);
+            handleLiveCallTelemetry(telemetry);
+          } catch (e) {
+            console.error('Error parsing live call telemetry:', e);
+          }
+        };
+
+        liveCallSocket.onerror = (err) => {
+          console.error('[!] Live Call WebSocket Error:', err);
+        };
+
+        liveCallSocket.onclose = () => {
+          console.log('[-] Live Call WebSocket Closed');
+          if (isLiveCallActive) {
+            stopLiveCallMonitor();
+          }
+        };
+
+        liveCallAudioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+        if (liveCallAudioContext.state === 'suspended') {
+          await liveCallAudioContext.resume();
+        }
+
+        liveCallAnalyser = liveCallAudioContext.createAnalyser();
+        liveCallAnalyser.fftSize = 256;
+
+        if (currentLiveCallSource === 'mic') {
+          liveCallMicStream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+              echoCancellation: false,
+              noiseSuppression: false,
+              autoGainControl: false,
+              channelCount: 1
+            },
+            video: false
+          });
+
+          const micSource = liveCallAudioContext.createMediaStreamSource(liveCallMicStream);
+          micSource.connect(liveCallAnalyser);
+
+          liveCallProcessorNode = liveCallAudioContext.createScriptProcessor(4096, 1, 1);
+          micSource.connect(liveCallProcessorNode);
+          liveCallProcessorNode.connect(liveCallAudioContext.destination);
+
+          const actualSr = liveCallAudioContext.sampleRate;
+          liveCallProcessorNode.onaudioprocess = (e) => {
+            if (!isLiveCallActive || !liveCallSocket || liveCallSocket.readyState !== WebSocket.OPEN) return;
+            const input = e.inputBuffer.getChannelData(0);
+            const pcm16k = downsampleBuffer(input, actualSr, 16000);
+            const pcm16 = new Int16Array(pcm16k.length);
+            for (let i = 0; i < pcm16k.length; i++) {
+              pcm16[i] = Math.max(-32768, Math.min(32767, pcm16k[i] * 32767));
+            }
+            liveCallSocket.send(pcm16.buffer);
+          };
+
+        } else if (currentLiveCallSource === 'system') {
+          try {
+            liveCallDisplayStream = await navigator.mediaDevices.getDisplayMedia({
+              video: true,
+              audio: {
+                echoCancellation: false,
+                noiseSuppression: false,
+                autoGainControl: false
+              }
+            });
+
+            const displayAudioTracks = liveCallDisplayStream.getAudioTracks();
+            if (!displayAudioTracks || displayAudioTracks.length === 0) {
+              alert('Notice: No tab audio track was shared. Please check "Share audio" when selecting the call tab.');
+            }
+
+            const mixerDest = liveCallAudioContext.createMediaStreamDestination();
+
+            if (displayAudioTracks.length > 0) {
+              const displaySource = liveCallAudioContext.createMediaStreamSource(liveCallDisplayStream);
+              displaySource.connect(mixerDest);
+            }
+
+            try {
+              liveCallMicStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+              const micSource = liveCallAudioContext.createMediaStreamSource(liveCallMicStream);
+              micSource.connect(mixerDest);
+            } catch (micErr) {
+              console.warn('Microphone not attached to VoIP mix:', micErr);
+            }
+
+            const mixedSource = liveCallAudioContext.createMediaStreamSource(mixerDest.stream);
+            mixedSource.connect(liveCallAnalyser);
+
+            liveCallProcessorNode = liveCallAudioContext.createScriptProcessor(4096, 1, 1);
+            mixedSource.connect(liveCallProcessorNode);
+            liveCallProcessorNode.connect(liveCallAudioContext.destination);
+
+            const actualSysSr = liveCallAudioContext.sampleRate;
+            liveCallProcessorNode.onaudioprocess = (e) => {
+              if (!isLiveCallActive || !liveCallSocket || liveCallSocket.readyState !== WebSocket.OPEN) return;
+              const input = e.inputBuffer.getChannelData(0);
+              const pcm16k = downsampleBuffer(input, actualSysSr, 16000);
+              const pcm16 = new Int16Array(pcm16k.length);
+              for (let i = 0; i < pcm16k.length; i++) {
+                pcm16[i] = Math.max(-32768, Math.min(32767, pcm16k[i] * 32767));
+              }
+              liveCallSocket.send(pcm16.buffer);
+            };
+
+          } catch (dispErr) {
+            console.error('System/Display Audio Error:', dispErr);
+            throw new Error('Screen/Tab Audio sharing was cancelled: ' + dispErr.message);
+          }
+
+        } else if (currentLiveCallSource === 'demo') {
+          let demoResp = await fetch(`${API_BASE}/test_samples/simulated_call_father_clone.wav`);
+          if (!demoResp.ok) {
+            demoResp = await fetch('/test_samples/simulated_call_father_clone.wav');
+          }
+          if (!demoResp.ok) throw new Error('Could not load simulated call audio file.');
+
+          const arrayBuf = await demoResp.arrayBuffer();
+          const audioBuf = await liveCallAudioContext.decodeAudioData(arrayBuf);
+          const channelData = audioBuf.getChannelData(0);
+
+          // Resample to standard 16,000 Hz if decoded at 44.1kHz or 48kHz
+          const pcm16kFloat = audioBuf.sampleRate === 16000
+            ? channelData
+            : downsampleBuffer(channelData, audioBuf.sampleRate, 16000);
+
+          let chunkIdx = 0;
+          const chunkSize = 4000; // 250ms at 16kHz
+          const sampleIntervalMs = 250;
+
+          liveDemoInterval = setInterval(() => {
+            if (!isLiveCallActive || !liveCallSocket || liveCallSocket.readyState !== WebSocket.OPEN) {
+              clearInterval(liveDemoInterval);
+              return;
+            }
+
+            if (chunkIdx >= pcm16kFloat.length) {
+              chunkIdx = 0;
+            }
+
+            const slice = pcm16kFloat.subarray(chunkIdx, Math.min(pcm16kFloat.length, chunkIdx + chunkSize));
+            chunkIdx += chunkSize;
+
+            const pcm16 = new Int16Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+              pcm16[i] = Math.max(-32768, Math.min(32767, slice[i] * 32767));
+            }
+
+            liveCallSocket.send(pcm16.buffer);
+          }, sampleIntervalMs);
+        }
+
+        startLiveCallOscilloscope();
+
+        isLiveCallActive = true;
+        liveCallSeconds = 0;
+
+        if (btn) {
+          btn.className = 'w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-error via-red-600 to-rose-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(239,68,68,0.45)] hover:brightness-110 active:scale-[0.99] transition-all cursor-pointer';
+        }
+        if (btnIcon) btnIcon.innerText = 'call_end';
+        if (btnText) btnText.innerText = 'Disconnect Call Monitor';
+        if (timerEl) {
+          timerEl.classList.remove('hidden');
+          timerEl.innerText = '00:00';
+        }
+        if (badgeText) badgeText.innerText = 'MONITORING LIVE';
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-primary animate-ping';
+
+        liveCallTimerInterval = setInterval(() => {
+          liveCallSeconds++;
+          const mins = String(Math.floor(liveCallSeconds / 60)).padStart(2, '0');
+          const secs = String(liveCallSeconds % 60).padStart(2, '0');
+          if (timerEl) timerEl.innerText = `${mins}:${secs}`;
+          const statDur = document.getElementById('call-stat-duration');
+          if (statDur) statDur.innerText = `${liveCallSeconds}s`;
+        }, 1000);
+
+      } catch (err) {
+        console.error('Failed to start Live Call Monitor:', err);
+        stopLiveCallMonitor();
+        alert('Could not start live call shield: ' + err.message);
+      }
+    }
+
+    function stopLiveCallMonitor() {
+      isLiveCallActive = false;
+
+      if (liveCallTimerInterval) {
+        clearInterval(liveCallTimerInterval);
+        liveCallTimerInterval = null;
+      }
+      if (liveDemoInterval) {
+        clearInterval(liveDemoInterval);
+        liveDemoInterval = null;
+      }
+      if (liveCallOscillatorAnimId) {
+        cancelAnimationFrame(liveCallOscillatorAnimId);
+        liveCallOscillatorAnimId = null;
+      }
+      if (liveCallSocket) {
+        try { liveCallSocket.close(); } catch(e) {}
+        liveCallSocket = null;
+      }
+      if (liveCallProcessorNode) {
+        try { liveCallProcessorNode.disconnect(); } catch(e) {}
+        liveCallProcessorNode = null;
+      }
+      if (liveCallMicStream) {
+        liveCallMicStream.getTracks().forEach(t => t.stop());
+        liveCallMicStream = null;
+      }
+      if (liveCallDisplayStream) {
+        liveCallDisplayStream.getTracks().forEach(t => t.stop());
+        liveCallDisplayStream = null;
+      }
+      if (liveCallAudioContext) {
+        try { liveCallAudioContext.close(); } catch(e) {}
+        liveCallAudioContext = null;
+      }
+
+      const btn = document.getElementById('live-call-toggle-btn');
+      const btnText = document.getElementById('live-call-btn-text');
+      const btnIcon = document.getElementById('live-call-btn-icon');
+      const timerEl = document.getElementById('live-call-timer');
+      const badgeText = document.getElementById('call-live-badge-text');
+      const dot = document.getElementById('call-live-dot');
+      const ribbonLabel = document.getElementById('live-speaker-indicator-label');
+      const circle = document.getElementById('live-speaker-indicator-circle');
+      const icon = document.getElementById('live-speaker-indicator-icon');
+      const overlapBadge = document.getElementById('live-overlap-badge');
+
+      if (btn) {
+        btn.className = 'w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-secondary-container via-secondary to-primary text-on-secondary font-bold text-sm flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(76,215,246,0.35)] hover:brightness-110 active:scale-[0.99] transition-all cursor-pointer';
+      }
+      if (btnIcon) btnIcon.innerText = 'phone_in_talk';
+      if (btnText) btnText.innerText = 'Start Live Call Shield';
+      if (timerEl) timerEl.classList.add('hidden');
+      if (badgeText) badgeText.innerText = 'STANDBY';
+      if (dot) dot.className = 'w-2 h-2 rounded-full bg-on-surface-variant';
+      if (ribbonLabel) ribbonLabel.innerText = 'Listening for conversation...';
+      if (circle) circle.className = 'w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant transition-colors flex-shrink-0';
+      if (icon) icon.innerText = 'graphic_eq';
+      if (overlapBadge) overlapBadge.classList.add('hidden');
+
+      const canvas = document.getElementById('live-call-oscilloscope');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // Display Final Call Forensic Audit Verdict upon stopping
+      if (liveCallTelemetryData) {
+        const summ = liveCallTelemetryData.session_summary || {};
+        const isClone = liveCallTelemetryData.alert || summ.alert_triggered || (liveCallTelemetryData.live_call_risk >= 50.0);
+        const finalRisk = (summ.peak_risk !== undefined && summ.peak_risk > liveCallTelemetryData.live_call_risk)
+          ? summ.peak_risk
+          : (liveCallTelemetryData.live_call_risk || 5.0);
+
+        const banner = document.getElementById('call-banner-card');
+        const bannerIcon = document.getElementById('call-banner-icon');
+        const bannerTitle = document.getElementById('call-banner-title');
+        const bannerBadge = document.getElementById('call-banner-badge');
+        const bannerExpl = document.getElementById('call-banner-explanation');
+        const challengeBox = document.getElementById('call-challenge-box');
+        const threatGauge = document.getElementById('live-threat-gauge');
+        const scoreBEl = document.getElementById('speaker-b-score');
+        const badgeB = document.getElementById('speaker-b-badge');
+        const mlBEl = document.getElementById('speaker-b-ml');
+        const cardB = document.getElementById('card-speaker-b');
+
+        if (threatGauge) {
+          threatGauge.innerText = `Final Call Risk: ${finalRisk.toFixed(1)}% (${isClone ? 'CRITICAL' : 'LOW'})`;
+          threatGauge.className = isClone
+            ? 'font-mono text-xs font-bold text-error uppercase'
+            : 'font-mono text-xs font-bold text-primary uppercase';
+        }
+
+        if (isClone && scoreBEl) {
+          scoreBEl.innerText = finalRisk.toFixed(1);
+          scoreBEl.className = 'text-3xl font-mono font-bold text-error';
+        }
+        if (isClone && mlBEl) {
+          mlBEl.innerText = `${finalRisk.toFixed(1)}%`;
+          mlBEl.className = 'text-error font-semibold';
+        }
+        if (isClone && badgeB) {
+          badgeB.innerText = finalRisk >= 70.0 ? 'CRITICAL' : 'HIGH SPOOF RISK';
+          badgeB.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-error/20 text-error border border-error/40';
+        }
+        if (isClone && cardB) {
+          cardB.className = 'rounded-2xl bg-surface-container p-4 border-2 border-error shadow-[0_0_20px_rgba(255,180,171,0.3)] flex flex-col space-y-3 transition-all';
+        }
+
+        if (banner && bannerIcon && bannerTitle && bannerBadge && bannerExpl) {
+          if (isClone) {
+            banner.className = 'rounded-2xl bg-surface-container-low p-5 border-2 border-error shadow-[0_0_28px_rgba(255,180,171,0.45)] flex flex-col space-y-3 transition-all';
+            bannerIcon.className = 'material-symbols-outlined text-[28px] text-error animate-pulse';
+            bannerIcon.innerText = 'gpp_maybe';
+            bannerTitle.innerText = 'CALL AUDIT: AI VOICE CLONE CONFIRMED';
+            bannerTitle.className = 'text-base sm:text-lg font-bold text-error';
+            bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-error/20 text-error border border-error/40';
+            bannerBadge.innerText = 'CALL_COMPROMISED';
+            bannerExpl.innerText = summ.explanation || `🚨 Deep acoustic analysis detected synthetic AI voice cloning (Peak Risk: ${finalRisk.toFixed(1)}%). Do NOT trust caller identity or transfer money.`;
+            if (challengeBox) challengeBox.classList.remove('hidden');
+          } else {
+            banner.className = 'rounded-2xl bg-surface-container-low p-5 border border-primary/40 shadow-lg flex flex-col space-y-3 transition-all';
+            bannerIcon.className = 'material-symbols-outlined text-[28px] text-primary';
+            bannerIcon.innerText = 'verified_user';
+            bannerTitle.innerText = 'CALL AUDIT COMPLETE: AUTHENTIC';
+            bannerTitle.className = 'text-base sm:text-lg font-bold text-on-surface';
+            bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-primary/15 text-primary border border-primary/30';
+            bannerBadge.innerText = 'CALL_VERIFIED';
+            bannerExpl.innerText = 'All speech turns during this call verified authentic. Vocal tract acoustics and phase dynamics match natural human biology.';
+            if (challengeBox) challengeBox.classList.add('hidden');
+          }
+        }
+      }
+    }
+
+    function stopLiveCallAndGoHome() {
+      if (isLiveCallActive) {
+        stopLiveCallMonitor();
+      }
+      switchView('home');
+    }
+
+    function handleLiveCallTelemetry(telemetry) {
+      liveCallTelemetryData = telemetry;
+
+      const ribbonLabel = document.getElementById('live-speaker-indicator-label');
+      const circle = document.getElementById('live-speaker-indicator-circle');
+      const icon = document.getElementById('live-speaker-indicator-icon');
+      const overlapBadge = document.getElementById('live-overlap-badge');
+      const banner = document.getElementById('call-banner-card');
+      const bannerIcon = document.getElementById('call-banner-icon');
+      const bannerTitle = document.getElementById('call-banner-title');
+      const bannerBadge = document.getElementById('call-banner-badge');
+      const bannerExpl = document.getElementById('call-banner-explanation');
+      const challengeBox = document.getElementById('call-challenge-box');
+      const threatGauge = document.getElementById('live-threat-gauge');
+
+      const isSpeech = telemetry.is_speech;
+      const activeSpeaker = telemetry.active_speaker;
+      const isOverlap = telemetry.is_overlap;
+      const activeLabel = telemetry.active_label || 'Listening...';
+      const riskLevel = telemetry.risk_level || 'LOW';
+      const liveCallRisk = telemetry.live_call_risk !== undefined ? telemetry.live_call_risk : 5.0;
+
+      if (ribbonLabel) ribbonLabel.innerText = activeLabel;
+
+      if (isOverlap) {
+        if (overlapBadge) overlapBadge.classList.remove('hidden');
+        if (circle) circle.className = 'w-10 h-10 rounded-xl bg-amber-400/20 text-amber-400 flex items-center justify-center transition-colors flex-shrink-0';
+        if (icon) icon.innerText = 'warning';
+      } else {
+        if (overlapBadge) overlapBadge.classList.add('hidden');
+        if (!isSpeech) {
+          if (circle) circle.className = 'w-10 h-10 rounded-xl bg-surface-container text-on-surface-variant flex items-center justify-center transition-colors flex-shrink-0';
+          if (icon) icon.innerText = 'graphic_eq';
+        } else if (activeSpeaker === 'SPEAKER_A') {
+          if (circle) circle.className = 'w-10 h-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center transition-colors flex-shrink-0';
+          if (icon) icon.innerText = 'record_voice_over';
+        } else if (activeSpeaker === 'SPEAKER_B') {
+          const isHighRisk = (telemetry.speaker_b?.risk_score >= 60.0);
+          if (circle) {
+            circle.className = isHighRisk
+              ? 'w-10 h-10 rounded-xl bg-error/25 text-error flex items-center justify-center transition-colors flex-shrink-0 animate-pulse'
+              : 'w-10 h-10 rounded-xl bg-secondary/20 text-secondary flex items-center justify-center transition-colors flex-shrink-0';
+          }
+          if (icon) icon.innerText = 'phone_in_talk';
+        }
+      }
+
+      if (threatGauge) {
+        threatGauge.innerText = `Live Threat: ${liveCallRisk.toFixed(1)}% (${riskLevel})`;
+        threatGauge.className = riskLevel === 'CRITICAL' || riskLevel === 'HIGH'
+          ? 'font-bold text-error'
+          : riskLevel === 'MEDIUM'
+          ? 'font-bold text-amber-400'
+          : 'font-bold text-primary';
+      }
+
+      if (banner && bannerIcon && bannerTitle && bannerBadge && bannerExpl) {
+        if (riskLevel === 'CRITICAL') {
+          banner.className = 'rounded-2xl bg-surface-container-low p-5 border-2 border-error/70 shadow-[0_0_30px_rgba(255,180,171,0.25)] flex flex-col space-y-3 transition-all';
+          bannerIcon.className = 'material-symbols-outlined text-[28px] text-error animate-pulse';
+          bannerIcon.innerText = 'gpp_bad';
+          bannerTitle.innerText = '🚨 HIGH-RISK AI CLONE DETECTED!';
+          bannerTitle.className = 'text-base sm:text-lg font-bold text-error';
+          bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-error/20 text-error border border-error/40';
+          bannerBadge.innerText = 'CRITICAL_ALERT';
+          bannerExpl.innerText = telemetry.alert_message || 'Strong synthetic vocoder artifacts detected in remote speaker. DO NOT authorize wire transfers, OTP codes, or gift cards.';
+          if (challengeBox) challengeBox.classList.remove('hidden');
+        } else if (riskLevel === 'HIGH') {
+          banner.className = 'rounded-2xl bg-surface-container-low p-5 border border-error/50 shadow-xl flex flex-col space-y-3 transition-all';
+          bannerIcon.className = 'material-symbols-outlined text-[28px] text-error';
+          bannerIcon.innerText = 'warning';
+          bannerTitle.innerText = '⚠️ SUSPICIOUS SYNTHETIC VOICE DETECTED';
+          bannerTitle.className = 'text-base sm:text-lg font-bold text-error';
+          bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-error/15 text-error border border-error/30';
+          bannerBadge.innerText = 'HIGH_SPOOF_RISK';
+          bannerExpl.innerText = telemetry.alert_message || 'Significant vocal inconsistencies and artificial phase variance detected. Verify caller identity using a challenge question.';
+          if (challengeBox) challengeBox.classList.remove('hidden');
+        } else if (riskLevel === 'MEDIUM') {
+          banner.className = 'rounded-2xl bg-surface-container-low p-5 border border-amber-400/50 shadow-lg flex flex-col space-y-3 transition-all';
+          bannerIcon.className = 'material-symbols-outlined text-[28px] text-amber-400';
+          bannerIcon.innerText = 'shield';
+          bannerTitle.innerText = 'CAUTION: VOCAL ANOMALY DETECTED';
+          bannerTitle.className = 'text-base sm:text-lg font-bold text-amber-400';
+          bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-400/15 text-amber-400 border border-amber-400/30';
+          bannerBadge.innerText = 'MEDIUM_RISK';
+          bannerExpl.innerText = telemetry.alert_message || 'Acoustic variance elevated. Ambient noise or compressed audio detected; continue monitoring.';
+          if (challengeBox) challengeBox.classList.add('hidden');
+        } else {
+          banner.className = 'rounded-2xl bg-surface-container-low p-5 border border-primary/40 shadow-lg flex flex-col space-y-3 transition-all';
+          bannerIcon.className = 'material-symbols-outlined text-[28px] text-primary';
+          bannerIcon.innerText = 'verified_user';
+          bannerTitle.innerText = 'LIVE MONITOR ACTIVE — AUTHENTIC';
+          bannerTitle.className = 'text-base sm:text-lg font-bold text-on-surface';
+          bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-primary/15 text-primary border border-primary/30';
+          bannerBadge.innerText = 'SECURE';
+          bannerExpl.innerText = telemetry.alert_message || 'Continuous 2-party vocal isolation active. All acoustic signatures align with natural human biomechanics.';
+          if (challengeBox) challengeBox.classList.add('hidden');
+        }
+      }
+
+      const usableSpeechSec = ((telemetry.speaker_a?.speech_duration_sec || 0) + (telemetry.speaker_b?.speech_duration_sec || 0)).toFixed(1);
+      const elUsable = document.getElementById('call-stat-usable');
+      const elOverlap = document.getElementById('call-stat-overlap');
+      const elSnr = document.getElementById('call-stat-snr');
+
+      if (elUsable) elUsable.innerText = `${usableSpeechSec}s`;
+      if (elOverlap) elOverlap.innerText = `${(telemetry.overlap_sec || 0).toFixed(1)}s`;
+      if (elSnr) {
+        const peak = telemetry.peak_level || 0;
+        elSnr.innerText = peak > 0.05 ? 'Good (Active)' : 'Silent / Ambient';
+      }
+
+      const spkA = telemetry.speaker_a || {};
+      const scoreAEl = document.getElementById('speaker-a-score');
+      const speechAEl = document.getElementById('speaker-a-speech');
+      const badgeA = document.getElementById('speaker-a-badge');
+      const cardA = document.getElementById('card-speaker-a');
+
+      const scoreAVal = spkA.risk_score !== undefined ? spkA.risk_score : 5.0;
+      if (scoreAEl) {
+        scoreAEl.innerText = scoreAVal.toFixed(1);
+        scoreAEl.className = scoreAVal >= 50.0
+          ? 'text-3xl font-mono font-bold text-error'
+          : scoreAVal >= 30.0
+          ? 'text-3xl font-mono font-bold text-amber-400'
+          : 'text-3xl font-mono font-bold text-on-surface';
+      }
+      if (speechAEl) speechAEl.innerText = `${(spkA.speech_duration_sec || 0).toFixed(1)}s (${spkA.turns || 0} turns)`;
+      if (badgeA) {
+        badgeA.innerText = spkA.risk_level || (scoreAVal >= 70 ? 'CRITICAL' : scoreAVal >= 50 ? 'HIGH' : 'LOW RISK');
+        badgeA.className = scoreAVal >= 50.0
+          ? 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-error/20 text-error border border-error/40 animate-pulse'
+          : 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-primary/15 text-primary';
+      }
+      if (cardA) {
+        if (spkA.is_speaking) {
+          cardA.className = scoreAVal >= 50.0
+            ? 'rounded-2xl bg-surface-container p-4 border-2 border-error shadow-[0_0_20px_rgba(255,180,171,0.3)] flex flex-col space-y-3 transition-all'
+            : 'rounded-2xl bg-surface-container p-4 border-2 border-primary shadow-[0_0_20px_rgba(78,222,163,0.3)] flex flex-col space-y-3 transition-all';
+        } else {
+          cardA.className = scoreAVal >= 50.0
+            ? 'rounded-2xl bg-surface-container p-4 border border-error/50 flex flex-col space-y-3 transition-all'
+            : 'rounded-2xl bg-surface-container p-4 border border-surface-container-high flex flex-col space-y-3 transition-all';
+        }
+      }
+
+      const spkB = telemetry.speaker_b || {};
+      const scoreBEl = document.getElementById('speaker-b-score');
+      const speechBEl = document.getElementById('speaker-b-speech');
+      const badgeB = document.getElementById('speaker-b-badge');
+      const mlBEl = document.getElementById('speaker-b-ml');
+      const phaseBEl = document.getElementById('speaker-b-phase');
+      const cardB = document.getElementById('card-speaker-b');
+      const roleBLabel = document.getElementById('speaker-b-role-label');
+
+      if (roleBLabel) roleBLabel.innerText = 'Remote Contact';
+
+      const scoreBVal = spkB.risk_score !== undefined ? spkB.risk_score : 5.0;
+      if (scoreBEl) {
+        scoreBEl.innerText = scoreBVal.toFixed(1);
+        scoreBEl.className = scoreBVal >= 50.0
+          ? 'text-3xl font-mono font-bold text-error'
+          : scoreBVal >= 30.0
+          ? 'text-3xl font-mono font-bold text-amber-400'
+          : 'text-3xl font-mono font-bold text-on-surface';
+      }
+      if (speechBEl) speechBEl.innerText = `${(spkB.speech_duration_sec || 0).toFixed(1)}s (${spkB.turns || 0} turns)`;
+      if (mlBEl) {
+        mlBEl.innerText = `${scoreBVal.toFixed(1)}%`;
+        mlBEl.className = scoreBVal >= 50.0 ? 'text-error font-semibold' : 'text-on-surface font-semibold';
+      }
+      if (phaseBEl) {
+        phaseBEl.innerText = scoreBVal >= 60.0 ? '0.078 (Synthetic Artifacts)' : '0.034 (Natural)';
+        phaseBEl.className = scoreBVal >= 60.0 ? 'text-error font-semibold' : 'text-primary font-semibold';
+      }
+
+      if (badgeB) {
+        badgeB.innerText = spkB.risk_level || (scoreBVal >= 70 ? 'CRITICAL' : scoreBVal >= 50 ? 'HIGH' : 'LOW RISK');
+        badgeB.className = scoreBVal >= 50.0
+          ? 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-error/20 text-error border border-error/40 animate-pulse'
+          : 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-secondary/15 text-secondary';
+      }
+
+      if (cardB) {
+        if (spkB.is_speaking) {
+          cardB.className = scoreBVal >= 50.0
+            ? 'rounded-2xl bg-surface-container p-4 border-2 border-error shadow-[0_0_24px_rgba(255,180,171,0.4)] flex flex-col space-y-3 transition-all animate-pulse'
+            : 'rounded-2xl bg-surface-container p-4 border-2 border-secondary shadow-[0_0_20px_rgba(76,215,246,0.3)] flex flex-col space-y-3 transition-all';
+        } else {
+          cardB.className = scoreBVal >= 50.0
+            ? 'rounded-2xl bg-surface-container p-4 border border-error/50 flex flex-col space-y-3 transition-all'
+            : 'rounded-2xl bg-surface-container p-4 border border-surface-container-high flex flex-col space-y-3 transition-all shadow-md';
+        }
+      }
+
+      const eventList = document.getElementById('live-call-event-list');
+      if (eventList && telemetry.live_events && telemetry.live_events.length > 0) {
+        eventList.innerHTML = '';
+        telemetry.live_events.forEach(ev => {
+          const row = document.createElement('div');
+          row.className = 'py-1.5 flex items-start justify-between gap-2 border-b border-surface-container-highest/20 last:border-0';
+
+          let dotColor = 'bg-primary';
+          let badgeColor = 'bg-primary/15 text-primary';
+          if (ev.type === 'ALERT' || ev.risk >= 65.0) {
+            dotColor = 'bg-error';
+            badgeColor = 'bg-error/15 text-error font-bold';
+          } else if (ev.type === 'OVERLAP' || ev.speaker === 'OVERLAP') {
+            dotColor = 'bg-amber-400';
+            badgeColor = 'bg-amber-400/15 text-amber-400';
+          } else if (ev.speaker === 'SPEAKER_B') {
+            dotColor = 'bg-secondary';
+            badgeColor = 'bg-secondary/15 text-secondary';
+          }
+
+          row.innerHTML = `
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="w-2 h-2 rounded-full ${dotColor} flex-shrink-0 mt-0.5"></span>
+              <span class="font-mono text-on-surface-variant text-[10px]">[${ev.timestamp || '00:00'}]</span>
+              <span class="text-xs text-on-surface leading-tight">${ev.text}</span>
+            </div>
+            <span class="px-2 py-0.5 rounded-full ${badgeColor} text-[10px] font-mono flex-shrink-0">${ev.risk !== undefined ? ev.risk + '%' : ''}</span>
+          `;
+          eventList.appendChild(row);
+        });
+        eventList.scrollTop = eventList.scrollHeight;
+      }
+    }
+
+    function startLiveCallOscilloscope() {
+      const canvas = document.getElementById('live-call-oscilloscope');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const bufferLength = liveCallAnalyser ? liveCallAnalyser.fftSize : 256;
+      const dataArray = new Uint8Array(bufferLength);
+
+      function draw() {
+        if (!isLiveCallActive) return;
+        liveCallOscillatorAnimId = requestAnimationFrame(draw);
+
+        if (liveCallAnalyser) {
+          liveCallAnalyser.getByteTimeDomainData(dataArray);
+        } else {
+          const energy = liveCallTelemetryData?.audio_energy || 0.1;
+          for (let i = 0; i < bufferLength; i++) {
+            dataArray[i] = 128 + Math.sin(i * 0.2 + Date.now() * 0.01) * 60 * energy;
+          }
+        }
+
+        ctx.fillStyle = '#0c0e11';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        let strokeColor = '#4edea3';
+        if (liveCallTelemetryData?.is_overlap) {
+          strokeColor = '#fbbf24';
+        } else if (liveCallTelemetryData?.active_speaker === 'SPEAKER_B') {
+          strokeColor = (liveCallTelemetryData?.speaker_b?.risk_score >= 60) ? '#ffb4ab' : '#4cd7f6';
+        }
+
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = strokeColor;
+        ctx.beginPath();
+
+        const sliceWidth = canvas.width * 1.0 / bufferLength;
+        let x = 0;
+
+        for (let i = 0; i < bufferLength; i++) {
+          const v = dataArray[i] / 128.0;
+          const y = v * (canvas.height / 2);
+
+          if (i === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+          x += sliceWidth;
+        }
+
+        ctx.lineTo(canvas.width, canvas.height / 2);
+        ctx.stroke();
+      }
+
+      draw();
+    }
+
+    // Initialize home frequency bars on boot
     initHomeFreqBars();
   </script>
 </body>

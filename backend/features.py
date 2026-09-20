@@ -101,7 +101,14 @@ class FeatureExtractor:
             "spectral_hf_energy_ratio": hf_ratio,
         }
 
-        for i in range(N_MFCC):
+        # Gain-invariant spectral tilt for c0: difference between c0 and lower formants (c1-c4)
+        # Prevents volume/loudness shortcut while preserving true vocal tract spectral tilt
+        c0_mean_raw = float(mfcc_means[0])
+        spectral_envelope_level = float(np.mean(mfcc_means[1:5]))
+        features["mfcc_0_mean"] = float(c0_mean_raw - spectral_envelope_level)
+        features["mfcc_0_std"] = float(mfcc_stds[0])
+
+        for i in range(1, N_MFCC):
             features[f"mfcc_{i}_mean"] = float(mfcc_means[i])
             features[f"mfcc_{i}_std"] = float(mfcc_stds[i])
 

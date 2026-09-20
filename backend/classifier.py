@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union, Any
 import numpy as np
 import joblib
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier, VotingClassifier
 from sklearn.linear_model import LogisticRegression
 
 try:
@@ -27,10 +27,29 @@ class AntiSpoofClassifier:
         self.model_params = model_params or {}
         self.feature_names: List[str] = []
         self.calibrated_threshold: float = calibrated_threshold
+        self.shortcut_indices: List[int] = []
         self.model = self._init_model()
 
     def _init_model(self):
-        if self.model_type == "random_forest":
+        if self.model_type in ("voting_ensemble", "ensemble"):
+            rf = RandomForestClassifier(
+                n_estimators=self.model_params.get("n_estimators", 100),
+                max_depth=self.model_params.get("max_depth", 16),
+                min_samples_leaf=self.model_params.get("min_samples_leaf", 5),
+                max_features="log2",
+                random_state=42,
+                n_jobs=-1
+            )
+            et = ExtraTreesClassifier(
+                n_estimators=self.model_params.get("n_estimators", 100),
+                max_depth=self.model_params.get("max_depth", 16),
+                min_samples_leaf=self.model_params.get("min_samples_leaf", 5),
+                max_features="log2",
+                random_state=42,
+                n_jobs=-1
+            )
+            return VotingClassifier(estimators=[('rf', rf), ('et', et)], voting='soft', n_jobs=-1)
+        elif self.model_type == "random_forest":
             params = {
                 "n_estimators": 200,
                 "random_state": 42,
@@ -57,6 +76,7 @@ class AntiSpoofClassifier:
                 "max_iter": 1000,
                 "random_state": 42,
                 "class_weight": "balanced",
+                "n_jobs": -1,
                 **self.model_params
             }
             return LogisticRegression(**params)
@@ -67,7 +87,28 @@ class AntiSpoofClassifier:
         """Train classifier on feature matrix X and ground truth labels y."""
         if feature_names:
             self.feature_names = feature_names
-        self.model.fit(X, y)
+    def _preprocess_x(self, X: np.ndarray) -> np.ndarray:
+        """Neutralize known acoustic recording/shortcut channels (e.g. loudness bias)."""
+        if hasattr(self, "shortcut_indices") and self.shortcut_indices:
+            X = np.array(X, copy=True, dtype=np.float32)
+            if X.ndim == 1:
+                for idx in self.shortcut_indices:
+                    if idx < len(X):
+                        X[idx] = 0.0
+            else:
+                for idx in self.shortcut_indices:
+                    if idx < X.shape[1]:
+                        X[:, idx] = 0.0
+        return X
+
+    def train(self, X: np.ndarray, y: np.ndarray, feature_names: Optional[List[str]] = None, shortcut_indices: Optional[List[int]] = None):
+        """Train classifier on feature matrix X and ground truth labels y."""
+        if feature_names:
+            self.feature_names = feature_names
+        if shortcut_indices is not None:
+            self.shortcut_indices = list(shortcut_indices)
+        X_clean = self._preprocess_x(X)
+        self.model.fit(X_clean, y)
 
     def predict(self, X: np.ndarray) -> np.ndarray:
         """Predict binary class labels using calibrated threshold."""
@@ -76,20 +117,21 @@ class AntiSpoofClassifier:
 
     def predict_proba(self, X: np.ndarray) -> np.ndarray:
         """Predict class probabilities: [P(genuine), P(spoof)]."""
-        return self.model.predict_proba(X)
+        X_clean = self._preprocess_x(X)
+        return self.model.predict_proba(X_clean)
 
     def predict_spoof_risk(self, x: np.ndarray) -> float:
         """Predict single instance spoof probability (0.0 to 1.0)."""
         if x.ndim == 1:
             x = x.reshape(1, -1)
-        proba = self.model.predict_proba(x)[0, 1]
+        proba = self.predict_proba(x)[0, 1]
         return float(proba)
 
     def predict_sample(self, x: np.ndarray) -> Dict[str, Any]:
         """Predict single instance returning structured genuine/spoof confidence using calibrated threshold."""
         if x.ndim == 1:
             x = x.reshape(1, -1)
-        probs = self.model.predict_proba(x)[0]
+        probs = self.predict_proba(x)[0]
         genuine_prob = float(probs[0])
         spoof_prob = float(probs[1])
         predicted_label = "spoof" if spoof_prob >= self.calibrated_threshold else "genuine"
@@ -111,6 +153,7 @@ class AntiSpoofClassifier:
             "feature_names": self.feature_names,
             "model_params": self.model_params,
             "calibrated_threshold": self.calibrated_threshold,
+            "shortcut_indices": getattr(self, "shortcut_indices", []),
             "model": self.model
         }
         joblib.dump(checkpoint, filepath)
@@ -126,5 +169,7 @@ class AntiSpoofClassifier:
             calibrated_threshold=checkpoint.get("calibrated_threshold", 0.5)
         )
         instance.feature_names = checkpoint.get("feature_names", [])
+        instance.shortcut_indices = checkpoint.get("shortcut_indices", [])
         instance.model = checkpoint["model"]
         return instance
+

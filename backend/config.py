@@ -14,6 +14,30 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATASETS_DIR = Path(os.getenv("VOICE_DATASETS_DIR", BASE_DIR / "datasets"))
 ASVSPOOF_ADJUSTED_WAV_DIR = DATASETS_DIR / "ASVspoof2019" / "ASVSpoof2019-sets-adjusted" / "data" / "wav"
 ASVSPOOF2019_DIR = DATASETS_DIR / "ASVspoof2019" / "LA"
+ASVSPOOF2021_DF_DIR = DATASETS_DIR / "ASVspoof2021_DF"
+ASVSPOOF2021_DF_AUDIO_DIR = ASVSPOOF2021_DF_DIR / "flac"
+ASVSPOOF2021_DF_KEYS_DIR = ASVSPOOF2021_DF_DIR / "keys"
+ASVSPOOF2021_DF_METADATA = ASVSPOOF2021_DF_KEYS_DIR / "trial_metadata.txt"
+
+# Indian Languages Datasets (IndicTTS & IndicSynth)
+INDIC_TTS_DIR = DATASETS_DIR / "indic_tts"
+INDIC_SYNTH_DIR = DATASETS_DIR / "indic_synth"
+INDIC_FEATURES_DIR = DATASETS_DIR / "indic_features"
+HF_CACHE_DIR = DATASETS_DIR / "cache"
+
+# Force Hugging Face cache strictly onto Drive D to protect limited Drive C space
+os.environ.setdefault("HF_HOME", str(HF_CACHE_DIR))
+
+# Supported Indian Language specifications
+INDIC_TARGET_LANGUAGES = ["hindi", "tamil", "telugu", "bengali", "kannada", "marathi"]
+INDIC_LANG_CODES = {
+    "hi": "hindi",
+    "ta": "tamil",
+    "te": "telugu",
+    "bn": "bengali",
+    "kn": "kannada",
+    "mr": "marathi",
+}
 
 # Output & Artifact Directories
 MODELS_DIR = Path(os.getenv("VOICE_MODELS_DIR", BASE_DIR / "models"))
@@ -24,6 +48,7 @@ LOGS_DIR = Path(os.getenv("VOICE_LOGS_DIR", BASE_DIR / "logs"))
 
 # Model checkpoints
 BASELINE_MODEL_PATH = MODELS_DIR / "baseline_random_forest.pkl"
+MULTILINGUAL_MODEL_PATH = MODELS_DIR / "multilingual_random_forest.pkl"
 
 # Audio Processing Parameters
 SAMPLE_RATE = 16000               # Standard 16 kHz sample rate for anti-spoofing
@@ -57,5 +82,8 @@ ENCRYPTION_KEY_ENV = "VOICE_ENCRYPTION_KEY"
 AUDIT_CHAIN_FILE = LOGS_DIR / "audit_chain.json"
 
 # Ensure all runtime directories exist
-for directory in [DATASETS_DIR, MODELS_DIR, RESULTS_DIR, FEATURES_DIR, EXPERIMENTS_DIR, LOGS_DIR]:
+for directory in [
+    DATASETS_DIR, MODELS_DIR, RESULTS_DIR, FEATURES_DIR, EXPERIMENTS_DIR, LOGS_DIR,
+    INDIC_TTS_DIR, INDIC_SYNTH_DIR, INDIC_FEATURES_DIR, HF_CACHE_DIR
+]:
     directory.mkdir(parents=True, exist_ok=True)

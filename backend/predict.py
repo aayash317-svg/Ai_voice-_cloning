@@ -64,7 +64,8 @@ class VoicePredictor:
             classifier_spoof_prob=res["spoof_probability"],
             acoustic_anomaly_score=feat_dict.get("acoustic_phase_derivative_var", 0.0),
             spectral_anomaly_score=feat_dict.get("spectral_hf_energy_ratio", 0.0),
-            prosody_anomaly_score=feat_dict.get("prosody_jitter", 0.0)
+            prosody_anomaly_score=feat_dict.get("prosody_jitter", 0.0),
+            contrast_anomaly_score=feat_dict.get("spectral_contrast_std", 0.0)
         )
 
         res["risk_score"] = assessment.risk_score

@@ -25,6 +25,35 @@ class AudioPreprocessor:
         Guarantees 1D mono float32 array resampled to target_sr.
         """
         if isinstance(source, (str, Path)):
+            # 1. Try soundfile (fastest for WAV/FLAC/OGG)
+            try:
+                data, loaded_sr = sf.read(str(source))
+                if data.ndim > 1:
+                    data = np.mean(data, axis=1)
+                if loaded_sr != self.target_sr:
+                    data = librosa.resample(data.astype(np.float32), orig_sr=loaded_sr, target_sr=self.target_sr)
+                return data.astype(np.float32)
+            except Exception:
+                pass
+
+            # 2. Try imageio_ffmpeg for M4A, AAC, MP4, WebM
+            try:
+                import imageio_ffmpeg, tempfile, subprocess, os
+                exe = imageio_ffmpeg.get_ffmpeg_exe()
+                if exe:
+                    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp_out:
+                        tmp_out_path = tmp_out.name
+                    res = subprocess.run([exe, "-y", "-i", str(source), "-ar", str(self.target_sr), "-ac", "1", "-f", "wav", tmp_out_path], capture_output=True)
+                    if res.returncode == 0 and os.path.exists(tmp_out_path):
+                        data, loaded_sr = sf.read(tmp_out_path)
+                        try: os.unlink(tmp_out_path)
+                        except Exception: pass
+                        if data.ndim > 1:
+                            data = np.mean(data, axis=1)
+                        return data.astype(np.float32)
+            except Exception:
+                pass
+
             audio, loaded_sr = librosa.load(str(source), sr=self.target_sr, mono=True)
             return audio.astype(np.float32)
 
@@ -46,9 +75,17 @@ class AudioPreprocessor:
         else:
             raise ValueError(f"Unsupported audio source type: {type(source)}")
 
-    def normalize_audio(self, audio: np.ndarray, target_peak: float = 0.95) -> np.ndarray:
-        """Normalize audio amplitude to target peak level to ensure consistent signal levels."""
-        max_val = np.max(np.abs(audio))
+    def normalize_audio(self, audio: np.ndarray, target_peak: float = 0.95, min_speech_peak: float = 0.03) -> np.ndarray:
+        """
+        Normalize audio amplitude to target peak level to ensure consistent signal levels.
+        Guards against amplifying low-level room noise/silence into full-scale synthetic hiss.
+        """
+        if len(audio) == 0:
+            return audio
+        max_val = float(np.max(np.abs(audio)))
+        if max_val < min_speech_peak:
+            # Ambient noise / room silence - do NOT boost noise floor
+            return audio
         if max_val > 1e-6:
             return (audio / max_val) * target_peak
         return audio
