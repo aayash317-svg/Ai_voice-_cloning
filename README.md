@@ -5,6 +5,9 @@
 > [!TIP]
 > 📖 **Master Technical Documentation**: For the exhaustive architectural specification, acoustic physics formulas, dataset inventory, anti-leakage training methodology, and operations runbook, refer to [docs/PROJECT_DOCUMENTATION.md](docs/PROJECT_DOCUMENTATION.md).
 
+> [!IMPORTANT]
+> 📑 **Presentation Guide & Architecture Brief**: For the slide-by-slide presentation deck content, visual working flow diagrams, and ML algorithms breakdown, refer to [APPLICATION_DOCUMENTATION.md](APPLICATION_DOCUMENTATION.md).
+
 ---
 
 ## Application Interface & Visual Walkthrough
@@ -40,15 +43,18 @@ The framework implements a layered defense-in-depth architecture designed for hi
 └──────────────────────────────────┬──────────────────────────────────┘
                                    │
 ┌──────────────────────────────────▼──────────────────────────────────┐
-│ LAYER 2: Dual-Model Detection Ensemble (Raw Waveform + Features)    │
+│ LAYER 2: Real-Time Diarization & Dual-Model Detection Ensemble      │
+│ ├─ Two-Speaker Online Diarizer (Cosine Timbre Clustering + VAD)     │
 │ ├─ SincNet Conv1D Neural Model (Time-domain bandpass filters on MPS)│
 │ └─ Calibrated Random Forest (63 spectral, acoustic & prosody feats) │
 └──────────────────────────────────┬──────────────────────────────────┘
                                    │
 ┌──────────────────────────────────▼──────────────────────────────────┐
-│ LAYER 3: Dynamic Multi-Signal Threat Scoring & Risk Engine          │
-│ P_ensemble (50/50 blend) • Phase derivative • HF energy • Metadata  │
-│ Categorical verdicts: LOW (0-30) | MED (31-60) | HIGH (61-80) | CRIT│
+│ LAYER 3: Dynamic Multi-Signal Threat Scoring & Progressive Engine   │
+│ ├─ Multi-signal threat formula (50% ML, 20% HF, 15% Phase, 10% Jitt)│
+│ ├─ Stage 0: Calibrating baseline (0-5s, countdown ticker Xs / 10s) │
+│ ├─ Stage 1: Preliminary 5s rolling average risk (5-6s)              │
+│ └─ Stage 2: Final verified threat score guaranteed at 10-12s        │
 └──────────────────────────────────┬──────────────────────────────────┘
                                    │
 ┌──────────────────────────────────▼──────────────────────────────────┐
@@ -67,21 +73,25 @@ The framework implements a layered defense-in-depth architecture designed for hi
 - Uses an in-memory circular ring buffer (`AudioPrivacyBuffer`) configured for 3.0-second sliding analysis windows.
 - **Strict Privacy Guarantee**: Call audio is never written to disk or persistently cached. Buffers are zeroed and purged immediately after feature extraction.
 
-### Layer 2: Dual-Model Detection Ensemble
-- Combines two complementary anti-spoofing paradigms to defend against both artifact-based and waveform-level attacks:
-  - **SincNet Neural Raw-Waveform Classifier**: Deep 1D neural architecture with parameterized bandpass sinc convolutions, temporal residual blocks, and attentive statistics pooling. Operates directly on raw waveform time steps without lossy STFT compression, accelerated via Apple Silicon Metal Performance Shaders (`mps`) or CUDA.
-  - **Calibrated Random Forest Classifier**: Evaluates 63 handcrafted mathematical features spanning spectral rolloff/contrast, MFCC dynamics, phase derivative variance, and vocal jitter/shimmer.
-  - **Ensemble Fusion**: $P_{\text{ensemble}} = 0.50 \cdot P_{\text{RF}} + 0.50 \cdot P_{\text{Neural}}$ providing superior generalization across unseen generators.
+### Layer 2: Real-Time Conversational Diarization & Dual-Model Ensemble
+- **Two-Speaker Diarization**: Extracts 40-D timbre embeddings (MFCC mean/std, spectral centroid/rolloff) and clusters speakers via Cosine Distance to isolate **Speaker A (Local Caller)** from **Speaker B (Remote Contact)**. Quarantines cross-talk overlap.
+- **SincNet Neural Raw-Waveform Classifier**: Deep 1D neural architecture with parameterized bandpass sinc convolutions, temporal residual blocks, and attentive statistics pooling directly on raw waveforms.
+- **Calibrated Random Forest Classifier**: Evaluates 63 handcrafted mathematical features spanning spectral rolloff/contrast, MFCC dynamics, phase derivative variance, and vocal jitter/shimmer.
+- **Ensemble Fusion**: $P_{\text{ensemble}} = 0.50 \cdot P_{\text{RF}} + 0.50 \cdot P_{\text{Neural}}$ providing superior generalization across unseen generators.
 
-### Layer 3: Dynamic Multi-Signal Threat Scoring & Risk Engine
+### Layer 3: Dynamic Multi-Signal Threat Scoring & Progressive Evaluation (The 10–12s Rule)
 - Synthesizes model probabilities with sub-band anomaly metrics to produce an intuitive **0–100 Impersonation Risk Score**:
   - $50\%$ ML Classifier Spoof Probability ($P_{\text{ensemble}}$)
   - $20\%$ High-Frequency Spectral Energy Discontinuity Score
   - $15\%$ Acoustic Phase Derivative Variance
   - $10\%$ Prosodic & Pitch Stability Factor
   - $5\%$ Speaker Consistency Weight
-- Contextual metadata adjustments (+8% unknown caller, +12% high financial transaction, +15% prior fraud flag, -10% trusted contact).
-- Automated threshold calibration ($\tau^* = 0.3985$) guarantees real human voices fall safely in the **LOW** zone (~12/100).
+- **3-Stage Progressive Timeline**:
+  - **Stage 0 (0.0s – 5.0s | Calibrating Baseline)**: Evaluates background acoustics and mic gain with live countdown ticker `(Xs / 10s)`.
+  - **Stage 1 (5.0s – 6.0s | Preliminary 5s Average)**: Computes early rolling risk average over initial speech turns.
+  - **Stage 2 (10.0s – 12.0s | Consolidated Final Verdict)**: Unconditionally evaluates all accumulated speech frames and displays verified verdict (`CALL AUTHENTIC` or `🚨 CRITICAL ALERT: AI CLONE DETECTED`), guaranteeing the engine never hangs on quiet mobile mics.
+- Contextual metadata adjustments (+12% high financial transaction, language normalizers).
+- Automated threshold calibration ($\tau^* = 0.3985$) guarantees real human voices fall safely in the **LOW** zone (~5.0% - 12.0%).
 
 ### Layer 4: Tamper-Evident SHA-256 Cryptographic Audit Ledger
 - Every scan and stream verification logs an immutable event block into an append-only cryptographic hash chain (`AuditChain`).

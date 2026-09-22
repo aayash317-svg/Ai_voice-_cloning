@@ -10,7 +10,9 @@ __pycache__/
 *$py.class
 .pytest_cache/
 
-# macOS / OS artifacts
+# IDE & Editor Settings
+.vscode/
+.idea/
 .DS_Store
 .DS_Store?
 ._*
@@ -42,6 +44,15 @@ test-clean.tar.gz
 
 # Testing media exceeding GitHub file size limits
 testing video/
+testing voice samples/*.mp4
+testing voice samples/*.m4v
+
+# Binaries & Executables
+*.exe
+cloudflared.exe
+
+# Node dependencies
+node_modules/
 
 # Logs & Temporary Files
 logs/*.log

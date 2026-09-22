@@ -94,6 +94,12 @@ class StreamingCallMonitor:
         self.speaker_b_speech_sec = 0.0
         self.overlap_speech_sec = 0.0
 
+        # Progressive multi-stage verification (Stage 0: 0-5s calibration, Stage 1: 5-8s average, Stage 2: >=8s final)
+        self.evaluation_stage = "CALIBRATING"  # 'CALIBRATING' | 'PRELIMINARY_AVERAGE' | 'CONSOLIDATED_FINAL'
+        self.risk_history = deque(maxlen=60)
+        self.average_risk = 5.0
+        self.final_confirmed_risk = 5.0
+
         # Live conversation timeline & events
         self.start_time = time.time()
         self.live_events = deque(maxlen=30)
@@ -200,19 +206,22 @@ class StreamingCallMonitor:
         energy = float(np.sqrt(np.mean(pcm_data**2))) if len(pcm_data) > 0 else 0.0
         peak = float(np.max(np.abs(pcm_data))) if len(pcm_data) > 0 else 0.0
 
-        # Voice Activity Detection: Is someone speaking right now?
-        is_speech = energy > 0.015 or peak > 0.06
+        # Voice Activity Detection: Calibrated for smartphone and speakerphone microphones
+        # (Mobile mics under hardware AGC typically yield speech RMS between 0.0035 and 0.04)
+        is_speech = energy > 0.0035 or peak > 0.018
         self.is_speech = is_speech
 
         if not is_speech:
             self.current_speaker = "SILENCE"
             self.is_overlap = False
+            self._update_threat_verdict()
             return self._build_telemetry(energy, peak)
 
         # Get recent 1.5 seconds for acoustic classification
         recent_audio = self.get_recent_window(seconds=1.5)
-        if len(recent_audio) < int(self.sample_rate * 0.4):
+        if len(recent_audio) < int(self.sample_rate * 0.25):
             # Too short for analysis
+            self._update_threat_verdict()
             return self._build_telemetry(energy, peak)
 
         # 1. Diarization: Who is speaking right now?
@@ -252,13 +261,13 @@ class StreamingCallMonitor:
 
                 if speaker == "SPEAKER_B":
                     # Remote party (claimed contact)
-                    if chunk_energy > 0.015:
+                    if chunk_energy > 0.003:
                         self.speaker_b_voiced_frames.extend(pcm_data)
                     self.speaker_b_frames.extend(pcm_data)
 
                     current_b_len = len(self.speaker_b_voiced_frames)
-                    # Evaluate when sufficient voiced speech accumulated
-                    if current_b_len >= int(self.sample_rate * 0.8) and (current_b_len - self.last_eval_samples_b >= int(self.sample_rate * 0.4)):
+                    # Evaluate rapidly once sufficient voiced speech accumulated (>= 0.5s, update every 0.25s)
+                    if current_b_len >= int(self.sample_rate * 0.5) and (current_b_len - self.last_eval_samples_b >= int(self.sample_rate * 0.25)):
                         self.last_eval_samples_b = current_b_len
                         accum_samples = np.array(self.speaker_b_voiced_frames, dtype=np.float32)
                         eval_len = min(len(accum_samples), int(self.sample_rate * 4.0))
@@ -266,14 +275,16 @@ class StreamingCallMonitor:
                         d_prob, d_pv, d_hf, d_jit, d_risk, d_level = self._evaluate_anti_spoof(deep_slice)
                         self.deep_spoof_prob_b = d_prob
                         self.deep_risk_b = d_risk
+                        self.risk_history.append(d_risk)
 
                     evaluated_risk = self.deep_risk_b
 
-                    # Persistent threat retention for remote caller
-                    if evaluated_risk >= 50.0:
+                    # Responsive dynamic EMA smoothing:
+                    # When speech evaluates as safe genuine human (< 30%), immediately decay into safe LOW zone
+                    if evaluated_risk < 30.0:
+                        self.ema_risk_b = 0.45 * evaluated_risk + 0.55 * self.ema_risk_b
+                    elif evaluated_risk >= 60.0:
                         self.ema_risk_b = max(self.ema_risk_b, evaluated_risk)
-                    elif self.peak_risk_b >= 50.0:
-                        self.ema_risk_b = max(round(self.peak_risk_b * 0.94, 1), evaluated_risk)
                     else:
                         self.ema_risk_b = 0.35 * evaluated_risk + 0.65 * self.ema_risk_b
 
@@ -286,24 +297,25 @@ class StreamingCallMonitor:
 
                 elif speaker == "SPEAKER_A":
                     # Local caller / audio input (user)
-                    if chunk_energy > 0.015:
+                    if chunk_energy > 0.003:
                         self.speaker_a_voiced_frames.extend(pcm_data)
                     self.speaker_a_frames.extend(pcm_data)
 
                     current_a_len = len(self.speaker_a_voiced_frames)
-                    if current_a_len >= int(self.sample_rate * 0.8) and (current_a_len - self.last_eval_samples_a >= int(self.sample_rate * 0.4)):
+                    if current_a_len >= int(self.sample_rate * 0.5) and (current_a_len - self.last_eval_samples_a >= int(self.sample_rate * 0.25)):
                         self.last_eval_samples_a = current_a_len
                         accum_samples = np.array(self.speaker_a_voiced_frames, dtype=np.float32)
                         eval_len = min(len(accum_samples), int(self.sample_rate * 4.0))
                         deep_slice = accum_samples[-eval_len:]
                         d_prob, d_pv, d_hf, d_jit, d_risk, d_level = self._evaluate_anti_spoof(deep_slice)
                         self.deep_risk_a = d_risk
+                        self.risk_history.append(d_risk)
 
                     evaluated_risk_a = self.deep_risk_a
-                    if evaluated_risk_a >= 50.0:
+                    if evaluated_risk_a < 30.0:
+                        self.ema_risk_a = 0.45 * evaluated_risk_a + 0.55 * self.ema_risk_a
+                    elif evaluated_risk_a >= 60.0:
                         self.ema_risk_a = max(self.ema_risk_a, evaluated_risk_a)
-                    elif self.peak_risk_a >= 50.0:
-                        self.ema_risk_a = max(round(self.peak_risk_a * 0.94, 1), evaluated_risk_a)
                     else:
                         self.ema_risk_a = 0.35 * evaluated_risk_a + 0.65 * self.ema_risk_a
                     self.speaker_a_risk = round(self.ema_risk_a, 1)
@@ -373,16 +385,19 @@ class StreamingCallMonitor:
 
         energy = float(np.sqrt(np.mean(audio_window**2)))
         peak = float(np.max(np.abs(audio_window)))
-        if energy < 0.008 or peak < 0.030:
+        if energy < 0.0035 and peak < 0.018:
             # Silence / ambient noise - do not amplify or evaluate noise as spoof
             return 0.05, 0.02, 0.005, 0.01, 5.0, "LOW"
 
         # Extract voiced speech only (removes silent gaps & room hiss)
         voiced = self.preprocessor.apply_vad(audio_window, top_db=26.0)
         if len(voiced) < int(self.sample_rate * 0.25):
-            return 0.05, 0.02, 0.005, 0.01, 5.0, "LOW"
-
-        eval_audio = self.preprocessor.normalize_audio(voiced)
+            if len(audio_window) >= int(self.sample_rate * 0.25):
+                eval_audio = self.preprocessor.normalize_audio(audio_window)
+            else:
+                return 0.05, 0.02, 0.005, 0.01, 5.0, "LOW"
+        else:
+            eval_audio = self.preprocessor.normalize_audio(voiced)
 
         features = {}
         if self.feature_extractor:
@@ -426,6 +441,8 @@ class StreamingCallMonitor:
             "is_high_value_transaction": self.is_financial_transaction
         }
 
+        risk_score = 5.0
+        risk_level = "LOW"
         if self.risk_engine:
             assessment = self.risk_engine.compute_risk(
                 classifier_spoof_prob=spoof_prob,
@@ -443,48 +460,115 @@ class StreamingCallMonitor:
         return spoof_prob, phase_var, hf_ratio, jitter, risk_score, risk_level
 
     def _update_threat_verdict(self) -> None:
-        """Update live call threat level and alert message based on both speakers and session history."""
-        # Active risk is dominated by remote speaker B in 2-party calls.
-        # However, if only 1 party is active (e.g. single-party mic test) or Speaker A is synthetic (>= 50%),
-        # include Speaker A's risk immediately into the live call threat evaluation.
+        """Update live call threat level and alert message based on both speakers, progressive stages, and session history."""
+        total_speech = self.speaker_b_speech_sec + self.speaker_a_speech_sec
         active_threat = self.speaker_b_risk
         if self.speaker_b_speech_sec < 0.5 or self.speaker_a_risk >= 50.0:
             active_threat = max(active_threat, self.speaker_a_risk)
 
         self.peak_call_risk = max(self.peak_call_risk, self.peak_risk_b, self.peak_risk_a if self.peak_risk_a >= 50.0 else 0.0)
 
-        effective_threat = max(active_threat, round(self.peak_call_risk * 0.95, 1)) if self.peak_call_risk >= 50.0 else active_threat
+        # Progressive Stages (5-6s average, 10-12s unconditional final confirmed risk):
+        call_elapsed = max(0.0, time.time() - self.start_time)
+        is_stage_2 = (call_elapsed >= 10.0) or (total_speech >= 4.5)
+        is_stage_1 = not is_stage_2 and ((call_elapsed >= 5.0) or (total_speech >= 1.5))
 
-        if self.peak_call_risk >= 65.0:
-            self.risk_level = "CRITICAL"
-            self.alert_triggered = True
-            self.alert_ever_triggered = True
-            self.live_call_risk = round(max(effective_threat, 65.0), 1)
-            role_str = self.claimed_contact_role.replace('_', ' ').title()
-            self.alert_message = (
-                f"🚨 CRITICAL ALERT: AI-Cloned Voice detected on claimed {role_str}! "
-                f"(Peak Threat: {self.peak_call_risk:.1f}%). DO NOT authorize wire transfers, gift cards, or crypto."
-            )
-        elif self.peak_call_risk >= 50.0:
-            self.risk_level = "HIGH"
-            self.alert_triggered = True
-            self.alert_ever_triggered = True
-            self.live_call_risk = round(max(effective_threat, 50.0), 1)
-            role_str = self.claimed_contact_role.replace('_', ' ').title()
-            self.alert_message = (
-                f"⚠️ HIGH SPOOF RISK: Synthetic vocal artifacts detected on claimed {role_str} (Peak Threat: {self.peak_call_risk:.1f}%). "
-                f"Verify identity by asking a secret shared memory question."
-            )
-        elif active_threat >= 30.0 or self.peak_call_risk >= 30.0:
-            self.risk_level = "MEDIUM"
-            self.alert_triggered = False
-            self.live_call_risk = round(max(active_threat, 30.0), 1)
-            self.alert_message = "Review recommended: Ambient room acoustics or compressed VoIP audio detected."
+        # If entering Stage 1 or Stage 2 without an evaluation yet, run fallback evaluation across buffered audio
+        if (is_stage_1 or is_stage_2) and not self.risk_history:
+            candidate_audio = None
+            if len(self.speaker_b_voiced_frames) >= int(self.sample_rate * 0.25):
+                candidate_audio = np.array(self.speaker_b_voiced_frames, dtype=np.float32)
+            elif len(self.speaker_b_frames) >= int(self.sample_rate * 0.25):
+                candidate_audio = np.array(self.speaker_b_frames, dtype=np.float32)
+            elif len(self.speaker_a_voiced_frames) >= int(self.sample_rate * 0.25):
+                candidate_audio = np.array(self.speaker_a_voiced_frames, dtype=np.float32)
+            elif len(self.speaker_a_frames) >= int(self.sample_rate * 0.25):
+                candidate_audio = np.array(self.speaker_a_frames, dtype=np.float32)
+            elif self.total_samples_received >= int(self.sample_rate * 0.5):
+                candidate_audio = self.get_recent_window(seconds=3.0)
+
+            if candidate_audio is not None and len(candidate_audio) >= int(self.sample_rate * 0.25):
+                d_prob, d_pv, d_hf, d_jit, d_risk, d_level = self._evaluate_anti_spoof(candidate_audio)
+                self.deep_spoof_prob_b = d_prob
+                self.deep_risk_b = d_risk
+                self.risk_history.append(d_risk)
+                self.speaker_b_risk = round(d_risk, 1)
+                active_threat = max(active_threat, d_risk)
+
+        if is_stage_2:
+            self.evaluation_stage = "CONSOLIDATED_FINAL"
+            if self.risk_history:
+                if active_threat >= 50.0:
+                    self.final_confirmed_risk = round(max(active_threat, float(np.max(self.risk_history))), 1)
+                else:
+                    self.final_confirmed_risk = round(active_threat, 1)
+            else:
+                self.final_confirmed_risk = round(active_threat, 1)
+            self.live_call_risk = self.final_confirmed_risk
+        elif is_stage_1:
+            self.evaluation_stage = "PRELIMINARY_AVERAGE"
+            if self.risk_history:
+                avg = float(np.mean(self.risk_history))
+            else:
+                avg = active_threat
+            self.average_risk = round(avg, 1)
+            self.live_call_risk = self.average_risk
         else:
-            self.risk_level = "LOW"
+            self.evaluation_stage = "CALIBRATING"
+            self.live_call_risk = 5.0
+            self.risk_level = "CALIBRATING"
             self.alert_triggered = False
-            self.live_call_risk = round(max(5.0, active_threat), 1)
-            self.alert_message = "Audio acoustics align with natural human speech."
+            needed = max(0.0, 5.0 - call_elapsed)
+            self.alert_message = f"Calibrating acoustic baseline ({call_elapsed:.0f}s / 10s)... Preliminary score in {needed:.0f}s."
+
+        if self.evaluation_stage == "PRELIMINARY_AVERAGE":
+            time_to_final = max(0.0, 10.0 - call_elapsed)
+            if self.live_call_risk >= 65.0:
+                self.risk_level = "CRITICAL"
+                self.alert_triggered = True
+                self.alert_ever_triggered = True
+                self.alert_message = f"⚠️ PRELIMINARY WARNING: Potential AI clone ({self.average_risk:.1f}% avg). Finalizing verification in {time_to_final:.0f}s..."
+            elif self.live_call_risk >= 50.0:
+                self.risk_level = "HIGH"
+                self.alert_triggered = True
+                self.alert_ever_triggered = True
+                self.alert_message = f"⚠️ PRELIMINARY ALERT: Synthetic artifacts detected ({self.average_risk:.1f}% avg). Stabilizing..."
+            elif self.live_call_risk >= 25.0:
+                self.risk_level = "MEDIUM"
+                self.alert_triggered = False
+                self.alert_message = f"Preliminary average risk: {self.average_risk:.1f}% (Elevated ambient acoustics). Stabilizing..."
+            else:
+                self.risk_level = "LOW"
+                self.alert_triggered = False
+                self.alert_message = f"Preliminary assessment: {self.average_risk:.1f}% risk (Averaged over {total_speech:.1f}s speech). Finalizing in {time_to_final:.0f}s..."
+
+        elif self.evaluation_stage == "CONSOLIDATED_FINAL":
+
+            role_str = self.claimed_contact_role.replace('_', ' ').title()
+            if self.live_call_risk >= 65.0:
+                self.risk_level = "CRITICAL"
+                self.alert_triggered = True
+                self.alert_ever_triggered = True
+                self.alert_message = (
+                    f"🚨 CRITICAL ALERT: AI-Cloned Voice confirmed on {role_str}! "
+                    f"(Final Score: {self.final_confirmed_risk:.1f}%). DO NOT authorize wire transfers or payments."
+                )
+            elif self.live_call_risk >= 50.0:
+                self.risk_level = "HIGH"
+                self.alert_triggered = True
+                self.alert_ever_triggered = True
+                self.alert_message = (
+                    f"⚠️ HIGH SPOOF RISK: Confirmed synthetic vocal features on {role_str} "
+                    f"(Final Score: {self.final_confirmed_risk:.1f}%). Verify identity with a challenge question."
+                )
+            elif self.live_call_risk >= 25.0:
+                self.risk_level = "MEDIUM"
+                self.alert_triggered = False
+                self.alert_message = f"Final assessment: {self.final_confirmed_risk:.1f}% risk. Ambient room acoustics or VoIP compression detected."
+            else:
+                self.risk_level = "LOW"
+                self.alert_triggered = False
+                self.alert_message = f"Call verified authentic ({self.final_confirmed_risk:.1f}% risk). Vocal biomechanics match natural human speech."
 
     def get_session_summary(self) -> Dict[str, Any]:
         """Detailed forensic summary of the complete call session."""
@@ -501,11 +585,17 @@ class StreamingCallMonitor:
             "turns_local": self.turn_counts.get("SPEAKER_A", 0),
             "deep_ml_spoof_prob": round(self.deep_spoof_prob_b, 3),
             "explanation": self.alert_message,
+            "stage": self.evaluation_stage,
+            "average_risk": round(self.average_risk, 1),
+            "final_confirmed_risk": round(self.final_confirmed_risk, 1),
         }
 
     def _build_telemetry(self, energy: float, peak: float) -> Dict[str, Any]:
         """Construct JSON-serializable telemetry payload for WebSocket clients."""
         role_label = f"Claimed {self.claimed_contact_role.replace('_', ' ').title()}"
+        total_speech = self.speaker_b_speech_sec + self.speaker_a_speech_sec
+        elapsed = round(max(0.0, time.time() - self.start_time), 1)
+
         active_label = "Listening..."
         if self.is_speech:
             if self.is_overlap:
@@ -514,8 +604,12 @@ class StreamingCallMonitor:
                 active_label = "You (Local Caller) Speaking"
             else:
                 active_label = f"Remote Voice ({role_label}) Speaking"
+        elif elapsed < 10.0:
+            active_label = f"Analyzing call audio (Evaluating: {elapsed:.0f}s / 10s)..."
 
-        elapsed = round(max(0.0, time.time() - self.start_time), 1)
+        time_prog = min(1.0, elapsed / 10.0)
+        speech_prog = min(1.0, total_speech / 4.5)
+        cal_prog = max(time_prog, speech_prog)
 
         return {
             "is_speech": self.is_speech,
@@ -523,6 +617,11 @@ class StreamingCallMonitor:
             "active_label": active_label,
             "language_preset": self.language_preset,
             "elapsed_sec": elapsed,
+            "total_speech_sec": round(total_speech, 1),
+            "stage": self.evaluation_stage,
+            "calibration_progress": round(cal_prog, 2),
+            "average_risk": round(self.average_risk, 1),
+            "final_confirmed_risk": round(self.final_confirmed_risk, 1),
             "live_call_risk": round(self.live_call_risk, 1),
             "risk_level": self.risk_level,
             "alert": self.alert_triggered,

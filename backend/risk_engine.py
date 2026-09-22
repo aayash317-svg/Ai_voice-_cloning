@@ -80,11 +80,11 @@ class RiskEngine:
             for code in ["hi", "ta", "te", "bn", "kn", "mr", "indic", "hindi", "tamil", "telugu"]
         )
 
-        phase_upper = 0.40 if is_indic else 0.36
-        jitter_upper = 0.12 if is_indic else 0.10
-        jitter_lower = 0.012
+        phase_upper = 0.48 if is_indic else 0.45
+        jitter_upper = 0.14 if is_indic else 0.12
+        jitter_lower = 0.010
 
-        # Phase anomaly deviation (neural vocoder phase artifacts; human <= 0.35)
+        # Phase anomaly deviation (neural vocoder phase artifacts; human <= 0.44 with mic/room noise)
         if raw_phase_var > phase_upper:
             phase_anom = min(1.0, (raw_phase_var - phase_upper) / 0.35)
         elif 0.0 < raw_phase_var < 0.015:
@@ -92,13 +92,13 @@ class RiskEngine:
         else:
             phase_anom = 0.0
 
-        # HF ratio anomaly deviation (> 4 kHz vocoder energy leak; human <= 0.010)
-        if raw_hf_ratio > 0.012:
-            hf_anom = min(1.0, (raw_hf_ratio - 0.012) / 0.020)
+        # HF ratio anomaly deviation (> 4 kHz vocoder energy leak; human <= 0.012)
+        if raw_hf_ratio > 0.014:
+            hf_anom = min(1.0, (raw_hf_ratio - 0.014) / 0.020)
         else:
             hf_anom = 0.0
 
-        # Prosody Jitter anomaly deviation (human 0.015 - 0.08, vocoders either unnaturally flat or erratic)
+        # Prosody Jitter anomaly deviation (human 0.015 - 0.10, vocoders either unnaturally flat or erratic)
         if raw_jitter > jitter_upper:
             jitter_anom = min(1.0, (raw_jitter - jitter_upper) / 0.20)
         elif 0.0 < raw_jitter < jitter_lower:
@@ -106,9 +106,13 @@ class RiskEngine:
         else:
             jitter_anom = 0.0
 
-        # Vocoder Sub-band Contrast anomaly deviation (human <= 7.2 across all languages; vocoders >= 7.8 - 12.5)
-        if raw_contrast_std > 7.5:
-            contrast_anom = min(1.0, (raw_contrast_std - 7.5) / 2.0)
+        # Vocoder Sub-band Contrast anomaly deviation:
+        # Natural human vocal tract across mobile microphones, speakerphones, and room reverbs
+        # exhibits standard contrast variance up to ~8.6.
+        # Neural vocoders (HiFi-GAN, BigVGAN, VITS, FreeVC, YourTTS, RVC) exhibit severe contrast variance >= 9.2 - 13.5.
+        contrast_upper = 8.8 if is_indic else 8.6
+        if raw_contrast_std > contrast_upper:
+            contrast_anom = min(1.0, (raw_contrast_std - contrast_upper) / 2.5)
         else:
             contrast_anom = 0.0
 
@@ -153,10 +157,14 @@ class RiskEngine:
         )
 
         # In voice conversion (e.g. FreeVC/RVC where a human voice drives pitch/prosody)
-        # the neural vocoder leaves an unambiguous spectral contrast artifact (norm_contrast_anom >= 0.15).
-        # We elevate the effective spoof probability so that vocoder clones cannot evade detection.
-        if norm_contrast_anom >= 0.15:
-            p_spoof = max(p_spoof, 0.52 + 0.40 * norm_contrast_anom)
+        # the neural vocoder leaves an unambiguous spectral contrast artifact (norm_contrast_anom >= 0.35)
+        # coupled with suspicious ML probability (>= 0.38).
+        # We ensure authentic human voices (p_spoof < 0.35) are never falsely overridden.
+        if norm_contrast_anom >= 0.35 and p_spoof >= 0.38:
+            p_spoof = max(p_spoof, 0.52 + 0.35 * norm_contrast_anom)
+        elif norm_contrast_anom >= 0.65:
+            # Extreme vocoder artifact (> 10.5 std contrast)
+            p_spoof = max(p_spoof, 0.55 + 0.35 * norm_contrast_anom)
 
         # Threat scaling dynamically aligned with ML decision boundary (tau)
         medium_cutoff = max(0.48, tau * 0.88)

@@ -1396,23 +1396,56 @@
       }
     }
 
+    function isMobileDevice() {
+      return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent || navigator.vendor || window.opera);
+    }
+
+    function createUniversalAudioContext() {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) {
+        throw new Error('Web Audio API is not supported on this browser.');
+      }
+      // Never force sampleRate: 16000 on initialization, as iOS Safari and Android Chrome throw NotSupportedError.
+      // Operate at device native hardware rate and downsample cleanly in software.
+      return new AudioContextClass();
+    }
+
+    async function getUniversalUserMedia(preferredConstraints = {}) {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Microphone access is not supported in this browser environment.');
+      }
+      try {
+        return await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: preferredConstraints.echoCancellation !== false,
+            noiseSuppression: preferredConstraints.noiseSuppression !== false,
+            autoGainControl: preferredConstraints.autoGainControl !== false,
+            channelCount: 1
+          },
+          video: false
+        });
+      } catch (err1) {
+        console.warn('Tailored microphone constraints failed, falling back to basic audio:', err1);
+        try {
+          return await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        } catch (err2) {
+          console.error('All microphone access attempts failed:', err2);
+          throw err2;
+        }
+      }
+    }
+
     function downsampleBuffer(buffer, inputSampleRate, outputSampleRate = 16000) {
       if (inputSampleRate === outputSampleRate || !inputSampleRate) return buffer;
       const ratio = inputSampleRate / outputSampleRate;
       const newLength = Math.round(buffer.length / ratio);
       const result = new Float32Array(newLength);
-      let offsetResult = 0;
-      let offsetBuffer = 0;
-      while (offsetResult < result.length) {
-        const nextOffsetBuffer = Math.round((offsetResult + 1) * ratio);
-        let accum = 0, count = 0;
-        for (let i = offsetBuffer; i < nextOffsetBuffer && i < buffer.length; i++) {
-          accum += buffer[i];
-          count++;
-        }
-        result[offsetResult] = count > 0 ? accum / count : buffer[offsetBuffer];
-        offsetResult++;
-        offsetBuffer = nextOffsetBuffer;
+      for (let i = 0; i < newLength; i++) {
+        const originIndex = i * ratio;
+        const indexLow = Math.floor(originIndex);
+        const indexHigh = Math.min(indexLow + 1, buffer.length - 1);
+        const weight = originIndex - indexLow;
+        result[i] = buffer[indexLow] * (1 - weight) + buffer[indexHigh] * weight;
       }
       return result;
     }
@@ -1429,16 +1462,11 @@
       if (!isRecording) {
         // Start Mic
         try {
-          audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
-          micStream = await navigator.mediaDevices.getUserMedia({
-            audio: {
-              echoCancellation: false,
-              noiseSuppression: false,
-              autoGainControl: false,
-              channelCount: 1
-            },
-            video: false
-          });
+          audioContext = createUniversalAudioContext();
+          if (audioContext.state === 'suspended') {
+            await audioContext.resume();
+          }
+          micStream = await getUniversalUserMedia();
           const source = audioContext.createMediaStreamSource(micStream);
           const analyser = audioContext.createAnalyser();
           analyser.fftSize = 256;
@@ -1473,7 +1501,10 @@
 
           const processor = audioContext.createScriptProcessor(4096, 1, 1);
           source.connect(processor);
-          processor.connect(audioContext.destination);
+          const recZeroGain = audioContext.createGain();
+          recZeroGain.gain.value = 0;
+          processor.connect(recZeroGain);
+          recZeroGain.connect(audioContext.destination);
 
           recordedPcmChunks = [];
           const actualSr = audioContext.sampleRate;
@@ -1702,6 +1733,11 @@
         alert('Please stop the current active call monitor before switching audio sources.');
         return;
       }
+      if (source === 'system' && isMobileDevice()) {
+        console.log('Mobile device detected - screen/tab audio sharing not supported on mobile OS.');
+        // Fallback to mic for mobile phones seamlessly
+        source = 'mic';
+      }
       currentLiveCallSource = source;
 
       const sources = ['mic', 'system', 'demo'];
@@ -1744,39 +1780,82 @@
       const fin = 'false';
 
       try {
-        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsHost = (window.location.protocol === 'http:' || window.location.protocol === 'https:')
-          ? window.location.host
-          : 'localhost:8050';
-        
-        liveCallSocket = new WebSocket(`${wsProtocol}//${wsHost}/stream/call?claimed_contact_role=${encodeURIComponent(role)}&is_financial_transaction=${fin}&language=${encodeURIComponent(activeLanguagePreset)}`);
-        liveCallSocket.binaryType = 'arraybuffer';
-
-        liveCallSocket.onopen = () => {
-          console.log('[+] Live Call WebSocket Connected');
-        };
-
-        liveCallSocket.onmessage = (event) => {
-          try {
-            const telemetry = JSON.parse(event.data);
-            handleLiveCallTelemetry(telemetry);
-          } catch (e) {
-            console.error('Error parsing live call telemetry:', e);
+        // --- 1. USER GESTURE ACQUISITION ---
+        // Must execute synchronously / directly at the top of the user click to prevent
+        // "getDisplayMedia must be called from a user gesture handler" error on Chrome/Edge.
+        let preAcquiredDisplayStream = null;
+        if (currentLiveCallSource === 'system') {
+          if (isMobileDevice()) {
+            console.log('[*] Mobile device detected: defaulting system audio capture to microphone.');
+            currentLiveCallSource = 'mic';
+            selectLiveCallSource('mic');
+          } else {
+            try {
+              preAcquiredDisplayStream = await navigator.mediaDevices.getDisplayMedia({
+                video: true,
+                audio: {
+                  echoCancellation: false,
+                  noiseSuppression: false,
+                  autoGainControl: false
+                }
+              });
+            } catch (dispErr) {
+              console.error('System/Display Audio Error:', dispErr);
+              throw new Error('Screen/Tab Audio sharing was cancelled: ' + dispErr.message);
+            }
           }
-        };
+        }
 
-        liveCallSocket.onerror = (err) => {
-          console.error('[!] Live Call WebSocket Error:', err);
-        };
+        let reconnectAttempts = 0;
+        const connectCallSocket = () => {
+          const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+          const wsHost = (window.location.protocol === 'http:' || window.location.protocol === 'https:')
+            ? window.location.host
+            : 'localhost:8050';
+          
+          liveCallSocket = new WebSocket(`${wsProtocol}//${wsHost}/stream/call?claimed_contact_role=${encodeURIComponent(role)}&is_financial_transaction=${fin}&language=${encodeURIComponent(activeLanguagePreset)}`);
+          liveCallSocket.binaryType = 'arraybuffer';
 
-        liveCallSocket.onclose = () => {
-          console.log('[-] Live Call WebSocket Closed');
-          if (isLiveCallActive) {
-            stopLiveCallMonitor();
-          }
-        };
+          liveCallSocket.onopen = () => {
+            console.log('[+] Live Call WebSocket Connected');
+            reconnectAttempts = 0;
+            const badgeText = document.getElementById('call-live-badge-text');
+            if (badgeText && isLiveCallActive) badgeText.innerText = 'MONITORING LIVE';
+          };
 
-        liveCallAudioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+          liveCallSocket.onmessage = (event) => {
+            try {
+              const telemetry = JSON.parse(event.data);
+              handleLiveCallTelemetry(telemetry);
+            } catch (e) {
+              console.error('Error parsing live call telemetry:', e);
+            }
+          };
+
+          liveCallSocket.onerror = (err) => {
+            console.warn('[!] Live Call WebSocket Error:', err);
+          };
+
+          liveCallSocket.onclose = (event) => {
+            console.log('[-] Live Call WebSocket Closed', event.code, event.reason);
+            if (isLiveCallActive) {
+              if (reconnectAttempts < 5) {
+                reconnectAttempts++;
+                console.log(`[*] Reconnecting live call socket (attempt ${reconnectAttempts}/5)...`);
+                const badgeText = document.getElementById('call-live-badge-text');
+                if (badgeText) badgeText.innerText = `RECONNECTING (${reconnectAttempts})...`;
+                setTimeout(() => {
+                  if (isLiveCallActive) connectCallSocket();
+                }, 800);
+              } else {
+                stopLiveCallMonitor();
+              }
+            }
+          };
+        };
+        connectCallSocket();
+
+        liveCallAudioContext = createUniversalAudioContext();
         if (liveCallAudioContext.state === 'suspended') {
           await liveCallAudioContext.resume();
         }
@@ -1785,22 +1864,20 @@
         liveCallAnalyser.fftSize = 256;
 
         if (currentLiveCallSource === 'mic') {
-          liveCallMicStream = await navigator.mediaDevices.getUserMedia({
-            audio: {
-              echoCancellation: false,
-              noiseSuppression: false,
-              autoGainControl: false,
-              channelCount: 1
-            },
-            video: false
-          });
+          liveCallMicStream = await getUniversalUserMedia();
 
           const micSource = liveCallAudioContext.createMediaStreamSource(liveCallMicStream);
           micSource.connect(liveCallAnalyser);
 
           liveCallProcessorNode = liveCallAudioContext.createScriptProcessor(4096, 1, 1);
           micSource.connect(liveCallProcessorNode);
-          liveCallProcessorNode.connect(liveCallAudioContext.destination);
+          const zeroGain = liveCallAudioContext.createGain();
+          // Inaudible gain (0.00001) prevents iOS Safari / Android from freezing audio pipeline
+          zeroGain.gain.value = 0.00001;
+          window._liveCallZeroGain = zeroGain;
+          window._liveCallMicSource = micSource;
+          liveCallProcessorNode.connect(zeroGain);
+          zeroGain.connect(liveCallAudioContext.destination);
 
           const actualSr = liveCallAudioContext.sampleRate;
           liveCallProcessorNode.onaudioprocess = (e) => {
@@ -1811,12 +1888,16 @@
             for (let i = 0; i < pcm16k.length; i++) {
               pcm16[i] = Math.max(-32768, Math.min(32767, pcm16k[i] * 32767));
             }
-            liveCallSocket.send(pcm16.buffer);
+            try {
+              liveCallSocket.send(pcm16.buffer);
+            } catch (sendErr) {
+              console.warn('[!] Error streaming PCM chunk:', sendErr);
+            }
           };
 
         } else if (currentLiveCallSource === 'system') {
           try {
-            liveCallDisplayStream = await navigator.mediaDevices.getDisplayMedia({
+            liveCallDisplayStream = preAcquiredDisplayStream || await navigator.mediaDevices.getDisplayMedia({
               video: true,
               audio: {
                 echoCancellation: false,
@@ -1838,7 +1919,7 @@
             }
 
             try {
-              liveCallMicStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+              liveCallMicStream = await getUniversalUserMedia();
               const micSource = liveCallAudioContext.createMediaStreamSource(liveCallMicStream);
               micSource.connect(mixerDest);
             } catch (micErr) {
@@ -1850,7 +1931,10 @@
 
             liveCallProcessorNode = liveCallAudioContext.createScriptProcessor(4096, 1, 1);
             mixedSource.connect(liveCallProcessorNode);
-            liveCallProcessorNode.connect(liveCallAudioContext.destination);
+            const zeroSysGain = liveCallAudioContext.createGain();
+            zeroSysGain.gain.value = 0;
+            liveCallProcessorNode.connect(zeroSysGain);
+            zeroSysGain.connect(liveCallAudioContext.destination);
 
             const actualSysSr = liveCallAudioContext.sampleRate;
             liveCallProcessorNode.onaudioprocess = (e) => {
@@ -1915,6 +1999,63 @@
 
         isLiveCallActive = true;
         liveCallSeconds = 0;
+        liveCallTelemetryData = null;
+
+        // Reset previous audit verdict banners & speaker cards
+        const banner = document.getElementById('call-banner-card');
+        const bannerIcon = document.getElementById('call-banner-icon');
+        const bannerTitle = document.getElementById('call-banner-title');
+        const bannerBadge = document.getElementById('call-banner-badge');
+        const bannerExpl = document.getElementById('call-banner-explanation');
+        const challengeBox = document.getElementById('call-challenge-box');
+        const threatGauge = document.getElementById('live-threat-gauge');
+        const scoreAEl = document.getElementById('speaker-a-score');
+        const scoreBEl = document.getElementById('speaker-b-score');
+        const badgeA = document.getElementById('speaker-a-badge');
+        const badgeB = document.getElementById('speaker-b-badge');
+        const statDur = document.getElementById('call-stat-duration');
+        const statUsable = document.getElementById('call-stat-usable');
+        const statOverlap = document.getElementById('call-stat-overlap');
+        const statSnr = document.getElementById('call-stat-snr');
+
+        if (statDur) statDur.innerText = '0s';
+        if (statUsable) statUsable.innerText = '0.0s';
+        if (statOverlap) statOverlap.innerText = '0.0s';
+        if (statSnr) statSnr.innerText = 'Listening (Active)...';
+
+        if (scoreAEl) {
+          scoreAEl.innerText = '--';
+          scoreAEl.className = 'text-3xl font-mono font-bold text-on-surface';
+        }
+        if (scoreBEl) {
+          scoreBEl.innerText = '--';
+          scoreBEl.className = 'text-3xl font-mono font-bold text-on-surface';
+        }
+        if (badgeA) {
+          badgeA.innerText = 'STANDBY';
+          badgeA.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-surface-container-high text-on-surface-variant';
+        }
+        if (badgeB) {
+          badgeB.innerText = 'STANDBY';
+          badgeB.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-surface-container-high text-on-surface-variant';
+        }
+        if (challengeBox) challengeBox.classList.add('hidden');
+
+        if (threatGauge) {
+          threatGauge.innerText = 'Acoustic Baseline Calibration: 0s / 10s';
+          threatGauge.className = 'font-bold text-secondary animate-pulse';
+        }
+
+        if (banner && bannerIcon && bannerTitle && bannerBadge && bannerExpl) {
+          banner.className = 'rounded-2xl bg-surface-container-low p-5 border border-secondary/40 shadow-lg flex flex-col space-y-3 transition-all';
+          bannerIcon.className = 'material-symbols-outlined text-[28px] text-secondary animate-pulse';
+          bannerIcon.innerText = 'graphic_eq';
+          bannerTitle.innerText = 'ANALYZING CALL AUDIO — EVALUATING (0s / 10s)';
+          bannerTitle.className = 'text-base sm:text-lg font-bold text-secondary';
+          bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-secondary/15 text-secondary border border-secondary/30';
+          bannerBadge.innerText = 'STAGE 0: CALIBRATING (10s)';
+          bannerExpl.innerText = 'Live acoustic monitoring active. Analyzing vocal tract biomechanics and vocoder cues. Verified risk score appears at 10-12s.';
+        }
 
         if (btn) {
           btn.className = 'w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-error via-red-600 to-rose-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(239,68,68,0.45)] hover:brightness-110 active:scale-[0.99] transition-all cursor-pointer';
@@ -1929,12 +2070,29 @@
         if (dot) dot.className = 'w-2 h-2 rounded-full bg-primary animate-ping';
 
         liveCallTimerInterval = setInterval(() => {
+          if (!isLiveCallActive) return;
           liveCallSeconds++;
           const mins = String(Math.floor(liveCallSeconds / 60)).padStart(2, '0');
           const secs = String(liveCallSeconds % 60).padStart(2, '0');
           if (timerEl) timerEl.innerText = `${mins}:${secs}`;
-          const statDur = document.getElementById('call-stat-duration');
-          if (statDur) statDur.innerText = `${liveCallSeconds}s`;
+          const statDurEl = document.getElementById('call-stat-duration');
+          if (statDurEl) statDurEl.innerText = `${liveCallSeconds}s`;
+
+          // If still calibrating, update countdown progress on banner and gauge
+          const currentStage = liveCallTelemetryData?.stage || 'CALIBRATING';
+          if (currentStage === 'CALIBRATING') {
+            const gauge = document.getElementById('live-threat-gauge');
+            const title = document.getElementById('call-banner-title');
+            const targetSec = 10;
+            const progressSec = Math.min(targetSec, liveCallSeconds);
+            if (gauge) gauge.innerText = `Acoustic Calibration: ${progressSec}s / ${targetSec}s`;
+            if (title) title.innerText = `ANALYZING CALL AUDIO — EVALUATING (${progressSec}s / ${targetSec}s)`;
+          }
+
+          // Mobile keep-alive: prevent mobile browsers from pausing audio pipeline
+          if (liveCallAudioContext && liveCallAudioContext.state === 'suspended') {
+            liveCallAudioContext.resume().catch(() => {});
+          }
         }, 1000);
 
       } catch (err) {
@@ -2013,10 +2171,8 @@
       // Display Final Call Forensic Audit Verdict upon stopping
       if (liveCallTelemetryData) {
         const summ = liveCallTelemetryData.session_summary || {};
-        const isClone = liveCallTelemetryData.alert || summ.alert_triggered || (liveCallTelemetryData.live_call_risk >= 50.0);
-        const finalRisk = (summ.peak_risk !== undefined && summ.peak_risk > liveCallTelemetryData.live_call_risk)
-          ? summ.peak_risk
-          : (liveCallTelemetryData.live_call_risk || 5.0);
+        const isClone = (liveCallTelemetryData.live_call_risk >= 50.0) || (liveCallTelemetryData.alert && (summ.peak_risk >= 60.0));
+        const finalRisk = liveCallTelemetryData.live_call_risk !== undefined ? liveCallTelemetryData.live_call_risk : (summ.peak_risk || 5.0);
 
         const banner = document.getElementById('call-banner-card');
         const bannerIcon = document.getElementById('call-banner-icon');
@@ -2031,7 +2187,7 @@
         const cardB = document.getElementById('card-speaker-b');
 
         if (threatGauge) {
-          threatGauge.innerText = `Final Call Risk: ${finalRisk.toFixed(1)}% (${isClone ? 'CRITICAL' : 'LOW'})`;
+          threatGauge.innerText = `Final Call Risk: ${finalRisk.toFixed(1)}% (${isClone ? 'HIGH THREAT' : 'LOW'})`;
           threatGauge.className = isClone
             ? 'font-mono text-xs font-bold text-error uppercase'
             : 'font-mono text-xs font-bold text-primary uppercase';
@@ -2058,21 +2214,21 @@
             banner.className = 'rounded-2xl bg-surface-container-low p-5 border-2 border-error shadow-[0_0_28px_rgba(255,180,171,0.45)] flex flex-col space-y-3 transition-all';
             bannerIcon.className = 'material-symbols-outlined text-[28px] text-error animate-pulse';
             bannerIcon.innerText = 'gpp_maybe';
-            bannerTitle.innerText = 'CALL AUDIT: AI VOICE CLONE CONFIRMED';
+            bannerTitle.innerText = `CALL AUDIT: AI VOICE CLONE DETECTED (${finalRisk.toFixed(1)}%)`;
             bannerTitle.className = 'text-base sm:text-lg font-bold text-error';
             bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-error/20 text-error border border-error/40';
             bannerBadge.innerText = 'CALL_COMPROMISED';
-            bannerExpl.innerText = summ.explanation || `🚨 Deep acoustic analysis detected synthetic AI voice cloning (Peak Risk: ${finalRisk.toFixed(1)}%). Do NOT trust caller identity or transfer money.`;
+            bannerExpl.innerText = summ.explanation || `🚨 Deep acoustic analysis detected synthetic AI voice cloning (Threat: ${finalRisk.toFixed(1)}%). Do NOT trust caller identity or transfer money.`;
             if (challengeBox) challengeBox.classList.remove('hidden');
           } else {
             banner.className = 'rounded-2xl bg-surface-container-low p-5 border border-primary/40 shadow-lg flex flex-col space-y-3 transition-all';
             bannerIcon.className = 'material-symbols-outlined text-[28px] text-primary';
             bannerIcon.innerText = 'verified_user';
-            bannerTitle.innerText = 'CALL AUDIT COMPLETE: AUTHENTIC';
-            bannerTitle.className = 'text-base sm:text-lg font-bold text-on-surface';
+            bannerTitle.innerText = `CALL AUDIT COMPLETE: AUTHENTIC (${finalRisk.toFixed(1)}% RISK)`;
+            bannerTitle.className = 'text-base sm:text-lg font-bold text-primary';
             bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-primary/15 text-primary border border-primary/30';
             bannerBadge.innerText = 'CALL_VERIFIED';
-            bannerExpl.innerText = 'All speech turns during this call verified authentic. Vocal tract acoustics and phase dynamics match natural human biology.';
+            bannerExpl.innerText = 'All conversational speech turns during this call verified authentic. Vocal tract acoustics and phase dynamics match natural human biology.';
             if (challengeBox) challengeBox.classList.add('hidden');
           }
         }
@@ -2108,7 +2264,14 @@
       const riskLevel = telemetry.risk_level || 'LOW';
       const liveCallRisk = telemetry.live_call_risk !== undefined ? telemetry.live_call_risk : 5.0;
 
-      if (ribbonLabel) ribbonLabel.innerText = activeLabel;
+      if (ribbonLabel) {
+        const scoreSnippet = (activeSpeaker === 'SPEAKER_B' && telemetry.speaker_b)
+          ? ` (${telemetry.speaker_b.risk_score.toFixed(1)}% Risk)`
+          : (activeSpeaker === 'SPEAKER_A' && telemetry.speaker_a)
+          ? ` (${telemetry.speaker_a.risk_score.toFixed(1)}% Risk)`
+          : '';
+        ribbonLabel.innerText = `${activeLabel}${scoreSnippet}`;
+      }
 
       if (isOverlap) {
         if (overlapBadge) overlapBadge.classList.remove('hidden');
@@ -2133,56 +2296,100 @@
         }
       }
 
+      const stage = telemetry.stage || 'CONSOLIDATED_FINAL';
+      const totalSpeech = telemetry.total_speech_sec !== undefined ? telemetry.total_speech_sec : (telemetry.speaker_a?.speech_duration_sec || 0) + (telemetry.speaker_b?.speech_duration_sec || 0);
+      const elapsedSec = Math.round(telemetry.elapsed_sec || liveCallSeconds || 0);
+
       if (threatGauge) {
-        threatGauge.innerText = `Live Threat: ${liveCallRisk.toFixed(1)}% (${riskLevel})`;
-        threatGauge.className = riskLevel === 'CRITICAL' || riskLevel === 'HIGH'
-          ? 'font-bold text-error'
-          : riskLevel === 'MEDIUM'
-          ? 'font-bold text-amber-400'
-          : 'font-bold text-primary';
+        if (stage === 'CALIBRATING') {
+          const pct = Math.round((telemetry.calibration_progress || 0) * 100);
+          threatGauge.innerText = `Calibrating Audio Baseline: ${elapsedSec}s / 10s (${pct}%)`;
+          threatGauge.className = 'font-bold text-secondary animate-pulse';
+        } else if (stage === 'PRELIMINARY_AVERAGE') {
+          const timeToFinal = Math.max(0, 10 - elapsedSec);
+          threatGauge.innerText = `Preliminary Average: ${liveCallRisk.toFixed(1)}% (Final verified score in ${timeToFinal}s)`;
+          threatGauge.className = liveCallRisk >= 50.0 ? 'font-bold text-error' : 'font-bold text-amber-400';
+        } else {
+          threatGauge.innerText = `Final Verified Threat: ${liveCallRisk.toFixed(1)}% (${riskLevel})`;
+          threatGauge.className = riskLevel === 'CRITICAL' || riskLevel === 'HIGH'
+            ? 'font-bold text-error'
+            : riskLevel === 'MEDIUM'
+            ? 'font-bold text-amber-400'
+            : 'font-bold text-primary';
+        }
       }
 
       if (banner && bannerIcon && bannerTitle && bannerBadge && bannerExpl) {
-        if (riskLevel === 'CRITICAL') {
-          banner.className = 'rounded-2xl bg-surface-container-low p-5 border-2 border-error/70 shadow-[0_0_30px_rgba(255,180,171,0.25)] flex flex-col space-y-3 transition-all';
-          bannerIcon.className = 'material-symbols-outlined text-[28px] text-error animate-pulse';
-          bannerIcon.innerText = 'gpp_bad';
-          bannerTitle.innerText = '🚨 HIGH-RISK AI CLONE DETECTED!';
-          bannerTitle.className = 'text-base sm:text-lg font-bold text-error';
-          bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-error/20 text-error border border-error/40';
-          bannerBadge.innerText = 'CRITICAL_ALERT';
-          bannerExpl.innerText = telemetry.alert_message || 'Strong synthetic vocoder artifacts detected in remote speaker. DO NOT authorize wire transfers, OTP codes, or gift cards.';
-          if (challengeBox) challengeBox.classList.remove('hidden');
-        } else if (riskLevel === 'HIGH') {
-          banner.className = 'rounded-2xl bg-surface-container-low p-5 border border-error/50 shadow-xl flex flex-col space-y-3 transition-all';
-          bannerIcon.className = 'material-symbols-outlined text-[28px] text-error';
-          bannerIcon.innerText = 'warning';
-          bannerTitle.innerText = '⚠️ SUSPICIOUS SYNTHETIC VOICE DETECTED';
-          bannerTitle.className = 'text-base sm:text-lg font-bold text-error';
-          bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-error/15 text-error border border-error/30';
-          bannerBadge.innerText = 'HIGH_SPOOF_RISK';
-          bannerExpl.innerText = telemetry.alert_message || 'Significant vocal inconsistencies and artificial phase variance detected. Verify caller identity using a challenge question.';
-          if (challengeBox) challengeBox.classList.remove('hidden');
-        } else if (riskLevel === 'MEDIUM') {
-          banner.className = 'rounded-2xl bg-surface-container-low p-5 border border-amber-400/50 shadow-lg flex flex-col space-y-3 transition-all';
+        if (stage === 'CALIBRATING') {
+          banner.className = 'rounded-2xl bg-surface-container-low p-5 border border-secondary/40 shadow-lg flex flex-col space-y-3 transition-all';
+          bannerIcon.className = 'material-symbols-outlined text-[28px] text-secondary animate-pulse';
+          bannerIcon.innerText = 'graphic_eq';
+          bannerTitle.innerText = `ANALYZING CALL AUDIO — EVALUATING (${elapsedSec}s / 10s)`;
+          bannerTitle.className = 'text-base sm:text-lg font-bold text-secondary';
+          bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-secondary/15 text-secondary border border-secondary/30';
+          bannerBadge.innerText = 'STAGE 0: CALIBRATING (10s)';
+          bannerExpl.innerText = telemetry.alert_message || `Analyzing vocal tract dynamics and synthetic vocoder cues. Preliminary average at 5s, verified final risk at 10-12s. Speak naturally.`;
+          if (challengeBox) challengeBox.classList.add('hidden');
+        } else if (stage === 'PRELIMINARY_AVERAGE') {
+          const isHigh = (liveCallRisk >= 50.0);
+          const timeToFinal = Math.max(0, 10 - elapsedSec);
+          banner.className = isHigh
+            ? 'rounded-2xl bg-surface-container-low p-5 border-2 border-amber-400 shadow-xl flex flex-col space-y-3 transition-all'
+            : 'rounded-2xl bg-surface-container-low p-5 border border-amber-400/50 shadow-lg flex flex-col space-y-3 transition-all';
           bannerIcon.className = 'material-symbols-outlined text-[28px] text-amber-400';
-          bannerIcon.innerText = 'shield';
-          bannerTitle.innerText = 'CAUTION: VOCAL ANOMALY DETECTED';
-          bannerTitle.className = 'text-base sm:text-lg font-bold text-amber-400';
+          bannerIcon.innerText = 'hourglass_top';
+          bannerTitle.innerText = `PRELIMINARY RISK: ${liveCallRisk.toFixed(1)}% (5s Average)`;
+          bannerTitle.className = isHigh ? 'text-base sm:text-lg font-bold text-error' : 'text-base sm:text-lg font-bold text-amber-400';
           bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-400/15 text-amber-400 border border-amber-400/30';
-          bannerBadge.innerText = 'MEDIUM_RISK';
-          bannerExpl.innerText = telemetry.alert_message || 'Acoustic variance elevated. Ambient noise or compressed audio detected; continue monitoring.';
-          if (challengeBox) challengeBox.classList.add('hidden');
+          bannerBadge.innerText = 'STAGE 1: 5S AVERAGE';
+          bannerExpl.innerText = telemetry.alert_message || `Preliminary risk averaged over early speech turns. Neural cross-verification in progress (Final verified risk in ${timeToFinal}s)...`;
+          if (challengeBox) {
+            if (isHigh) challengeBox.classList.remove('hidden');
+            else challengeBox.classList.add('hidden');
+          }
         } else {
-          banner.className = 'rounded-2xl bg-surface-container-low p-5 border border-primary/40 shadow-lg flex flex-col space-y-3 transition-all';
-          bannerIcon.className = 'material-symbols-outlined text-[28px] text-primary';
-          bannerIcon.innerText = 'verified_user';
-          bannerTitle.innerText = 'LIVE MONITOR ACTIVE — AUTHENTIC';
-          bannerTitle.className = 'text-base sm:text-lg font-bold text-on-surface';
-          bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-primary/15 text-primary border border-primary/30';
-          bannerBadge.innerText = 'SECURE';
-          bannerExpl.innerText = telemetry.alert_message || 'Continuous 2-party vocal isolation active. All acoustic signatures align with natural human biomechanics.';
-          if (challengeBox) challengeBox.classList.add('hidden');
+          // Stage 2: Consolidated Final
+          if (riskLevel === 'CRITICAL') {
+            banner.className = 'rounded-2xl bg-surface-container-low p-5 border-2 border-error/70 shadow-[0_0_30px_rgba(255,180,171,0.25)] flex flex-col space-y-3 transition-all';
+            bannerIcon.className = 'material-symbols-outlined text-[28px] text-error animate-pulse';
+            bannerIcon.innerText = 'gpp_bad';
+            bannerTitle.innerText = `🚨 CRITICAL: AI CLONE DETECTED — ${liveCallRisk.toFixed(1)}% RISK`;
+            bannerTitle.className = 'text-base sm:text-lg font-bold text-error';
+            bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-error/20 text-error border border-error/40';
+            bannerBadge.innerText = `${liveCallRisk.toFixed(1)}% CRITICAL`;
+            bannerExpl.innerText = telemetry.alert_message || 'Strong synthetic vocoder artifacts detected. DO NOT authorize wire transfers or payments.';
+            if (challengeBox) challengeBox.classList.remove('hidden');
+          } else if (riskLevel === 'HIGH') {
+            banner.className = 'rounded-2xl bg-surface-container-low p-5 border border-error/50 shadow-xl flex flex-col space-y-3 transition-all';
+            bannerIcon.className = 'material-symbols-outlined text-[28px] text-error';
+            bannerIcon.innerText = 'warning';
+            bannerTitle.innerText = `⚠️ HIGH RISK SYNTHETIC VOICE — ${liveCallRisk.toFixed(1)}% RISK`;
+            bannerTitle.className = 'text-base sm:text-lg font-bold text-error';
+            bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-error/15 text-error border border-error/30';
+            bannerBadge.innerText = `${liveCallRisk.toFixed(1)}% HIGH`;
+            bannerExpl.innerText = telemetry.alert_message || 'Significant vocal inconsistencies detected. Verify caller identity using a challenge question.';
+            if (challengeBox) challengeBox.classList.remove('hidden');
+          } else if (riskLevel === 'MEDIUM') {
+            banner.className = 'rounded-2xl bg-surface-container-low p-5 border border-amber-400/50 shadow-lg flex flex-col space-y-3 transition-all';
+            bannerIcon.className = 'material-symbols-outlined text-[28px] text-amber-400';
+            bannerIcon.innerText = 'shield';
+            bannerTitle.innerText = `CAUTION: ELEVATED NOISE — ${liveCallRisk.toFixed(1)}% RISK`;
+            bannerTitle.className = 'text-base sm:text-lg font-bold text-amber-400';
+            bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-400/15 text-amber-400 border border-amber-400/30';
+            bannerBadge.innerText = `${liveCallRisk.toFixed(1)}% MEDIUM`;
+            bannerExpl.innerText = telemetry.alert_message || 'Acoustic variance elevated. Ambient noise or compressed audio detected; continue monitoring.';
+            if (challengeBox) challengeBox.classList.add('hidden');
+          } else {
+            banner.className = 'rounded-2xl bg-surface-container-low p-5 border border-primary/40 shadow-lg flex flex-col space-y-3 transition-all';
+            bannerIcon.className = 'material-symbols-outlined text-[28px] text-primary';
+            bannerIcon.innerText = 'verified_user';
+            bannerTitle.innerText = `CALL AUTHENTIC — VERIFIED RISK: ${liveCallRisk.toFixed(1)}%`;
+            bannerTitle.className = 'text-base sm:text-lg font-bold text-primary';
+            bannerBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-primary/15 text-primary border border-primary/30';
+            bannerBadge.innerText = `${liveCallRisk.toFixed(1)}% AUTHENTIC`;
+            bannerExpl.innerText = telemetry.alert_message || 'All conversational speech turns align with natural human vocal biomechanics. Zero clone indicators detected.';
+            if (challengeBox) challengeBox.classList.add('hidden');
+          }
         }
       }
 

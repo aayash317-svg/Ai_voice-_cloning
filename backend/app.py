@@ -13,7 +13,7 @@ import soundfile as sf
 from fastapi import FastAPI, UploadFile, File, Form, WebSocket, WebSocketDisconnect, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from pydantic import BaseModel
 
 from backend.config import SAMPLE_RATE, WINDOW_SAMPLES, MODELS_DIR, BASE_DIR, INDIC_TARGET_LANGUAGES
@@ -60,6 +60,14 @@ def serve_dashboard():
     if index_file.exists():
         return FileResponse(str(index_file))
     return {"message": "Voice Integrity Verification API is online. Visit /docs for Swagger UI."}
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    """Serve favicon or 204 to avoid browser console 404 errors."""
+    fav = FRONTEND_DIR / "assets" / "logo.png"
+    if fav.exists():
+        return FileResponse(str(fav), media_type="image/png")
+    return Response(status_code=204)
 
 # Global Framework State
 preprocessor = AudioPreprocessor()
@@ -581,22 +589,34 @@ async def websocket_stream_call_endpoint(websocket: WebSocket):
             if message.get("type") == "websocket.disconnect":
                 break
             if "bytes" in message and message["bytes"]:
-                pcm_bytes = message["bytes"]
-                pcm_data = np.frombuffer(pcm_bytes, dtype=np.int16).astype(np.float32) / 32768.0
-                telemetry = monitor.process_live_chunk(pcm_data)
-                if telemetry.get("alert") and telemetry.get("speaker_b", {}).get("risk_score", 0.0) >= 70.0:
-                    audit_chain.append_event("LIVE_CALL_CLONE_DETECTED", {
-                        "role": monitor.claimed_contact_role,
-                        "risk_score": telemetry.get("speaker_b", {}).get("risk_score"),
-                        "risk_level": telemetry.get("risk_level"),
-                        "timestamp": telemetry.get("timestamp")
-                    })
-                await websocket.send_json(telemetry)
+                try:
+                    pcm_bytes = message["bytes"]
+                    if len(pcm_bytes) % 2 != 0:
+                        pcm_bytes = pcm_bytes[:len(pcm_bytes) - 1]
+                    if len(pcm_bytes) == 0:
+                        continue
+                    pcm_data = np.frombuffer(pcm_bytes, dtype=np.int16).astype(np.float32) / 32768.0
+                    telemetry = monitor.process_live_chunk(pcm_data)
+                    if telemetry.get("alert") and telemetry.get("speaker_b", {}).get("risk_score", 0.0) >= 70.0:
+                        audit_chain.append_event("LIVE_CALL_CLONE_DETECTED", {
+                            "role": monitor.claimed_contact_role,
+                            "risk_score": telemetry.get("speaker_b", {}).get("risk_score"),
+                            "risk_level": telemetry.get("risk_level"),
+                            "timestamp": telemetry.get("timestamp")
+                        })
+                    await websocket.send_json(telemetry)
+                except Exception as chunk_err:
+                    print(f"[!] Live call chunk processing error: {chunk_err}", flush=True)
+                    continue
             elif "text" in message and message["text"]:
                 try:
                     payload = json.loads(message["text"])
                     if "audio_chunk" in payload:
                         raw_bytes = base64.b64decode(payload["audio_chunk"])
+                        if len(raw_bytes) % 2 != 0:
+                            raw_bytes = raw_bytes[:len(raw_bytes) - 1]
+                        if len(raw_bytes) == 0:
+                            continue
                         pcm_data = np.frombuffer(raw_bytes, dtype=np.int16).astype(np.float32) / 32768.0
                         telemetry = monitor.process_live_chunk(pcm_data)
                         await websocket.send_json(telemetry)
@@ -608,8 +628,9 @@ async def websocket_stream_call_endpoint(websocket: WebSocket):
                         if "language" in payload:
                             monitor.language_preset = payload["language"]
                         await websocket.send_json({"status": "configured", "role": monitor.claimed_contact_role, "language": monitor.language_preset})
-                except Exception:
-                    pass
+                except Exception as text_err:
+                    print(f"[!] Live call text payload error: {text_err}", flush=True)
+                    continue
     except WebSocketDisconnect:
         pass
     except Exception as e:
