@@ -1,4 +1,4 @@
-# Voice Shield AI: Real-Time Voice Cloning Detection Engine
+# Voice Shield AI: Voice Integrity Verification Framework
 
 [![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/aayash317-svg/Ai_voice-_cloning)
 [![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
@@ -7,24 +7,13 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 [![Tests Passing](https://img.shields.io/badge/Tests-5%2F5%20Passing-success?style=for-the-badge)](tests/)
 
-> **Official Repository**: [https://github.com/aayash317-svg/Ai_voice-_cloning](https://github.com/aayash317-svg/Ai_voice-_cloning)  
-> **Voice Shield AI is a real-time cybersecurity engine that detects deepfakes, synthetic speech, and AI-cloned voices during live two-way phone calls and batch file uploads. Powered by a dual ensemble of SincNet neural raw-waveform filters and 63-dimensional spectral-acoustic classifiers, it delivers dynamic risk scoring with zero-retention privacy and a tamper-evident cryptographic audit ledger.**
+> **One-line pitch**: A real-time cybersecurity engine that detects AI-cloned voices, synthetic speech, and deepfakes during live phone conversations and audio uploads with zero-retention privacy and cryptographic proof.
 
 > [!TIP]
 > 📖 **Master Technical Documentation**: For the exhaustive architectural specification, acoustic physics formulas, dataset inventory, anti-leakage training methodology, and operations runbook, refer to [docs/PROJECT_DOCUMENTATION.md](docs/PROJECT_DOCUMENTATION.md).
 
 > [!IMPORTANT]
 > 📑 **Presentation Guide & Architecture Brief**: For the slide-by-slide presentation deck content, visual working flow diagrams, and ML algorithms breakdown, refer to [APPLICATION_DOCUMENTATION.md](APPLICATION_DOCUMENTATION.md).
-
----
-
-## 🎯 Project Goals & Mission
-
-1. **Protect Financial & Emergency Communications**: Shield everyday individuals and corporate finance teams from high-stakes AI voice cloning scams (grandparent extortion, fake executive wire transfer authorizations).
-2. **Sub-100ms Live Conversational Protection**: Move beyond legacy post-call analysis by evaluating live audio during phone calls, issuing real-time threat warnings before money is transferred.
-3. **Eradicate False Alarms on Real Humans**: Enforce strict 1:1 balanced dataset training and Equal Error Rate (EER) calibration, driving false alarms down to 5.53% without compromising detection rates.
-4. **Zero-Retention Ephemeral Privacy**: Ensure zero caller audio is ever saved to disk or permanent databases, fully complying with GDPR, CCPA, and banking security mandates.
-5. **Cryptographic Accountability**: Provide mathematical proof of all security assessments through a SHA-256 tamper-evident blockchain ledger.
 
 ---
 
@@ -48,278 +37,164 @@
 
 ---
 
-## The 5 Security & Architectural Layers
+## 🎯 Goals
 
-The framework implements a layered defense-in-depth architecture designed for high throughput, sub-100ms latency, zero-retention privacy, and cryptographic accountability:
+### What problem does this project solve?
+Generative voice cloning systems (e.g. ElevenLabs, ChatterboxTTS, VITS, HiFi-GAN) can now clone an individual's vocal identity from as little as **3 seconds** of audio. Fraudsters exploit this to commit authorized push-payment fraud, emergency family scams, and executive impersonation over phone calls. Legacy forensic tools only process audio *after* the call finishes—when the money has already been stolen. 
 
-```
-                      [ Live Call / Audio Stream ]
-                                   │
-┌──────────────────────────────────▼──────────────────────────────────┐
-│ LAYER 1: In-Memory Ingestion & Zero-Retention Privacy Buffer        │
-│ 16kHz resampler • Amplitude normalizer • 3.0s circular ephemeral RAM│
-└──────────────────────────────────┬──────────────────────────────────┘
-                                   │
-┌──────────────────────────────────▼──────────────────────────────────┐
-│ LAYER 2: Real-Time Diarization & Dual-Model Detection Ensemble      │
-│ ├─ Two-Speaker Online Diarizer (Cosine Timbre Clustering + VAD)     │
-│ ├─ SincNet Conv1D Neural Model (Time-domain bandpass filters on MPS)│
-│ └─ Calibrated Random Forest (63 spectral, acoustic & prosody feats) │
-└──────────────────────────────────┬──────────────────────────────────┘
-                                   │
-┌──────────────────────────────────▼──────────────────────────────────┐
-│ LAYER 3: Dynamic Multi-Signal Threat Scoring & Progressive Engine   │
-│ ├─ Multi-signal threat formula (50% ML, 20% HF, 15% Phase, 10% Jitt)│
-│ ├─ Stage 0: Calibrating baseline (0-5s, countdown ticker Xs / 10s) │
-│ ├─ Stage 1: Preliminary 5s rolling average risk (5-6s)              │
-│ └─ Stage 2: Final verified threat score guaranteed at 10-12s        │
-└──────────────────────────────────┬──────────────────────────────────┘
-                                   │
-┌──────────────────────────────────▼──────────────────────────────────┐
-│ LAYER 4: Tamper-Evident SHA-256 Cryptographic Audit Ledger          │
-│ Immutable hash chain • Non-biometric metadata • Merkle verification │
-└──────────────────────────────────┬──────────────────────────────────┘
-                                   │
-┌──────────────────────────────────▼──────────────────────────────────┐
-│ LAYER 5: Edge-First Local Spooling & Offline Resilience Queue       │
-│ Offline fallback • Zero call latency • Auto-sync upon reconnection  │
-└─────────────────────────────────────────────────────────────────────┘
-```
+**Voice Shield AI** solves this by evaluating live two-way conversational audio in real time over WebSockets with sub-90ms latency, delivering a **guaranteed verified verdict at 10–12 seconds** without saving user audio to disk.
 
-### Layer 1: In-Memory Ingestion & Zero-Retention Privacy Buffer
-- Operates on transient audio streams, resampling to a standardized 16,000 Hz mono PCM format.
-- Uses an in-memory circular ring buffer (`AudioPrivacyBuffer`) configured for 3.0-second sliding analysis windows.
-- **Strict Privacy Guarantee**: Call audio is never written to disk or persistently cached. Buffers are zeroed and purged immediately after feature extraction.
+### Who is it for?
+- **Banking & Fintech Security Teams**: To prevent fraudulent telephone wire transfer authorizations.
+- **Enterprise Call Centers**: To verify inbound customer voice biometric integrity in real time.
+- **Smartphone Users**: To protect against AI-powered extortion and family emergency voice scams.
+- **Digital Forensics & Security Researchers**: To audit synthetic speech artifacts using explainable physics.
 
-### Layer 2: Real-Time Conversational Diarization & Dual-Model Ensemble
-- **Two-Speaker Diarization**: Extracts 40-D timbre embeddings (MFCC mean/std, spectral centroid/rolloff) and clusters speakers via Cosine Distance to isolate **Speaker A (Local Caller)** from **Speaker B (Remote Contact)**. Quarantines cross-talk overlap.
-- **SincNet Neural Raw-Waveform Classifier**: Deep 1D neural architecture with parameterized bandpass sinc convolutions, temporal residual blocks, and attentive statistics pooling directly on raw waveforms.
-- **Calibrated Random Forest Classifier**: Evaluates 63 handcrafted mathematical features spanning spectral rolloff/contrast, MFCC dynamics, phase derivative variance, and vocal jitter/shimmer.
-- **Ensemble Fusion**: $P_{\text{ensemble}} = 0.50 \cdot P_{\text{RF}} + 0.50 \cdot P_{\text{Neural}}$ providing superior generalization across unseen generators.
-
-### Layer 3: Dynamic Multi-Signal Threat Scoring & Progressive Evaluation (The 10–12s Rule)
-- Synthesizes model probabilities with sub-band anomaly metrics to produce an intuitive **0–100 Impersonation Risk Score**:
-  - $50\%$ ML Classifier Spoof Probability ($P_{\text{ensemble}}$)
-  - $20\%$ High-Frequency Spectral Energy Discontinuity Score
-  - $15\%$ Acoustic Phase Derivative Variance
-  - $10\%$ Prosodic & Pitch Stability Factor
-  - $5\%$ Speaker Consistency Weight
-- **3-Stage Progressive Timeline**:
-  - **Stage 0 (0.0s – 5.0s | Calibrating Baseline)**: Evaluates background acoustics and mic gain with live countdown ticker `(Xs / 10s)`.
-  - **Stage 1 (5.0s – 6.0s | Preliminary 5s Average)**: Computes early rolling risk average over initial speech turns.
-  - **Stage 2 (10.0s – 12.0s | Consolidated Final Verdict)**: Unconditionally evaluates all accumulated speech frames and displays verified verdict (`CALL AUTHENTIC` or `🚨 CRITICAL ALERT: AI CLONE DETECTED`), guaranteeing the engine never hangs on quiet mobile mics.
-- Contextual metadata adjustments (+12% high financial transaction, language normalizers).
-- Automated threshold calibration ($\tau^* = 0.3985$) guarantees real human voices fall safely in the **LOW** zone (~5.0% - 12.0%).
-
-### Layer 4: Tamper-Evident SHA-256 Cryptographic Audit Ledger
-- Every scan and stream verification logs an immutable event block into an append-only cryptographic hash chain (`AuditChain`).
-- Each block contains: `block_index`, `timestamp`, `event_type`, `payload_hash`, and `previous_hash`.
-- Zero raw audio or biometrics are stored in the ledger—only verifiable security verdicts.
-- Integrated `/audit/verify` endpoint verifies block integrity across the entire chain.
-
-### Layer 5: Edge-First Local Spooling & Offline Resilience Queue
-- Implements an offline-first architecture (`EdgeQueueService`) allowing deployment on edge gateways, mobile devices, and local branch PBX servers.
-- If connectivity to central security monitoring / SIEM is lost, detection runs entirely offline with sub-100ms latency, spooling signed ledger entries locally and syncing automatically once reconnected.
+### What does "done" look like for v1?
+- Real-time conversational two-speaker diarization isolating the local caller from the remote party.
+- Progressive 3-stage threat scoring: Stage 0 (0–5s calibration) $\to$ Stage 1 (5–6s preliminary average) $\to$ Stage 2 (10–12s guaranteed final verdict).
+- Dual-model consensus ensemble combining PyTorch SincNet 1D raw-waveform neural filters with 63-D calibrated Random Forest classifiers.
+- Zero-retention ephemeral RAM ring buffer (no audio stored on disk) and SHA-256 cryptographic audit ledger.
+- Validated performance: **0.9882 ROC-AUC**, **6.12% EER**, and **100% detection rate on modern neural TTS**.
 
 ---
 
-## How the Model Finds Cloned Voices (Forensic & Acoustic Mechanics)
+## ✨ Features
 
-Voice cloning systems (e.g. ElevenLabs, ChatterboxTTS, VITS, WaveNet, Tacotron, HiFi-GAN) construct speech by predicting intermediate representations (Mel-spectrograms or linguistic tokens) and synthesizing pressure waves via neural vocoders. While cloned voices sound convincing to the human ear, they leave distinct mathematical and physical traces in the acoustic and phase domains:
+### Implemented & Ready in v1
+- [x] **Two-Way Live Conversational Diarization**: Isolates Speaker A (Local user) from Speaker B (Remote caller) using 40-D timbre embeddings and online cosine clustering.
+- [x] **Cross-Talk Overlap Quarantine**: Automatically detects and quarantines simultaneous speech to prevent false contamination.
+- [x] **Progressive 3-Stage Threat Evaluation**:
+  - *Stage 0 (0–5s)*: Baseline ambient room and mic gain calibration with active `(Xs / 10s)` countdown ticker.
+  - *Stage 1 (5–6s)*: Rolling 5-second preliminary average risk score.
+  - *Stage 2 (10–12s)*: **Guaranteed unconditional verified verdict** (`CALL AUTHENTIC` or `AI CLONE DETECTED`).
+- [x] **Dual-Model AI Ensemble**: Blends raw time-domain neural filters with physical acoustic heuristics ($P_{\text{ensemble}} = 0.50 \cdot P_{\text{RF}} + 0.50 \cdot P_{\text{Neural}}$).
+- [x] **Explainable Acoustic Physics**:
+  - *Hilbert Phase Derivative Variance*: Detects artificial vocoder phase jumps.
+  - *High-Frequency Spectral Cutoff*: Identifies 4–6 kHz Mel filterbank energy drop-offs.
+  - *Glottal Pitch Jitter & Shimmer*: Catches unnatural robotic pitch smoothness.
+  - *Spectral Contrast Standard Deviation*: Evaluates formant peak vs valley dynamics across 6 octave bands.
+- [x] **Zero-Retention Ephemeral Privacy Buffer**: Audio lives exclusively in a 3.0-second circular RAM ring buffer and is shredded immediately after feature extraction.
+- [x] **SHA-256 Cryptographic Audit Ledger (`AuditChain`)**: Seals every completed call inspection into an append-only hash chain with block verification.
+- [x] **Glassmorphic Cyber UI**: 60 FPS HTML5 canvas oscilloscope, dynamic per-speaker forensic cards, and color-coded alert banners.
+- [x] **Mobile Optimization & Cloud Tunnels**: Audio keep-alive feedback loop (`0.00001` gain) and integrated Cloudflare tunnel (`cloudflared`) for live cellular phone testing.
+- [x] **Batch Audio Forensic Upload**: Drag-and-drop analysis for `.wav`, `.mp3`, `.m4a`, and `.flac` files.
+- [x] **1-Click Cloud Deployment**: Pre-configured `Dockerfile`, `Procfile`, and `render.yaml` for Render, Hugging Face Spaces, and Railway.
 
-```
-Human Vocal Tract (Physical Air Flow)          AI Voice Cloner (Neural Vocoder)
-├─ Glottal pulses & continuous phase           ├─ Reconstructed phase & mathematical jumps
-├─ Involuntary micro-tremors (Jitter/Shimmer)  ├─ Rigid, unnatural prosodic stability
-├─ Natural resonant formants (F1-F4)           ├─ Non-linear co-articulation artifacts
-└─ Wide harmonic energy distribution           └─ Abrupt high-frequency spectral cutoff (>4-6kHz)
-```
-
-Our dual-model ensemble exploits six forensic anomalies to identify deepfakes:
-
-### 1. Instantaneous Phase Derivative Variance (Hilbert Transform Analysis)
-- **Physical Mechanism**: Human vocal fold vibrations and acoustic radiation from the lips create smoothly continuous phase transitions governed by biomechanical aerodynamics.
-- **Cloning Artifact**: Generative vocoders estimate phase synthetically (Griffin-Lim or learned vocoder upsampling layers). This produces unnatural, jagged instantaneous phase transitions across consecutive time frames.
-- **Detection Algorithm**: The engine computes the analytic signal using the Hilbert transform:
-  $$y_{\text{analytic}}[t] = y[t] + i \cdot \mathcal{H}(y[t])$$
-  Unwrapping the instantaneous phase angle $\phi[t] = \operatorname{unwrap}(\arg(y_{\text{analytic}}[t]))$ and calculating the variance of the first derivative:
-  $$\text{Phase Variance} = \operatorname{Var}\left(\frac{\Delta \phi}{\Delta t}\right)$$
-  Spikes in phase derivative variance strongly correlate with synthetic vocoder reconstruction.
-
-### 2. High-Frequency Spectral Cutoffs & Mel Shelf Artifacts
-- **Physical Mechanism**: Uncompressed human vocal speech naturally radiates acoustic energy into the 4,000–8,000 Hz spectrum through consonant friction and oral cavity resonances.
-- **Cloning Artifact**: To reduce compute, neural TTS architectures almost universally operate on 80-band Mel filterbanks capped at 4 kHz or 8 kHz. Above this cutoff, neural vocoders either truncate energy completely or produce synthetic checkerboard upsampling artifacts.
-- **Detection Algorithm**: Evaluates high-frequency energy ratios above 4 kHz against total spectral power:
-  $$\text{HF Energy Ratio} = \frac{\sum_{f \ge 4000 \text{ Hz}} |X(f)|^2}{\sum_{f} |X(f)|^2}$$
-  Abrupt spectral rolloff shelves or unnatural energy voids trigger immediate spectral anomaly flags.
-
-### 3. Glottal Prosodic Dynamics: Micro-Jitter & Shimmer
-- **Physical Mechanism**: Biological human speech contains continuous, involuntary micro-fluctuations in vocal fold cycle length (pitch **Jitter**) and cycle amplitude (**Shimmer**).
-- **Cloning Artifact**: Cloned speech is either *mathematically too smooth* (robotic stability without micro-perturbations) or *erratic across phoneme transitions*.
-- **Detection Algorithm**: Extracts Fundamental Frequency ($F_0$) pitch tracks via parabolic peak interpolation, measuring relative perturbation:
-  $$\text{Jitter} = \frac{\frac{1}{N-1} \sum_{i=1}^{N-1} |T_i - T_{i+1}|}{\frac{1}{N} \sum_{i=1}^N T_i}, \quad \text{Shimmer} = \frac{\frac{1}{N-1} \sum_{i=1}^{N-1} |A_i - A_{i+1}|}{\frac{1}{N} \sum_{i=1}^N A_i}$$
-
-### 4. Vocal Tract Resonances & Formant Inconsistencies (20 MFCC Dimensions)
-- **Physical Mechanism**: The human vocal tract acts as a biological acoustic filter, continuously shifting formants ($F_1$ through $F_4$) during co-articulation (e.g. transitioning from plosives like /p/ or /k/ into vowels).
-- **Cloning Artifact**: Generative models struggle with non-linear formant trajectories, creating spectral smearing or unnatural energy contrast between formant peaks and spectral valleys.
-- **Detection Algorithm**: Computes 20 Mel-Frequency Cepstral Coefficients (MFCCs) across 1,024-point FFT frames, extracting temporal mean, standard deviation, and sub-band spectral contrast across octave bands.
-
-### 5. Deep Raw-Waveform SincNet Time-Domain Filtering
-- **Physical Mechanism**: Spectrogram-based classifiers discard phase and compress audio into discrete frequency bins, losing temporal micro-artifacts.
-- **Cloning Artifact**: Neural vocoder upsamplers introduce waveform-level quantization noise and sample interpolation errors in the time domain.
-- **Detection Algorithm**: SincNet directly convolves the raw pressure signal $x[t]$ with parameterized learnable bandpass filters:
-  $$g[t, f_1, f_2] = 2f_2 \operatorname{sinc}(2\pi f_2 t) - 2f_1 \operatorname{sinc}(2\pi f_1 t)$$
-  The filter cutoffs $f_1, f_2$ are updated during backpropagation, autonomously isolating adversarial frequency bands that differentiate human glottal pulses from synthetic neural vocoding.
-
-### 6. Dual Ensemble Consensus Decision
-- Handcrafted acoustic features are evaluated by the calibrated Random Forest.
-- Raw time-domain waveforms are evaluated by SincNet on Apple Silicon MPS.
-- Individual probabilities are blended ($P_{\text{ensemble}} = 0.50 \cdot P_{\text{RF}} + 0.50 \cdot P_{\text{Neural}}$), ensuring that if an attacker circumvents spectral features, the raw-waveform network catches the attack (and vice versa).
+### Planned Roadmap
+- [ ] **Native Mobile Call Screening**: Android `CallScreeningService` background telephony dialer hook.
+- [ ] **On-Device Keyword Fraud Spotter**: Real-time keyword spotting for high-risk fraud trigger phrases (*"OTP"*, *"urgent wire transfer"*, *"police warrant"*).
+- [ ] **Enterprise SIP / PBX Proxy**: Hardware-accelerated SIP trunk inspection for corporate banking call centers.
+- [ ] **Adversarial Codec Data Augmentation**: Fine-tuning against low-bitrate WhatsApp VoIP and AMR-WB mobile codecs.
 
 ---
 
-## Complete List of Datasets (38,239 Total Audio Clips)
+## 🗺️ Roadmap
 
-The framework is trained, calibrated, and evaluated across four comprehensive speech corpora:
-
-| Dataset | Type | Sample Count | Audio Format | Description & Attack Systems |
-| :--- | :--- | :--- | :--- | :--- |
-| **LibriSpeech (test-clean)** | Genuine Human | **2,620** clips | 16 kHz FLAC | Clean, diverse human reading speech across hundreds of male and female speakers. |
-| **ASVspoof 2019 LA (Bonafide)** | Genuine Human | **2,680** clips | 16 kHz WAV | Telephone & voice verification bonafide speech recorded in controlled acoustic environments. |
-| **ASVspoof 2019 LA (Spoof A07–A19)** | Synthetic Spoofs | **15,399** clips | 16 kHz WAV | 13 distinct voice generation systems: neural vocoders, waveform concatenation, WaveNet, deep neural voice conversion. |
-| **PhonemeDF (ChatterboxTTS)** | Modern Neural TTS | **17,540** clips | 16 kHz WAV | State-of-the-art contemporary phoneme-level neural text-to-speech synthetic voices. |
-| **ASVspoof 2021 DF (Deepfake)** | Compressed Spoof Benchmark | **611,829** trials | 16 kHz FLAC | Deepfake & compressed speech evaluation across 9 lossy codecs and unknown vocoders. |
-| **Total Active Dataset Universe** | **Multi-Source** | **650,068** items | **16 kHz PCM** | **Comprehensive multi-modal benchmark spanning raw acoustic, neural TTS, and compressed deepfakes.** |
-
-
-### Bundled Test Samples (`test_samples/`)
-For instant verification without downloading multi-gigabyte files, pre-packaged samples are included in the repository:
-- `test_samples/genuine_sample.wav` — Clean human speech reference
-- `test_samples/test_genuine.m4a` / `.wav` — Natural human speech recording
-- `test_samples/spoof_sample.wav` — ASVspoof synthetic voice sample
-- `test_samples/chatterbox_tts_sample.wav` — PhonemeDF ChatterboxTTS neural synthetic voice
+Track ongoing engineering tasks, sprint items, and upcoming milestones on our live issue board:
+👉 **[GitHub Issues & Milestones](https://github.com/aayash317-svg/Ai_voice-_cloning/issues)**
 
 ---
 
-## How We Train the Dataset (Step-by-Step Methodology)
+## 📦 Requirements
 
-To guarantee scientific honesty, prevent data leakage, and eliminate false alarms on genuine human voices, training follows a strict 6-stage protocol:
-
-```
- 38,239 Audio Files (LibriSpeech + ASVspoof + ChatterboxTTS)
-                           │
- ┌─────────────────────────▼──────────────────────────┐
- │ Step 1: Strict Anti-Leakage Partitioning           │
- │ Train (70%)  •  Dev (15%)  •  Held-out Test (15%)  │
- └─────────────────────────┬──────────────────────────┘
-                           │
- ┌─────────────────────────▼──────────────────────────┐
- │ Step 2: Controlled 1:1 Class Balancing             │
- │ Exactly 3,710 Genuine Human vs 3,710 Synthetic     │
- │ (Eliminates majority-spoof bias & false 88% alarms)│
- └─────────────────────────┬──────────────────────────┘
-                           │
- ┌─────────────────────────▼──────────────────────────┐
- │ Step 3: Multi-Domain Feature Matrix Extraction     │
- │ 63 Acoustic, Spectral, MFCC & Prosodic dimensions  │
- └─────────────────────────┬──────────────────────────┘
-                           │
- ┌─────────────────────────▼──────────────────────────┐
- │ Step 4: Model Training                             │
- │ ├─ Random Forest (100 trees, max_depth=16, CPU)    │
- │ └─ SincNet Neural Waveform (PyTorch on MPS/CUDA)   │
- └─────────────────────────┬──────────────────────────┘
-                           │
- ┌─────────────────────────▼──────────────────────────┐
- │ Step 5: Dev-Set Threshold Calibration (tau*)       │
- │ Tunes decision boundary at EER point on Dev ONLY   │
- └─────────────────────────┬──────────────────────────┘
-                           │
- ┌─────────────────────────▼──────────────────────────┐
- │ Step 6: Unbiased Held-Out Test Set Evaluation      │
- │ Final honest benchmark (Zero test-set tuning)      │
- └────────────────────────────────────────────────────┘
-```
-
-### Step 1: Anti-Leakage Data Partitioning
-- Datasets are partitioned into **Train (70%)**, **Development (15%)**, and **Test (15%)** splits.
-- Audio files from the same recording session or speaker never cross split boundaries, preventing identity memorization.
-
-### Step 2: Controlled 1:1 Class Balancing
-- Standard anti-spoofing datasets are up to 85% synthetic, which causes standard classifiers to develop a strong majority bias—falsely labeling real human voices as deepfakes (the root cause of the previous 88% false risk score).
-- We enforce an exact **1:1 training distribution**:
-  - **3,710 Genuine Human Voices** (LibriSpeech + ASVspoof bonafide)
-  - **3,710 Synthetic Spoofs** (split evenly between ASVspoof A07–A19 and ChatterboxTTS)
-
-### Step 3: 63-Dimensional Feature Extraction
-- Audio clips are normalized and transformed into fixed-length 63-dimensional vectors:
-  - **MFCCs (20 coefficients)**: Mean and standard deviation across frames (spectral envelope).
-  - **Spectral Descriptors**: Centroid, bandwidth, rolloff, flatness, and sub-band contrast.
-  - **Phase & Acoustic Artifacts**: Instantaneous phase derivative variance and zero-crossing rate.
-  - **Prosodic Dynamics**: Fundamental frequency (F0), pitch range, jitter, and shimmer.
-
-### Step 4: Model Training
-- **Random Forest**: Trained with 100 estimators, balanced leaf weights, and multi-core CPU parallelism.
-- **SincNet Neural Model**: Trained on raw audio waveforms using AdamW optimizer with Cosine Annealing learning rate scheduling across 5 epochs on Apple Silicon Metal Performance Shaders (`mps`).
-
-### Step 5: Dev-Set Threshold Calibration ($\tau^*$)
-- **Strict Anti-Overfitting Rule**: The decision threshold is tuned strictly on the Development set by locating the Equal Error Rate (EER) point where False Positive Rate (FPR) equals False Negative Rate (FNR).
-- The resulting calibrated threshold $\tau^* = 0.3985$ is locked into the model metadata.
-
-### Step 6: Unbiased Test Set Evaluation
-- Evaluated on the held-out Test set (3,405 audio clips) with zero test-set threshold adjustments:
-  - **ROC-AUC**: **0.9827** (Dual Ensemble: **0.9882**)
-  - **Equal Error Rate (EER)**: **7.05%** (Dual Ensemble: **6.12%**)
-  - **Human False Alarm Rate (Real $\to$ Fake)**: **5.53%** (down from 15%)
-  - **ChatterboxTTS Detection Rate**: **100.0%** (300 / 300 detected)
-
----
-
-## Quickstart & Installation Guide
-
-### 1. Prerequisites
+- **Operating System**: Windows 10/11, macOS (Apple Silicon or Intel), or Linux (Ubuntu 20.04+)
 - **Python**: 3.10, 3.11, 3.12, or 3.13
-- **FFmpeg**: Required for universal audio decoding (`.wav`, `.mp3`, `.m4a`, `.flac`)
-  ```bash
-  # Windows (via Chocolatey or Scoop)
-  choco install ffmpeg
-  # or scoop install ffmpeg
+- **Hardware Acceleration**:
+  - Apple Silicon Metal Performance Shaders (`mps`) supported
+  - NVIDIA CUDA GPU supported
+  - CPU multi-core fallback enabled by default
+- **Key Dependencies**:
+  - `torch >= 2.2.0` & `torchaudio >= 2.2.0` (SincNet neural waveform network)
+  - `librosa >= 0.10.1` & `scipy >= 1.12.0` (Acoustic physics & Hilbert transform)
+  - `scikit-learn >= 1.4.0` (Calibrated Random Forest classifier)
+  - `fastapi >= 0.110.0` & `uvicorn[standard]` (High-throughput async server)
+  - `websockets >= 12.0` (Low-latency binary audio streaming)
+  - `soundfile >= 0.12.1` & `pydub` (PCM audio decoding)
 
-  # macOS (via Homebrew)
-  brew install ffmpeg
+---
 
-  # Ubuntu / Debian
-  sudo apt update && sudo apt install -y ffmpeg
-  ```
+## 🚀 Installation
 
-### 2. Local Setup
-
-#### Clone the Repository:
+### 1. Prerequisites (Install FFmpeg)
+FFmpeg is required for universal audio decoding:
 ```bash
-git clone https://github.com/aayash317-svg/Ai_voice-_cloning.git
-cd Ai_voice-_cloning
+# Windows (via Chocolatey or Scoop)
+choco install ffmpeg
+# or: scoop install ffmpeg
+
+# macOS (via Homebrew)
+brew install ffmpeg
+
+# Ubuntu / Debian Linux
+sudo apt update && sudo apt install -y ffmpeg
 ```
+
+### 2. Clone Repository & Setup Virtual Environment
 
 #### Windows (PowerShell):
 ```powershell
+# Clone the repository
+git clone https://github.com/aayash317-svg/Ai_voice-_cloning.git
+cd Ai_voice-_cloning
+
+# Create and activate virtual environment
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+
+# Install dependencies
 pip install -r requirements.txt
-python app.py
 ```
 
 #### Linux / macOS:
 ```bash
+# Clone the repository
+git clone https://github.com/aayash317-svg/Ai_voice-_cloning.git
+cd Ai_voice-_cloning
+
+# Create and activate virtual environment
 python3 -m venv .venv
 source .venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
+```
+
+---
+
+## 🔧 Usage
+
+### Workflow 1: Launch the Interactive Dashboard & Call Shield
+Start the unified FastAPI server and dashboard:
+```bash
 python app.py
 ```
-*The web dashboard is now accessible at `http://127.0.0.1:8000` (or `http://127.0.0.1:8050`).*
+- Open **`http://127.0.0.1:8000`** (or `http://127.0.0.1:8050`) in your web browser.
+- Click **"Start Live Call Shield"** to monitor audio live.
 
-### 3. Docker Container Deployment
+### Workflow 2: Live Mobile Testing via Cloudflare Tunnel
+To test live cellular phone calls from your smartphone over an encrypted public HTTPS/WSS URL:
+```bash
+.\cloudflared.exe tunnel --url http://127.0.0.1:8000
+```
+Open the generated `https://*.trycloudflare.com` URL in Chrome on Android or Safari on iOS.
 
-You can build and run Voice Shield AI in an isolated container:
+> [!TIP]
+> **Android Cellular Call Tip**: When placing a live cellular call on Android, turn on **Speakerphone** so Android's audio system permits Chrome to capture both caller voices simultaneously.
+
+### Workflow 3: Command-Line Audio File Prediction
+Run forensic inspection directly on an audio file from the terminal:
+```bash
+python backend/predict.py --audio test_samples/spoof_sample.wav
+```
+
+### Workflow 4: Run Automated Tests
+Execute the unit test suite covering the classifier, features, privacy shredder, and audit ledger:
+```bash
+pytest tests/ -v
+```
+
+### Workflow 5: Docker Container Deployment
 ```bash
 # Build the Docker image
 docker build -t voice-shield-ai .
@@ -327,283 +202,73 @@ docker build -t voice-shield-ai .
 # Run the container
 docker run -p 8000:8000 voice-shield-ai
 ```
-Or via Docker Compose:
-```bash
-docker-compose up --build
-```
-
-### 4. Live Mobile Testing via Cloudflare Tunnel
-
-To test live cellular phone calls on your physical smartphone over a secure public HTTPS/WSS URL:
-```bash
-# Launch Cloudflare Tunnel pointing to your local port
-.\cloudflared.exe tunnel --url http://127.0.0.1:8000
-```
-Open the generated `https://*.trycloudflare.com` URL in Chrome on Android or Safari on iOS.
-
-> [!TIP]
-> **Android Cellular Call Tip**: When placing a live cellular phone call on Android, turn on **Speakerphone** so Android's audio system permits Chrome to capture both caller voices simultaneously.
-
-### 5. Running Automated Unit Tests
-
-Verify model inference, cryptographic audit chains, and privacy shredding:
-```bash
-pytest tests/ -v
-```
-*Expected: 5 passed in < 10 seconds.*
 
 ---
 
-## 📋 Project Tracking & Governance
-
-We manage all development milestones, bugs, and feature roadmaps through **[GitHub Issues](https://github.com/aayash317-svg/Ai_voice-_cloning/issues)**:
-
-| Issue Type | Template | Use Case |
-| :--- | :--- | :--- |
-| **Bug Reports** | [Bug Report](.github/ISSUE_TEMPLATE/bug_report.md) | Reproducible audio decoding issues, VAD edge cases, or false positives |
-| **Feature Requests** | [Feature Request](.github/ISSUE_TEMPLATE/feature_request.md) | Acoustic physics proposals, codec integrations, or UI enhancements |
-| **Project Tasks** | [Task Tracking](.github/ISSUE_TEMPLATE/task_tracking.md) | Sprint deliverables, milestone planning, and release tracking |
-
-Refer to [CONTRIBUTING.md](CONTRIBUTING.md) for pull request guidelines, branch naming conventions, and code review standards.
-
----
-
-## Testing with Packaged Sample Data
-
-The repository includes pre-packaged test samples in `test_samples/` for immediate verification:
-
-### Test 1: Genuine Human Voice
-```bash
-curl -X POST -F "file=@test_samples/genuine_sample.wav" http://localhost:8000/analyze
-```
-**Result**: Risk Score: **~12 / 100 (LOW RISK)** | Alert: `false`
-
-### Test 2: Natural Speech Recording (M4A)
-```bash
-curl -X POST -F "file=@test_samples/test_genuine.m4a" http://localhost:8000/analyze
-```
-**Result**: Risk Score: **~12 / 100 (LOW RISK)** | Alert: `false`
-
-### Test 3: ASVspoof Synthetic Voice
-```bash
-curl -X POST -F "file=@test_samples/spoof_sample.wav" http://localhost:8000/analyze
-```
-**Result**: High/Medium threat flagged.
-
-### Test 4: ChatterboxTTS Neural Voice
-```bash
-curl -X POST -F "file=@test_samples/chatterbox_tts_sample.wav" http://localhost:8000/analyze
-```
-**Result**: Neural TTS spoof pattern identified with 100% confidence.
-
----
-
-## Retraining & Benchmarking Commands
-
-### Train Multi-Generator Random Forest (with ChatterboxTTS)
-```bash
-python backend/train_with_chatterbox.py
-```
-
-### Train SincNet Neural Raw-Waveform Model on MPS / GPU
-```bash
-python backend/train_neural.py
-```
-
-### Run Multi-Generator Benchmark (A07–A19)
-```bash
-python backend/generator_benchmark.py
-```
-
-### Download Full Datasets
-```bash
-# Extract full 17,540 PhonemeDF ChatterboxTTS files
-python scripts/install_phonemedf.py --max-samples 0
-
-# Download ASVspoof 2019 LA
-python scripts/download_asvspoof2019.py
-
-# Download / Setup ASVspoof 2021 DF (keys + starter subset)
-python scripts/download_asvspoof2021_df.py --fetch-keys --sample-subset 100
-```
-
----
-
-## Repository Structure
+## 📁 Project Structure
 
 ```
-.
-├── app.py                            # Application entrypoint
+Ai_voice-_cloning/
 ├── backend/
-│   ├── app.py                        # FastAPI endpoints & WebSocket streaming
-│   ├── classifier.py                 # Anti-spoof classifier abstraction
-│   ├── neural_classifier.py          # PyTorch SincNet deep raw-waveform architecture
-│   ├── features.py                   # 63-dimensional feature extractor
-│   ├── preprocess.py                 # 16kHz resampler & amplitude normalizer
-│   ├── risk_engine.py                # Multi-signal threat scoring engine
-│   ├── privacy.py                    # Zero-retention circular privacy buffer
-│   ├── audit_chain.py                # SHA-256 immutable audit ledger
-│   ├── dataset_loader.py             # ASVspoof 2019/2021, LibriSpeech & Chatterbox loader
-│   ├── train_with_chatterbox.py      # Balanced multi-generator training
-│   └── train_neural.py               # MPS-accelerated deep neural training
+│   ├── app.py                     # FastAPI WebSocket & REST endpoints
+│   ├── classifier.py              # Calibrated Random Forest (63 features)
+│   ├── neural_classifier.py       # PyTorch SincNet 1D raw-waveform model
+│   ├── stream_diarizer.py         # Real-time streaming diarizer & progressive stages
+│   ├── risk_engine.py             # Multi-signal risk fusion & context engine
+│   ├── features.py                # 63-D acoustic & physics feature extractor
+│   ├── privacy.py                 # Ephemeral RAM ring buffer (zero disk retention)
+│   └── audit_chain.py             # SHA-256 cryptographic audit ledger
 ├── frontend/
-│   └── index.html                    # Cyberpunk Stitch UI dashboard
+│   ├── index.html                 # Complete responsive UI & Web Audio streamer
+│   └── assets/                    # Styling, emblems, and visual assets
 ├── models/
-│   ├── baseline_random_forest.pkl    # Pre-trained calibrated RF checkpoint
-│   └── neural_sincnet.pt             # Pre-trained PyTorch SincNet weights
-├── test_samples/                     # Packaged testing audio files
-├── docs/images/                      # Application screenshots and benchmark charts
-├── scripts/
-│   ├── download_asvspoof2019.py      # ASVspoof 2019 automated downloader
-│   ├── download_asvspoof2021_df.py   # ASVspoof 2021 DF downloader & installer
-│   └── install_phonemedf.py          # PhonemeDF ChatterboxTTS installer
-├── requirements.txt                  # Python dependencies
-└── README.md                         # Project documentation
-```
-
-
----
-
-## Enterprise Security & Privacy Architecture
-
-Security, zero-trust privacy, and non-repudiation are foundational engineering requirements of the Voice Integrity Verification platform:
-
-### 1. Zero-Retention Audio Policy (RAM-Only Volatile Processing)
-- **Zero Disk Spooling**: In live call streaming (`/stream`), audio chunks are received over secure WebSockets directly into transient memory. No raw audio is ever written to disk, databases, or temporary cache files.
-- **Volatile Ring Buffering**: Implemented via `AudioPrivacyBuffer`, which holds an ephemeral 3.0-second sliding window. Once features are extracted, the buffer is zeroed with `buffer.fill(0.0)` and discarded.
-- **GDPR & HIPAA Compliance Alignment**: Because voice recordings are classified as biometric personal identifiable information (PII), our zero-retention guarantee ensures that intercepted or stored voice data cannot be leaked, breached, or subpoenaed from server disk drives.
-
-### 2. Tamper-Evident SHA-256 Cryptographic Audit Ledger
-- All security verdicts, model probabilities, and alert triggers are sealed into an immutable blockchain-style audit ledger (`AuditChain`).
-- **Cryptographic Hash Chain Structure**:
-  $$\text{Block Hash}_n = \operatorname{SHA-256}\Big(\text{Index}_n \parallel \text{Timestamp}_n \parallel \text{EventType}_n \parallel \text{PayloadHash}_n \parallel \text{Block Hash}_{n-1}\Big)$$
-- **Non-Biometric Metadata Guarantee**: Audit blocks record event metrics (e.g. `{"risk_score": 12.1, "risk_level": "LOW", "alert_triggered": false}`), but **never store raw audio or speaker biometric embeddings**.
-- **Tamper Detection**: The built-in `/audit/verify` endpoint verifies the mathematical hash continuity of all blocks. Any retrospective modification or deletion of an audit record instantly breaks the cryptographic chain and raises an alert.
-
-### 3. Encrypted Voiceprint Vault (AES-128 / Fernet)
-- When authorized speaker profiles are registered for comparison, voice audio is converted into mathematical embedding vectors and encrypted using `Fernet` (AES-128-CBC with HMAC-SHA256 authentication).
-- Raw enrollment audio is immediately shredded, storing only ciphertext embeddings.
-
----
-
-### Raw Audio Ingestion & Cryptographic Encryption Flow
-
-The platform guarantees that sensitive raw human voice samples are **never retained on disk in plaintext**. Instead, audio passes through a one-way ephemeral ingestion pipeline:
-
-```
-[ Incoming Audio File / Stream Chunk ]
-                │
-                ▼
-[ In-Memory Transient Decode (io.BytesIO) ]  <── Never touches persistent disk
-                │
-                ▼
-[ Feature Extraction & Normalization ]       <── Converted to 63-D mathematical vector
-                │
-        ┌───────┴────────────────────────┐
-        ▼                                ▼
-[ Raw Audio Shredder ]         [ Voiceprint Vault ]
-• buffer.fill(0.0)             • Vector serialized to float32 byte array
-• Memory buffer purged         • Encrypted via AES-128-CBC + HMAC-SHA256
-• Zero disk remnants           • Output: Ciphertext Token (b'gAAAAABn...')
-```
-
-#### Step 1: Memory-Only Audio Ingestion
-Incoming audio bytes from HTTP uploads or WebSocket frames are decoded strictly in-memory using `io.BytesIO`. Temporary OS transcoding files (if needed for M4A/AAC conversion) are immediately deleted in `finally:` blocks before responses are returned.
-
-#### Step 2: Irreversible Mathematical Vectorization
-Audio waveforms are transformed into fixed-length 63-dimensional statistical feature vectors (MFCC moments, spectral rolloff, phase derivative variance). These numerical moments cannot be inverted to reconstruct the original speech recording.
-
-#### Step 3: Military-Grade Symmetric Encryption (Fernet)
-When saving authorized speaker profiles, the resulting numerical embedding is encrypted using `VoiceprintVault`. Fernet guarantees:
-- **AES-128-CBC Encryption**: Strong symmetric confidentiality.
-- **HMAC-SHA256 Authentication**: Prevents tampering or ciphertext manipulation.
-- **Timestamp & IV Randomization**: Distinct ciphertexts produced even for identical voiceprints.
-
----
-
-### Code Examples & Hands-On Demonstrations
-
-#### Example 1: Encrypting and Decrypting Voice Vectors in Python
-```python
-import numpy as np
-from backend.privacy import VoiceprintVault
-
-# Initialize the secure vault (loads ENCRYPTION_KEY or generates random 256-bit key)
-vault = VoiceprintVault()
-
-# 1. Simulate a 63-dimensional extracted acoustic voiceprint vector
-sample_voiceprint = np.array([
-    0.1247, 0.4195, 0.0488, 1732.59, 1667.57, -373.97, 85.79, 6.41, 39.40
-], dtype=np.float32)
-
-print("Original Voiceprint Vector:\n", sample_voiceprint[:4])
-
-# 2. Encrypt vector to secure ciphertext
-encrypted_token = vault.encrypt_embedding(sample_voiceprint)
-print("\nEncrypted Ciphertext Stored in Database:")
-print(encrypted_token[:60] + b"...")
-# Output: b'gAAAAABn0Q8-A4l9xK3z1Y8vQ2mP9k...'
-
-# 3. Decrypt vector during live caller authentication (no raw audio involved)
-decrypted_voiceprint = vault.decrypt_embedding(encrypted_token)
-print("\nDecrypted Vector for Cosine Similarity:")
-print(decrypted_voiceprint[:4])
-
-# 4. Verify exact mathematical equality
-assert np.allclose(sample_voiceprint, decrypted_voiceprint)
-print("\n[+] Verification Successful: Zero audio stored, 100% cryptographic recovery.")
-```
-
-#### Example 2: In-Memory Volatile Buffer & Audio Shredding
-```python
-import numpy as np
-from backend.privacy import AudioPrivacyBuffer
-
-# Create ephemeral ring buffer configured for 3.0-second sliding windows (48,000 samples at 16kHz)
-buffer = AudioPrivacyBuffer(max_seconds=3.0, sr=16000)
-
-# Simulate receiving live streaming PCM call audio chunks
-pcm_chunk_1 = np.ones(16000, dtype=np.float32) * 0.1  # 1.0 second of audio
-pcm_chunk_2 = np.ones(32000, dtype=np.float32) * 0.2  # 2.0 seconds of audio
-
-buffer.append_chunk(pcm_chunk_1)
-buffer.append_chunk(pcm_chunk_2)
-
-# Extract analysis window for model inference
-window = buffer.get_window(num_samples=48000)
-print(f"Window extracted for inference: {len(window)} samples ({len(window)/16000:.1f}s)")
-
-# Immediately shred raw audio from RAM upon call hangup or window evaluation
-buffer.purge()
-print(f"Buffer samples remaining after purge: {len(buffer._buffer)} (RAM zeroed)")
-assert len(buffer._buffer) == 0
-```
-
-#### Example 3: Verifying the Immutable Audit Ledger via cURL
-Every batch analysis or live call detection logs an event into the cryptographic ledger without saving any voice data:
-
-```bash
-# Verify the entire audit ledger integrity
-curl http://localhost:8000/audit/verify
-```
-
-**Response**:
-```json
-{
-  "valid": true,
-  "blocks_verified": 82,
-  "genesis_hash": "63f82029bbf8a594896e053a473b64bc7d6363ceea51296c05d762f03314da12",
-  "latest_hash": "9c1a5b8f7e2d3c4b5a6f7e8d9c0b1a2f3e4d5c6b7a8f9e0d1c2b3a4f5e6d7c8b",
-  "tamper_detected": false
-}
+│   ├── baseline_random_forest.pkl # Calibrated Random Forest model checkpoint
+│   └── neural_sincnet.pt          # PyTorch SincNet weights
+├── docs/
+│   ├── PROJECT_DOCUMENTATION.md   # Master technical and mathematical specification
+│   └── images/                    # UI walkthrough screenshots and ROC curves
+├── test_samples/                  # Reference genuine & clone audio test samples
+├── tests/                         # pytest automated unit test suite (5/5 passing)
+├── .github/
+│   ├── ISSUE_TEMPLATE/            # Bug report, feature request & task templates
+│   └── pull_request_template.md   # Standardized PR checklist
+├── Dockerfile & Procfile          # Container and cloud deployment definitions
+├── render.yaml                    # 1-click cloud deployment blueprint for Render.com
+├── requirements.txt               # Pinned Python dependencies
+├── CONTRIBUTING.md                # Developer guidelines and issue tracking workflow
+├── APPLICATION_DOCUMENTATION.md   # Comprehensive project & presentation deck brief
+├── LICENSE                        # MIT Open Source License
+└── app.py                         # Root entrypoint with port collision auto-resolver
 ```
 
 ---
 
-### 4. Edge-First / Air-Gapped Operation
-- All inference pipelines (FastAPI, PyTorch MPS, Scikit-Learn) run 100% locally on-premise or on edge gateways.
-- **No External Cloud Calls**: Audio is never transmitted to third-party proprietary APIs (e.g. OpenAI, ElevenLabs, Google Cloud), eliminating man-in-the-middle (MitM) eavesdropping risks.
-- If network connection to a central SIEM server drops, `EdgeQueueService` spools signed ledger hashes locally on disk and reconciles upon reconnection.
+## 🤝 Contributing
 
-### 5. Defensive Biometric Integrity Scope
-This system is engineered strictly for **defensive biometric verification and voice impersonation protection**. It is designed to safeguard banking call centers, executive authorization lines, and everyday individuals from voice cloning fraud, CEO gift card scams, and deepfake social engineering.
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on reporting bugs, requesting features, and submitting pull requests.
+
+We use **[GitHub Issues](https://github.com/aayash317-svg/Ai_voice-_cloning/issues)** for project tracking:
+- **Bug Reports**: Use the `[BUG]` template for reproducible acoustic or UI anomalies.
+- **Feature Requests**: Use the `[FEAT]` template to suggest new model architectures or integrations.
+- **Project Tasks**: Use the `[TASK]` template for milestone and sprint deliverables.
+
+---
+
+## ⚖️ Ethical Use
+
+Voice Shield AI is engineered strictly for **defensive biometric verification, fraud prevention, and voice integrity security**. It is designed to safeguard individuals, banks, and enterprises from malicious voice cloning extortion, CEO fraud, and unauthorized audio impersonation. Do not misuse this technology for non-consensual surveillance or malicious exploitation.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgements
+
+- **[ASVspoof Consortium](https://www.asvspoof.org/)**: For the ASVspoof 2019 LA and 2021 DF anti-spoofing benchmark datasets.
+- **[LibriSpeech ASR Corpus](https://www.openslr.org/12/)**: For clean, diverse human voice reference speech.
+- **[Mirco Ravanelli et al.](https://arxiv.org/abs/1808.00158)**: For the foundational research and mathematical formulation of SincNet raw-waveform bandpass convolutions.
+- **PhonemeDF / ChatterboxTTS Team**: For contemporary neural TTS deepfake reference samples.
