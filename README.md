@@ -17,25 +17,6 @@
 
 ---
 
-## Application Interface & Visual Walkthrough
-
-| Live Authenticity Check Dashboard | Live Voice Recording & Sampling |
-| :---: | :---: |
-| ![Dashboard Home](docs/images/dashboard_home.png) | ![Record Voice Sample](docs/images/record_sample.png) |
-
-| Multi-Stage Signal Processing Pipeline | Audio Upload & Batch Analysis |
-| :---: | :---: |
-| ![Analysis Pipeline](docs/images/analysis_pipeline.png) | ![Upload Sample](docs/images/upload_sample.png) |
-
-| Genuine Human Voice Result (Low Risk) | Impersonation Threat Result (High Risk) |
-| :---: | :---: |
-| ![Genuine Voice Result](docs/images/result_genuine.png) | ![Suspicious Spoof Result](docs/images/result_spoof.png) |
-
-| Model ROC-AUC Curve (0.9882) | Multi-Generator Confusion Matrix |
-| :---: | :---: |
-| ![ROC Curve](docs/images/roc_curve.png) | ![Confusion Matrix](docs/images/confusion_matrix.png) |
-
----
 
 ## 🎯 Goals
 
