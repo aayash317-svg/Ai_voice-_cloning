@@ -1,12 +1,30 @@
-# Voice Integrity Verification Framework
+# Voice Shield AI: Real-Time Voice Cloning Detection Engine
 
-> **Voice Integrity Verification is a real-time AI security engine that detects deepfakes, synthetic speech, and cloned voices. Powered by a dual ensemble of SincNet neural raw-waveform filters and spectral-acoustic classifiers, it delivers dynamic risk scoring with zero-retention privacy and a tamper-evident cryptographic audit ledger.**
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/aayash317-svg/Ai_voice-_cloning)
+[![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.2.0-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+[![Tests Passing](https://img.shields.io/badge/Tests-5%2F5%20Passing-success?style=for-the-badge)](tests/)
+
+> **Official Repository**: [https://github.com/aayash317-svg/Ai_voice-_cloning](https://github.com/aayash317-svg/Ai_voice-_cloning)  
+> **Voice Shield AI is a real-time cybersecurity engine that detects deepfakes, synthetic speech, and AI-cloned voices during live two-way phone calls and batch file uploads. Powered by a dual ensemble of SincNet neural raw-waveform filters and 63-dimensional spectral-acoustic classifiers, it delivers dynamic risk scoring with zero-retention privacy and a tamper-evident cryptographic audit ledger.**
 
 > [!TIP]
 > 📖 **Master Technical Documentation**: For the exhaustive architectural specification, acoustic physics formulas, dataset inventory, anti-leakage training methodology, and operations runbook, refer to [docs/PROJECT_DOCUMENTATION.md](docs/PROJECT_DOCUMENTATION.md).
 
 > [!IMPORTANT]
 > 📑 **Presentation Guide & Architecture Brief**: For the slide-by-slide presentation deck content, visual working flow diagrams, and ML algorithms breakdown, refer to [APPLICATION_DOCUMENTATION.md](APPLICATION_DOCUMENTATION.md).
+
+---
+
+## 🎯 Project Goals & Mission
+
+1. **Protect Financial & Emergency Communications**: Shield everyday individuals and corporate finance teams from high-stakes AI voice cloning scams (grandparent extortion, fake executive wire transfer authorizations).
+2. **Sub-100ms Live Conversational Protection**: Move beyond legacy post-call analysis by evaluating live audio during phone calls, issuing real-time threat warnings before money is transferred.
+3. **Eradicate False Alarms on Real Humans**: Enforce strict 1:1 balanced dataset training and Equal Error Rate (EER) calibration, driving false alarms down to 5.53% without compromising detection rates.
+4. **Zero-Retention Ephemeral Privacy**: Ensure zero caller audio is ever saved to disk or permanent databases, fully complying with GDPR, CCPA, and banking security mandates.
+5. **Cryptographic Accountability**: Provide mathematical proof of all security assessments through a SHA-256 tamper-evident blockchain ledger.
 
 ---
 
@@ -257,40 +275,96 @@ To guarantee scientific honesty, prevent data leakage, and eliminate false alarm
 
 ---
 
-## Quickstart & Running Commands
+## Quickstart & Installation Guide
 
 ### 1. Prerequisites
-- Python 3.10, 3.11, 3.12, or 3.13
-- `ffmpeg` (for universal audio decoding)
+- **Python**: 3.10, 3.11, 3.12, or 3.13
+- **FFmpeg**: Required for universal audio decoding (`.wav`, `.mp3`, `.m4a`, `.flac`)
   ```bash
-  # macOS
+  # Windows (via Chocolatey or Scoop)
+  choco install ffmpeg
+  # or scoop install ffmpeg
+
+  # macOS (via Homebrew)
   brew install ffmpeg
 
   # Ubuntu / Debian
-  sudo apt install ffmpeg
+  sudo apt update && sudo apt install -y ffmpeg
   ```
 
-### 2. Installation
-Clone the repository and set up a virtual environment:
+### 2. Local Setup
+
+#### Clone the Repository:
 ```bash
 git clone https://github.com/aayash317-svg/Ai_voice-_cloning.git
 cd Ai_voice-_cloning
-
-python3 -m venv .venv
-source .venv/bin/activate
-
-pip install -r requirements.txt
 ```
 
-### 3. Launch the Application
-Start the unified FastAPI server and dashboard:
-```bash
+#### Windows (PowerShell):
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
 python app.py
 ```
-Or with Uvicorn:
+
+#### Linux / macOS:
 ```bash
-uvicorn backend.app:app --host 0.0.0.0 --port 8000 --reload
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python app.py
 ```
+*The web dashboard is now accessible at `http://127.0.0.1:8000` (or `http://127.0.0.1:8050`).*
+
+### 3. Docker Container Deployment
+
+You can build and run Voice Shield AI in an isolated container:
+```bash
+# Build the Docker image
+docker build -t voice-shield-ai .
+
+# Run the container
+docker run -p 8000:8000 voice-shield-ai
+```
+Or via Docker Compose:
+```bash
+docker-compose up --build
+```
+
+### 4. Live Mobile Testing via Cloudflare Tunnel
+
+To test live cellular phone calls on your physical smartphone over a secure public HTTPS/WSS URL:
+```bash
+# Launch Cloudflare Tunnel pointing to your local port
+.\cloudflared.exe tunnel --url http://127.0.0.1:8000
+```
+Open the generated `https://*.trycloudflare.com` URL in Chrome on Android or Safari on iOS.
+
+> [!TIP]
+> **Android Cellular Call Tip**: When placing a live cellular phone call on Android, turn on **Speakerphone** so Android's audio system permits Chrome to capture both caller voices simultaneously.
+
+### 5. Running Automated Unit Tests
+
+Verify model inference, cryptographic audit chains, and privacy shredding:
+```bash
+pytest tests/ -v
+```
+*Expected: 5 passed in < 10 seconds.*
+
+---
+
+## 📋 Project Tracking & Governance
+
+We manage all development milestones, bugs, and feature roadmaps through **[GitHub Issues](https://github.com/aayash317-svg/Ai_voice-_cloning/issues)**:
+
+| Issue Type | Template | Use Case |
+| :--- | :--- | :--- |
+| **Bug Reports** | [Bug Report](.github/ISSUE_TEMPLATE/bug_report.md) | Reproducible audio decoding issues, VAD edge cases, or false positives |
+| **Feature Requests** | [Feature Request](.github/ISSUE_TEMPLATE/feature_request.md) | Acoustic physics proposals, codec integrations, or UI enhancements |
+| **Project Tasks** | [Task Tracking](.github/ISSUE_TEMPLATE/task_tracking.md) | Sprint deliverables, milestone planning, and release tracking |
+
+Refer to [CONTRIBUTING.md](CONTRIBUTING.md) for pull request guidelines, branch naming conventions, and code review standards.
 
 ---
 
