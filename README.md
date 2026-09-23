@@ -40,7 +40,24 @@ Generative voice cloning systems (e.g. ElevenLabs, ChatterboxTTS, VITS, HiFi-GAN
 
 ---
 
+## 🏗️ System Architecture
+
+<p align="center">
+  <img src="docs/images/architecture_flowchart.png" alt="Voice Shield AI System Architecture" width="360" />
+</p>
+
+Voice Shield AI processes real-time two-way audio through a 6-stage defensive pipeline:
+1. **Client Layer**: Captures & preprocesses mobile / VoIP audio at 16 kHz.
+2. **Ingestion & Privacy**: High-speed WebSocket streaming with zero disk retention (RAM-only ring buffer).
+3. **Real-Time Diarization**: Separates speakers by vocal timbre using online cosine clustering.
+4. **AI Detection Ensemble**: Late fusion of SincNet 1D raw-waveform neural network and 63-D Random Forest.
+5. **Risk Engine**: Multi-signal threat scoring with contextual transaction awareness.
+6. **Audit & Output**: Immutable SHA-256 audit ledger, live dashboard telemetry, and instant freeze alerts.
+
+---
+
 ## ✨ Features
+
 
 ### Implemented & Ready in v1
 - [x] **Two-Way Live Conversational Diarization**: Isolates Speaker A (Local user) from Speaker B (Remote caller) using 40-D timbre embeddings and online cosine clustering.
