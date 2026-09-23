@@ -1,0 +1,27 @@
+# Docker build ignore file
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+.pytest_cache/
+.vscode/
+.git/
+.github/
+
+# Raw audio datasets & archives (not needed for inference runtime)
+datasets/
+test-clean.tar.gz
+*.tar
+*.tar.gz
+*.zip
+
+# Local testing media & recordings
+testing video/
+testing voice samples/
+scratch/
+experiments/
+cloudflared.exe
+node_modules/
+stitch_voice_cleaning_platform_ui/
+*.log
