@@ -114,7 +114,7 @@ Use this section to explain the machine learning innovations clearly in your pre
 
 ---
 
-## Part 3: Ready-to-Use Slide-by-Slide PPT Content
+## Part 3: Ready-to-Use 
 
 Copy and paste these exact slide outlines directly into your PowerPoint / Canva presentation deck:
 
