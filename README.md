@@ -175,14 +175,33 @@ Execute the unit test suite covering the classifier, features, privacy shredder,
 pytest tests/ -v
 ```
 
-### Workflow 5: Docker Container Deployment
+### Workflow 5: Cloud & Docker Deployment
+
+#### A. Free 1-Click Deployment on Render.com (Recommended)
+This repository includes a pre-configured [`render.yaml`](render.yaml) blueprint:
+1. Log into [Render.com](https://render.com).
+2. Go to **Blueprints** → Click **New Blueprint Instance**.
+3. Connect your repository: `https://github.com/aayash317-svg/Ai_voice-_cloning.git`.
+4. Render automatically configures the Docker web service, sets dynamic port binding (`$PORT`), and mounts the `/health` check.
+5. Click **Apply** — your instance will build and be live in under 2 minutes!
+
+> [!TIP]
+> **Manual Web Service on Render**: If creating a manual Web Service on Render:
+> - **Environment**: Select `Docker` (or select `Python 3`).
+> - **Build Command (if Python 3)**: `./build.sh`
+> - **Start Command (if Python 3)**: `python main.py`
+> - **Health Check Path**: `/health`
+
+#### B. Local or Cloud Docker Deployment
 ```bash
-# Build the Docker image
+# Build the optimized production Docker image (CPU-only PyTorch, ~95% smaller)
 docker build -t voice-shield-ai .
 
-# Run the container
+# Run container locally on port 8000
 docker run -p 8000:8000 voice-shield-ai
 ```
+Visit `http://localhost:8000` to access the dashboard.
+
 
 ---
 
