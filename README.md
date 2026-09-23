@@ -43,7 +43,7 @@ Generative voice cloning systems (e.g. ElevenLabs, ChatterboxTTS, VITS, HiFi-GAN
 ## 🏗️ System Architecture
 
 <p align="center">
-  <img src="docs/images/architecture_flowchart.png" alt="Voice Shield AI System Architecture" width="360" />
+  <img src="docs/images/architecture_flowchart.png" alt="Voice Shield AI System Architecture" width="520" />
 </p>
 
 Voice Shield AI processes real-time two-way audio through a 6-stage defensive pipeline:

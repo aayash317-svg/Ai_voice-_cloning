@@ -9,7 +9,7 @@
 ## Part 1: Visual Working Architecture Diagram
 
 <p align="center">
-  <img src="docs/images/architecture_flowchart.png" alt="Voice Shield AI Working Architecture Diagram" width="380" />
+  <img src="docs/images/architecture_flowchart.png" alt="Voice Shield AI Working Architecture Diagram" width="520" />
 </p>
 
 Below is the complete end-to-end working flow and technical specification of the 6 core system stages shown in the diagram above:
