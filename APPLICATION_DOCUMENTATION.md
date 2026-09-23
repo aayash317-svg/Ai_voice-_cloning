@@ -120,7 +120,7 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
 
 ---
 
-### Slide 1: Title Slide
+### 
 - **Slide Title**: Voice Shield AI
 - **Subtitle**: Real-Time AI Voice Cloning Detection & Live Call Protection Engine
 - **Bullet Points**:
@@ -131,7 +131,7 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
 
 ---
 
-### Slide 2: The Problem — The Weaponization of Generative Voice
+###  The Problem — The Weaponization of Generative Voice
 - **Slide Title**: The Threat: Generative AI Voice Cloning
 - **Bullet Points**:
   - **3 Seconds to Clone**: Modern neural TTS engines (ElevenLabs, ChatterboxTTS, VITS) require as little as 3 seconds of reference audio to clone any human voice.
@@ -141,7 +141,7 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
 
 ---
 
-### Slide 3: The Solution — Voice Shield AI
+### The Solution — Voice Shield AI
 - **Slide Title**: Our Solution: Real-Time Conversational Defense
 - **Bullet Points**:
   - **Live Call Protection**: Streams and analyzes two-way conversational phone audio in real time over WebSockets (< 90ms latency).
@@ -154,7 +154,7 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
 
 ---
 
-### Slide 4: System Architecture & 5-Layer Defense
+### System Architecture & 5-Layer Defense
 - **Slide Title**: End-to-End System Architecture
 - **Bullet Points**:
   - **Layer 1 (Ingestion)**: 16 kHz resampler, inaudible mobile keep-alive loop, and ephemeral RAM ring buffer.
@@ -166,7 +166,7 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
 
 ---
 
-### Slide 5: Acoustic Physics: How the Model Catches Clones
+###  Acoustic Physics: How the Model Catches Clones
 - **Slide Title**: Forensic Acoustic Mechanics: Human Vocal Tract vs AI Vocoders
 - **Bullet Points**:
   - **Phase Discontinuity (Hilbert Transform)**:
@@ -181,7 +181,7 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
 
 ---
 
-### Slide 6: Machine Learning Architecture & Dual Ensemble
+###  Machine Learning Architecture & Dual Ensemble
 - **Slide Title**: Dual-Model Machine Learning Ensemble
 - **Bullet Points**:
   - **Model 1: SincNet 1D Raw-Waveform Filter**:
@@ -196,7 +196,7 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
 
 ---
 
-### Slide 7: Real-Time Conversational Diarization
+### Real-Time Conversational Diarization
 - **Slide Title**: Two-Speaker Live Call Diarization
 - **Bullet Points**:
   - **The Two-Way Audio Challenge**: Phone calls contain mixed audio of both participants; analyzing both together creates false alarms.
@@ -208,7 +208,7 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
 
 ---
 
-### Slide 8: Progressive Threat Scoring (The 10–12s Rule)
+###  Progressive Threat Scoring (The 10–12s Rule)
 - **Slide Title**: Progressive Evaluation Timeline
 - **Bullet Points**:
   - **Stage 0 (0.0s – 5.0s | Calibrating Baseline)**:
@@ -222,7 +222,7 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
 
 ---
 
-### Slide 9: Privacy-First Design & Cryptographic Audit
+###  Privacy-First Design & Cryptographic Audit
 - **Slide Title**: Zero-Retention Privacy & Tamper-Evident Ledger
 - **Bullet Points**:
   - **Zero-Retention Guarantee**:
@@ -235,7 +235,7 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
 
 ---
 
-### Slide 10: Training Methodology & Dataset Universe
+### Training Methodology & Dataset Universe
 - **Slide Title**: Dataset Universe & Scientific Anti-Leakage Training
 - **Bullet Points**:
   - **38,239 Audio Clips Corpus**:
@@ -250,7 +250,7 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
 
 ---
 
-### Slide 11: Performance Benchmarks & Results
+### Performance Benchmarks & Results
 - **Slide Title**: Validated Performance Benchmarks
 - **Bullet Points**:
   - **ROC-AUC**: **0.9882** on the held-out multi-generator test set.
@@ -272,7 +272,7 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
 
 ---
 
-### Slide 13: Competitive Advantage Matrix
+### Competitive Advantage Matrix
 - **Slide Title**: Competitive Advantage Matrix
 - **Table**:
   | Capability | Traditional Biometrics | Cloud Voice APIs | **Voice Shield AI** |
@@ -286,7 +286,7 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
 
 ---
 
-### Slide 14: Conclusion & Future Roadmap
+###  Conclusion & Future Roadmap
 - **Slide Title**: Project Conclusion & Future Roadmap
 - **Bullet Points**:
   - **Accomplishments**:
@@ -301,7 +301,7 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
 
 ---
 
-## Part 4: Frequently Asked Questions & Defense Points for Presentation
+## Frequently Asked Questions & Defense Points for Presentation
 
 1. **Why does the model evaluate at 10–12 seconds instead of immediately?**
    - *Answer*: Instantaneous 1-second audio slices can be distorted by network packet jitter, hardware AGC, or coughs. Waiting 5 seconds allows the model to calculate a stable preliminary average, and 10–12 seconds guarantees enough speech frames to confirm vocal tract biomechanics with 98.8% accuracy.
