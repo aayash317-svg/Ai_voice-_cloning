@@ -1,13 +1,15 @@
 # Voice Shield AI: Voice Integrity Verification Framework
 
 [![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/aayash317-svg/Ai_voice-_cloning)
+[![Live Demo on Render](https://img.shields.io/badge/Live%20Demo-Render-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://ai-voice-cloning-qxvc.onrender.com)
 [![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.2.0-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 [![Tests Passing](https://img.shields.io/badge/Tests-5%2F5%20Passing-success?style=for-the-badge)](tests/)
 
-> **One-line pitch**: A real-time cybersecurity engine that detects AI-cloned voices, synthetic speech, and deepfakes during live phone conversations and audio uploads with zero-retention privacy and cryptographic proof.
+> **One-line pitch**: A real-time cybersecurity engine that detects AI-cloned voices, synthetic speech, and deepfakes during live phone conversations and audio uploads with zero-retention privacy and cryptographic proof.  
+> 🌐 **Live Interactive Cloud App**: [https://ai-voice-cloning-qxvc.onrender.com](https://ai-voice-cloning-qxvc.onrender.com)
 
 > [!TIP]
 > 📖 **Master Technical Documentation**: For the exhaustive architectural specification, acoustic physics formulas, dataset inventory, anti-leakage training methodology, and operations runbook, refer to [docs/PROJECT_DOCUMENTATION.md](docs/PROJECT_DOCUMENTATION.md).

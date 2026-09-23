@@ -1,6 +1,7 @@
 # Voice Shield AI: Complete Project Brief & PPT Presentation Guide
 
 > **Official Project Repository**: [https://github.com/aayash317-svg/Ai_voice-_cloning](https://github.com/aayash317-svg/Ai_voice-_cloning)  
+> **Live Deployed Web Application**: [https://ai-voice-cloning-qxvc.onrender.com](https://ai-voice-cloning-qxvc.onrender.com)  
 > **Project Title**: Voice Shield AI — Real-Time Conversational AI Voice Cloning Detection & Call Defense Engine  
 > **Core Mission**: Protecting financial transactions and phone communications against generative AI voice clones (ElevenLabs, ChatterboxTTS, HiFi-GAN) with real-time conversational diarization, raw-waveform neural filtering, and zero-retention privacy.
 
