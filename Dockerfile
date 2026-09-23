@@ -39,8 +39,10 @@ ENV PATH="/opt/venv/bin:$PATH"
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
 
-# Pre-create runtime directories with full permissions
-RUN mkdir -p /app/logs /app/results /app/features /app/experiments
+# Pre-create runtime directories with full permissions for root and non-root users
+RUN mkdir -p /app/logs /app/results /app/features /app/experiments && \
+    chmod -R 777 /app/logs /app/results /app/features /app/experiments
+
 
 # Copy application files
 COPY backend/ /app/backend/
