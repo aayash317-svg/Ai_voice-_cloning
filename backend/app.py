@@ -6,27 +6,63 @@ and tamper-evident audit endpoints.
 
 import json
 import io
+import hmac
+import uuid
+import hashlib
 from pathlib import Path
 from typing import Optional, Dict, Any
+from dataclasses import asdict
 import numpy as np
 import soundfile as sf
-from fastapi import FastAPI, UploadFile, File, Form, WebSocket, WebSocketDisconnect, Query, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, WebSocket, WebSocketDisconnect, Query, HTTPException, Depends, Security, Body, status
+from fastapi.security import APIKeyHeader, HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, Response
 from pydantic import BaseModel
 
-from backend.config import SAMPLE_RATE, WINDOW_SAMPLES, MODELS_DIR, BASE_DIR, INDIC_TARGET_LANGUAGES
+from backend.config import (
+    SAMPLE_RATE, WINDOW_SAMPLES, MODELS_DIR, BASE_DIR, INDIC_TARGET_LANGUAGES,
+    ADMIN_API_KEY
+)
 from backend.preprocess import AudioPreprocessor
 from backend.features import FeatureExtractor
 from backend.classifier import AntiSpoofClassifier
 from backend.neural_classifier import SincNetClassifier, NEURAL_MODEL_PATH
 from backend.risk_engine import RiskEngine
 from backend.privacy import AudioPrivacyBuffer
-from backend.audit_chain import AuditChain
+from backend.audit_chain import AuditChain, AuditLedgerCorruptedError
 from backend.call_analyzer import MultiSpeakerCallAnalyzer
 from backend.stream_diarizer import StreamingCallMonitor
 from backend.live_call_engine import LiveCallSession
+
+# Admin Security Scheme for Privileged Audit Operations
+admin_api_key_header = APIKeyHeader(name="X-Admin-API-Key", auto_error=False)
+admin_bearer_auth = HTTPBearer(auto_error=False)
+
+
+def verify_admin_access(
+    api_key: Optional[str] = Security(admin_api_key_header),
+    bearer_creds: Optional[HTTPAuthorizationCredentials] = Security(admin_bearer_auth)
+) -> bool:
+    """
+    Validate administrative credentials via 'X-Admin-API-Key' or 'Authorization: Bearer <token>'.
+    Uses constant-time comparison to protect against timing attacks.
+    """
+    token = api_key or (bearer_creds.credentials if bearer_creds else None)
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Administrative authorization required. Provide 'X-Admin-API-Key' or 'Authorization: Bearer <key>' header.",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    if not hmac.compare_digest(token, ADMIN_API_KEY):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access forbidden: Invalid administrative key."
+        )
+    return True
+
 
 FRONTEND_DIR = BASE_DIR / "frontend"
 
@@ -380,9 +416,15 @@ async def analyze_audio_file(
         language_code=language
     )
 
-    # Append non-biometric security event to audit chain
+    audio_sha256 = hashlib.sha256(audio_bytes).hexdigest()
+    session_id = str(uuid.uuid4())
+    safe_filename = Path(file.filename).name if file.filename else "audio_file.wav"
+
+    # Append non-biometric security event to audit chain (Zero audio / biometric data stored)
     audit_chain.append_event("BATCH_ANALYSIS", {
-        "filename": file.filename,
+        "session_id": session_id,
+        "audio_sha256": audio_sha256,
+        "filename": safe_filename,
         "language": language,
         "risk_score": assessment.risk_score,
         "risk_level": assessment.risk_level,
@@ -444,13 +486,19 @@ async def analyze_call_endpoint(
     result["filename"] = file.filename
     result["language_preset"] = language
 
-    # Log multi-speaker forensic event to tamper-evident audit chain
+    audio_sha256 = hashlib.sha256(audio_bytes).hexdigest()
+    session_id = str(uuid.uuid4())
+    safe_filename = Path(file.filename).name if file.filename else "call_audio.wav"
+
+    # Log multi-speaker forensic event to tamper-evident audit chain (Non-biometric metadata only)
     audit_chain.append_event("CALL_ANALYSIS", {
-        "filename": file.filename,
-        "call_assessment": result["call_assessment"],
+        "session_id": session_id,
+        "audio_sha256": audio_sha256,
+        "filename": safe_filename,
+        "verdict": result.get("call_assessment", {}).get("verdict", "UNKNOWN"),
         "overall_call_risk": result.get("overall_call_risk", 0.0),
-        "speakers_count": len(result["speakers"]),
-        "overlap_percent": result["audio_quality"]["overlap_percent"]
+        "speakers_count": len(result.get("speakers", [])),
+        "overlap_percent": result.get("audio_quality", {}).get("overlap_percent", 0.0)
     })
 
     return result
@@ -699,19 +747,74 @@ async def websocket_live_analyze_endpoint(websocket: WebSocket):
         print(f"[!] WebSocket live analyze error: {e}")
 
 
-@app.get("/audit/chain")
+@app.get("/audit/chain", dependencies=[Depends(verify_admin_access)])
 def get_audit_chain():
-    """Retrieve immutable audit chain entries."""
-    return {"chain": [vars(b) for b in audit_chain.chain], "length": len(audit_chain.chain)}
-
-
-@app.get("/audit/verify")
-def verify_audit_integrity():
-    """Cryptographically verify the integrity of the audit ledger."""
-    is_valid, error = audit_chain.verify_integrity()
+    """
+    Retrieve immutable audit chain entries.
+    Requires administrative authentication (X-Admin-API-Key or Bearer token).
+    """
+    if audit_chain.is_corrupted:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "status": "AUDIT_LEDGER_CORRUPTED",
+                "error": audit_chain.corruption_error,
+                "recovery_instructions": "Contact administrator. Use POST /audit/recover with force_new_genesis=True to reinitialize."
+            }
+        )
     return {
-        "valid": is_valid,
-        "status": "SECURE_AND_INTACT" if is_valid else "TAMPERING_DETECTED",
-        "error_detail": error,
-        "blocks_verified": len(audit_chain.chain)
+        "chain": [asdict(b) for b in audit_chain.chain],
+        "length": len(audit_chain.chain),
+        "status": audit_chain.status
     }
+
+
+@app.get("/audit/verify", dependencies=[Depends(verify_admin_access)])
+def verify_audit_integrity():
+    """
+    Cryptographically verify every block, sequential index, and hash linkage in the ledger.
+    Requires administrative authentication (X-Admin-API-Key or Bearer token).
+    """
+    val = audit_chain.verify_integrity()
+    return val.to_dict()
+
+
+@app.post("/audit/checkpoint", dependencies=[Depends(verify_admin_access)])
+def create_audit_checkpoint():
+    """
+    Create a trusted external cryptographic checkpoint capturing the cumulative chain hash.
+    Used for offsite backup verification to detect whole-ledger rewrite attacks.
+    Requires administrative authentication.
+    """
+    try:
+        checkpoint = audit_chain.create_checkpoint()
+        return {
+            "status": "CHECKPOINT_CREATED",
+            "checkpoint": checkpoint
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Checkpoint generation failed: {e}"
+        )
+
+
+@app.post("/audit/verify-checkpoint", dependencies=[Depends(verify_admin_access)])
+def verify_audit_checkpoint(checkpoint_data: Dict[str, Any] = Body(...)):
+    """
+    Verify the local ledger against an external trusted checkpoint payload.
+    Requires administrative authentication.
+    """
+    result = audit_chain.verify_against_checkpoint(checkpoint_data)
+    return result.to_dict()
+
+
+@app.post("/audit/recover", dependencies=[Depends(verify_admin_access)])
+def recover_audit_chain(force_new_genesis: bool = False):
+    """
+    Administrative recovery for a corrupted audit chain.
+    Safely backs up corrupted file before re-initializing fresh Genesis.
+    Requires administrative authentication.
+    """
+    recovery = audit_chain.admin_recover_corrupted(backup=True, force_new_genesis=force_new_genesis)
+    return recovery

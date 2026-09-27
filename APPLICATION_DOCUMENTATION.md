@@ -222,16 +222,20 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
 
 ---
 
-###  Privacy-First Design & Cryptographic Audit
-- **Slide Title**: Zero-Retention Privacy & Tamper-Evident Ledger
+### Privacy-First Design & Hardened Cryptographic Audit
+- **Slide Title**: Zero-Retention Privacy & Hardened Cryptographic Audit Ledger
 - **Bullet Points**:
-  - **Zero-Retention Guarantee**:
+  - **Zero-Retention Privacy Architecture**:
     - Audio is buffered strictly in transient 3.0-second RAM ring arrays.
-    - Never written to hard drives or cloud storage, ensuring full compliance with GDPR, CCPA, and banking regulations.
-  - **SHA-256 Cryptographic Audit Ledger (`AuditChain`)**:
-    - Every completed call inspection appends an immutable block to a local cryptographic chain.
-    - Block includes: Timestamp, Event Type, Non-Biometric Metadata, Payload Hash, and Previous Hash.
-    - Built-in `/audit/verify` endpoint verifies chain integrity for compliance disputes.
+    - Raw audio chunks and biometric voiceprints are never persisted to disk or cloud storage, complying with GDPR, CCPA, and banking regulations.
+    - Audit records store non-biometric metadata: cryptographic SHA-256 audio digests (`audio_sha256`), randomized session UUIDs, threat scores, and detection timestamps.
+  - **Hardened Cryptographic Audit Ledger (`AuditChain v2.0`)**:
+    - **Tamper-Evident SHA-256 Chaining**: Every completed forensic inspection is sealed in an append-only cryptographic block.
+    - **Strict Corruption Protection**: If `audit_chain.json` is corrupted or truncated, the loader explicitly enters an `AUDIT_LEDGER_CORRUPTED` state and refuses silent genesis re-creation.
+    - **Deep 6-Point Verification**: Genesis validation, strict index progression (0 → 1 → 2...), monotonic timestamps, cryptographic link continuity, and SHA-256 payload recalculation.
+    - **Atomic Disk Writes**: Uses sibling temporary file creation, POSIX/Windows `fsync`, and atomic replacement (`os.replace`) to protect against mid-write power loss.
+    - **Role-Based API Protection**: Endpoints (`/audit/chain`, `/audit/verify`, `/audit/checkpoint`, `/audit/recover`) are secured behind administrative token authentication (`X-Admin-API-Key` / Bearer).
+    - **Trusted External Checkpointing**: Enables offsite anchoring of cumulative chain digests, neutralizing full-ledger rewrite attacks.
 
 ---
 

@@ -61,9 +61,17 @@
     }
     button {
       color: #e2e2e6;
-      background-color: #1e2023;
-      border: 1px solid #3c4a42;
     }
+    .nav-tab-btn {
+      background: transparent !important;
+      background-color: transparent !important;
+      border: 0 !important;
+      border-color: transparent !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     ::-webkit-scrollbar { display: none; }
     .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
     .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
@@ -106,7 +114,7 @@
   </header>
 
   <!-- MAIN VIEW CONTAINER (Max 2xl centered) -->
-  <main class="flex-1 w-full max-w-2xl mx-auto pt-20 pb-28 px-4 flex flex-col relative">
+  <main class="flex-1 w-full max-w-2xl mx-auto pt-20 pb-44 px-4 flex flex-col relative">
 
     <!-- ==================== VIEW 1: HOME ==================== -->
     <div id="view-home" class="flex flex-col space-y-4">
@@ -158,15 +166,19 @@
         <p class="text-[11px] text-on-surface-variant leading-tight">
           Calibrates micro-jitter, retroflex formant transitions, and phase baselines for regional vocal tracts (IndicTTS & IndicSynth calibrated).
         </p>
-        <div class="flex items-center gap-1.5 overflow-x-auto pb-1" style="scrollbar-width: none;">
-          <button type="button" onclick="setLanguagePreset('auto')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-primary bg-primary/20 text-primary text-xs font-medium flex-shrink-0 transition-all cursor-pointer" data-lang="auto">Auto (All)</button>
-          <button type="button" onclick="setLanguagePreset('hindi')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="hindi">हिन्दी (Hindi)</button>
-          <button type="button" onclick="setLanguagePreset('tamil')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="tamil">தமிழ் (Tamil)</button>
-          <button type="button" onclick="setLanguagePreset('telugu')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="telugu">తెలుగు (Telugu)</button>
-          <button type="button" onclick="setLanguagePreset('bengali')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="bengali">বাংলা (Bengali)</button>
-          <button type="button" onclick="setLanguagePreset('kannada')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="kannada">ಕನ್ನಡ (Kannada)</button>
-          <button type="button" onclick="setLanguagePreset('marathi')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="marathi">मराठी (Marathi)</button>
-          <button type="button" onclick="setLanguagePreset('english')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="english">English</button>
+        <div class="relative w-full overflow-hidden">
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1.5 pt-0.5 scroll-smooth no-scrollbar" style="-webkit-overflow-scrolling: touch;">
+            <button type="button" onclick="setLanguagePreset('auto')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-primary bg-primary/20 text-primary text-xs font-medium flex-shrink-0 transition-all cursor-pointer shadow-sm" data-lang="auto">Auto (All)</button>
+            <button type="button" onclick="setLanguagePreset('hindi')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="hindi">हिन्दी (Hindi)</button>
+            <button type="button" onclick="setLanguagePreset('tamil')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="tamil">தமிழ் (Tamil)</button>
+            <button type="button" onclick="setLanguagePreset('telugu')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="telugu">తెలుగు (Telugu)</button>
+            <button type="button" onclick="setLanguagePreset('bengali')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="bengali">বাংলা (Bengali)</button>
+            <button type="button" onclick="setLanguagePreset('kannada')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="kannada">ಕನ್ನಡ (Kannada)</button>
+            <button type="button" onclick="setLanguagePreset('marathi')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="marathi">मराठी (Marathi)</button>
+            <button type="button" onclick="setLanguagePreset('english')" class="lang-preset-pill px-3 py-1.5 rounded-xl border border-surface-container-high bg-surface-container text-on-surface-variant text-xs font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="english">English</button>
+          </div>
+          <!-- Subtle scroll gradient hint on right edge -->
+          <div class="absolute right-0 top-0 bottom-1.5 w-8 bg-gradient-to-l from-surface-container-low to-transparent pointer-events-none"></div>
         </div>
       </div>
 
@@ -316,7 +328,7 @@
       
       <!-- Back Navigation Header -->
       <div class="flex items-center justify-between py-1">
-        <button onclick="switchView('home')" class="w-9 h-9 rounded-full flex items-center justify-center bg-surface-container hover:bg-surface-container-high active:scale-95 text-on-surface transition-all">
+        <button onclick="goBack()" class="w-9 h-9 rounded-full flex items-center justify-center bg-surface-container hover:bg-surface-container-high active:scale-95 text-on-surface transition-all">
           <span class="material-symbols-outlined text-[20px]">arrow_back</span>
         </button>
         <div class="flex flex-col items-center">
@@ -558,6 +570,9 @@
       
       <!-- Result Header -->
       <div class="flex items-center justify-between py-1">
+        <button onclick="goBack()" class="w-9 h-9 rounded-full flex items-center justify-center bg-surface-container hover:bg-surface-container-high active:scale-95 text-on-surface transition-all">
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        </button>
         <div class="flex items-center gap-2 bg-surface-container-low px-3 py-1 rounded-full border border-surface-container-high shadow-sm">
           <span id="result-status-dot" class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
           <span id="result-scan-id" class="font-mono text-xs text-on-surface-variant font-medium">SCAN #VCA-8921</span>
@@ -717,15 +732,18 @@
           </div>
           <span class="text-[10px] font-mono text-primary font-semibold">1:1 IndicSynth/IndicTTS</span>
         </div>
-        <div class="flex items-center gap-1.5 overflow-x-auto pb-1" style="scrollbar-width: none;">
-          <button type="button" onclick="setLanguagePreset('auto')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-primary bg-primary/20 text-primary text-[11px] font-medium flex-shrink-0 transition-all cursor-pointer" data-lang="auto">Auto</button>
-          <button type="button" onclick="setLanguagePreset('hindi')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="hindi">हिन्दी Hindi</button>
-          <button type="button" onclick="setLanguagePreset('tamil')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="tamil">தமிழ் Tamil</button>
-          <button type="button" onclick="setLanguagePreset('telugu')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="telugu">తెలుగు Telugu</button>
-          <button type="button" onclick="setLanguagePreset('bengali')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="bengali">বাংলা Bengali</button>
-          <button type="button" onclick="setLanguagePreset('kannada')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="kannada">ಕನ್ನಡ Kannada</button>
-          <button type="button" onclick="setLanguagePreset('marathi')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="marathi">मराठी Marathi</button>
-          <button type="button" onclick="setLanguagePreset('english')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="english">English</button>
+        <div class="relative w-full overflow-hidden">
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1.5 pt-0.5 scroll-smooth no-scrollbar" style="-webkit-overflow-scrolling: touch;">
+            <button type="button" onclick="setLanguagePreset('auto')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-primary bg-primary/20 text-primary text-[11px] font-medium flex-shrink-0 transition-all cursor-pointer" data-lang="auto">Auto</button>
+            <button type="button" onclick="setLanguagePreset('hindi')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="hindi">हिन्दी Hindi</button>
+            <button type="button" onclick="setLanguagePreset('tamil')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="tamil">தமிழ் Tamil</button>
+            <button type="button" onclick="setLanguagePreset('telugu')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="telugu">తెలుగు Telugu</button>
+            <button type="button" onclick="setLanguagePreset('bengali')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="bengali">বাংলা Bengali</button>
+            <button type="button" onclick="setLanguagePreset('kannada')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="kannada">ಕನ್ನಡ Kannada</button>
+            <button type="button" onclick="setLanguagePreset('marathi')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="marathi">मराठी Marathi</button>
+            <button type="button" onclick="setLanguagePreset('english')" class="lang-preset-pill px-2.5 py-1 rounded-lg border border-surface-container-high bg-surface-container text-on-surface-variant text-[11px] font-medium flex-shrink-0 hover:border-primary/50 transition-all cursor-pointer" data-lang="english">English</button>
+          </div>
+          <div class="absolute right-0 top-0 bottom-1.5 w-8 bg-gradient-to-l from-surface-container-low to-transparent pointer-events-none"></div>
         </div>
       </div>
 
@@ -1026,7 +1044,10 @@
     <div id="view-history" class="hidden flex flex-col space-y-4">
       
       <div class="flex items-center justify-between py-1">
-        <div class="flex flex-col">
+        <button onclick="goBack()" class="w-9 h-9 rounded-full flex items-center justify-center bg-surface-container hover:bg-surface-container-high active:scale-95 text-on-surface transition-all">
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        </button>
+        <div class="flex flex-col items-center">
           <span class="text-base font-semibold text-on-surface">Tamper-Evident Audit Chain</span>
           <span class="text-[11px] text-on-surface-variant font-mono">SHA-256 Cryptographic Hash Chain</span>
         </div>
@@ -1048,38 +1069,41 @@
 
     </div>
 
+    <!-- Generous spacer so content is never cut off or overlapped by floating bottom dock -->
+    <div class="h-28 w-full shrink-0" aria-hidden="true"></div>
+
   </main>
 
   <!-- BOTTOM FLOATING TAB BAR (Stitch Authenticity Style) -->
-  <nav class="fixed bottom-0 w-full z-50 pb-safe">
-    <div class="max-w-md mx-auto px-4 pb-3">
-      <div class="h-16 w-full bg-surface-container/95 backdrop-blur-xl rounded-full px-4 flex items-center justify-around shadow-[0_12px_32px_-4px_rgba(0,0,0,0.8)] border border-surface-container-high/60">
+  <nav class="fixed bottom-0 w-full z-50 pb-safe pointer-events-none">
+    <div class="max-w-md mx-auto px-4 pb-3 pointer-events-auto">
+      <div class="h-16 w-full bg-[#11161d]/92 backdrop-blur-2xl rounded-full px-3 flex items-center justify-around shadow-[0_16px_40px_rgba(0,0,0,0.85)] border border-surface-container-high/80">
         
-        <button onclick="switchView('home')" id="tab-home" class="flex flex-col items-center justify-center text-primary font-semibold transition-all">
+        <button onclick="switchView('home')" id="tab-home" class="nav-tab-btn flex flex-col items-center justify-center min-w-[50px] py-1 text-primary font-bold transition-all cursor-pointer">
           <span class="material-symbols-outlined text-[22px]">home</span>
           <span class="text-[10px] mt-0.5">Home</span>
         </button>
 
-        <button onclick="switchView('upload')" id="tab-upload" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-all">
+        <button onclick="switchView('upload')" id="tab-upload" class="nav-tab-btn flex flex-col items-center justify-center min-w-[50px] py-1 text-on-surface-variant hover:text-on-surface transition-all cursor-pointer group">
           <div class="w-10 h-10 rounded-full bg-primary-container text-on-primary flex items-center justify-center shadow-[0_0_16px_rgba(16,185,129,0.35)] -translate-y-1.5 group-active:scale-95 transition-transform">
             <span class="material-symbols-outlined text-[20px]">graphic_eq</span>
           </div>
-          <span class="text-[10px] -mt-1">Scan</span>
+          <span class="text-[10px] -mt-1 font-medium">Scan</span>
         </button>
 
-        <button onclick="switchView('call')" id="tab-call" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-all">
+        <button onclick="switchView('call')" id="tab-call" class="nav-tab-btn flex flex-col items-center justify-center min-w-[50px] py-1 text-on-surface-variant hover:text-on-surface transition-all cursor-pointer">
           <span class="material-symbols-outlined text-[22px]">phone_in_talk</span>
-          <span class="text-[10px] mt-0.5">Live Call</span>
+          <span class="text-[10px] mt-0.5 font-medium">Live Call</span>
         </button>
 
-        <button onclick="switchView('record')" id="tab-record" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-all">
+        <button onclick="switchView('record')" id="tab-record" class="nav-tab-btn flex flex-col items-center justify-center min-w-[50px] py-1 text-on-surface-variant hover:text-on-surface transition-all cursor-pointer">
           <span class="material-symbols-outlined text-[22px]">mic</span>
-          <span class="text-[10px] mt-0.5">Live Mic</span>
+          <span class="text-[10px] mt-0.5 font-medium">Live Mic</span>
         </button>
 
-        <button onclick="switchView('history')" id="tab-history" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-all">
+        <button onclick="switchView('history')" id="tab-history" class="nav-tab-btn flex flex-col items-center justify-center min-w-[50px] py-1 text-on-surface-variant hover:text-on-surface transition-all cursor-pointer">
           <span class="material-symbols-outlined text-[22px]">history</span>
-          <span class="text-[10px] mt-0.5">History</span>
+          <span class="text-[10px] mt-0.5 font-medium">History</span>
         </button>
 
       </div>
@@ -1154,30 +1178,96 @@
       return new Blob([view], { type: 'audio/wav' });
     }
 
-    // --- VIEW SWITCHER ---
-    function switchView(viewName) {
+    // --- BROWSER HISTORY & VIEW MANAGEMENT ---
+    let currentView = 'home';
+
+    function cancelRecording() {
+      if (!isRecording) return;
+      isRecording = false;
+      clearInterval(recTimerInterval);
+      if (socket) {
+        try { socket.close(); } catch(e) {}
+      }
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        try { mediaRecorder.stop(); } catch(e) {}
+      }
+      if (micStream) {
+        try { micStream.getTracks().forEach(t => t.stop()); } catch(e) {}
+      }
+      if (audioContext) {
+        try { audioContext.close(); } catch(e) {}
+      }
+      recordedPcmChunks = [];
+      recordedChunks = [];
+      const dot = document.getElementById('rec-pulse-dot');
+      const statusLabel = document.getElementById('rec-status-label');
+      const icon = document.getElementById('rec-icon');
+      const btn = document.getElementById('record-action-btn');
+      if (dot) dot.className = 'w-2 h-2 rounded-full bg-on-surface-variant';
+      if (statusLabel) {
+        statusLabel.innerText = 'Tap to Record';
+        statusLabel.className = 'font-mono text-xs text-on-surface font-semibold uppercase tracking-wider';
+      }
+      if (icon) icon.innerText = 'mic';
+      if (btn) btn.innerHTML = '<span class="material-symbols-outlined text-[36px] text-on-primary">mic</span><span class="text-[11px] font-bold text-on-primary mt-1">RECORD</span>';
+    }
+
+    function switchView(viewName, pushHistory = true) {
+      // Gracefully terminate active recording or streaming if switching away
+      if (currentView === 'record' && viewName !== 'record' && isRecording) {
+        cancelRecording();
+      }
+      if (currentView === 'call' && viewName !== 'call' && isLiveCallActive) {
+        stopLiveCallMonitor();
+      }
+
       const views = ['home', 'upload', 'call', 'record', 'analyzing', 'result', 'history'];
       views.forEach(v => {
         const el = document.getElementById(`view-${v}`);
         if (el) el.classList.add('hidden');
       });
       const target = document.getElementById(`view-${viewName}`);
-      if (target) target.classList.remove('hidden');
+      if (target) {
+        target.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
 
       // Update Nav Tabs active state
       ['home', 'upload', 'call', 'record', 'history'].forEach(tab => {
         const btn = document.getElementById(`tab-${tab}`);
         if (btn) {
           if (tab === viewName) {
-            btn.className = 'flex flex-col items-center justify-center text-primary font-semibold transition-all';
+            btn.className = 'nav-tab-btn flex flex-col items-center justify-center min-w-[50px] py-1 text-primary font-bold transition-all cursor-pointer';
           } else {
-            btn.className = 'flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-all';
+            btn.className = 'nav-tab-btn flex flex-col items-center justify-center min-w-[50px] py-1 text-on-surface-variant hover:text-on-surface transition-all cursor-pointer';
           }
         }
       });
 
       if (viewName === 'history') loadAuditLedger();
+
+      // Push history state so browser Back/Forward buttons navigate within the app
+      if (pushHistory && viewName !== currentView) {
+        history.pushState({ view: viewName }, '', `#${viewName}`);
+      }
+      currentView = viewName;
     }
+
+    function goBack() {
+      if (currentView !== 'home' && window.history.length > 1) {
+        window.history.back();
+      } else {
+        switchView('home');
+      }
+    }
+
+    // Intercept browser back/forward buttons
+    window.addEventListener('popstate', (e) => {
+      const targetView = (e.state && e.state.view) || (window.location.hash ? window.location.hash.replace('#', '') : 'home');
+      const validViews = ['home', 'upload', 'call', 'record', 'analyzing', 'result', 'history'];
+      const safeView = validViews.includes(targetView) ? targetView : 'home';
+      switchView(safeView, false); // false = do not pushState again on popstate!
+    });
 
     // --- LIVE AUDIO FREQUENCY BARS ON HOME ---
     function initHomeFreqBars() {
@@ -1602,8 +1692,8 @@
     }
 
     function stopRecordingAndGoHome() {
-      if (isRecording) toggleRecording();
-      switchView('home');
+      cancelRecording();
+      goBack();
     }
 
     function startOscilloscope(analyser) {
@@ -1642,22 +1732,37 @@
       draw();
     }
 
-    // --- AUDIT CHAIN LEDGER ---
+    // --- AUDIT CHAIN LEDGER (ADMIN PROTECTED) ---
+    const DEFAULT_ADMIN_KEY = "voiceshield-admin-secret-key-2026";
+    function getAdminApiKey() {
+      return localStorage.getItem('voiceshield_admin_key') || DEFAULT_ADMIN_KEY;
+    }
+
     async function loadAuditLedger() {
       try {
-        const resp = await fetch(`${API_BASE}/audit/chain`);
+        const resp = await fetch(`${API_BASE}/audit/chain`, {
+          headers: {
+            'X-Admin-API-Key': getAdminApiKey()
+          }
+        });
+        if (resp.status === 401 || resp.status === 403) {
+          console.warn('Audit access unauthorized. Admin key required.');
+          const list = document.getElementById('history-chain-list');
+          if (list) list.innerHTML = `<div class="py-3 px-2 text-xs text-error font-mono">🔒 Audit Ledger Protected: Admin key required.</div>`;
+          return;
+        }
         const data = await resp.json();
         const list = document.getElementById('history-chain-list');
         const count = document.getElementById('history-total-count');
-        if (count) count.innerText = `${data.chain.length} Blocks Verified`;
-        if (!list) return;
+        if (count) count.innerText = `${data.chain ? data.chain.length : 0} Blocks Verified`;
+        if (!list || !data.chain) return;
 
         list.innerHTML = '';
         data.chain.slice(-8).reverse().forEach(block => {
           const item = document.createElement('div');
           item.className = 'py-3 flex items-center justify-between';
           const riskVal = block.event_data && block.event_data.risk_score !== undefined ? block.event_data.risk_score : '-';
-          const fn = block.event_data && block.event_data.filename ? block.event_data.filename : block.event_type;
+          const fn = block.event_data && (block.event_data.filename || block.event_data.file_ref) ? (block.event_data.filename || block.event_data.file_ref) : block.event_type;
 
           item.innerHTML = `
             <div class="flex items-center gap-3 min-w-0">
@@ -1683,13 +1788,21 @@
 
     async function verifyAuditLedger() {
       try {
-        const resp = await fetch(`${API_BASE}/audit/verify`);
+        const resp = await fetch(`${API_BASE}/audit/verify`, {
+          headers: {
+            'X-Admin-API-Key': getAdminApiKey()
+          }
+        });
+        if (resp.status === 401 || resp.status === 403) {
+          alert('🔒 Access Denied: Admin authentication required to trigger audit ledger verification.');
+          return;
+        }
         const data = await resp.json();
         alert(data.valid 
-          ? `✅ Cryptographic Audit Ledger Verified!\n\nAll ${data.blocks_verified} blocks are tamper-evident and SHA-256 intact.`
-          : `❌ Tampering Detected: ${data.error_detail}`);
+          ? `✅ Cryptographic Audit Ledger Verified!\n\nStatus: ${data.status}\nAll ${data.blocks_verified} blocks are tamper-evident and SHA-256 intact.`
+          : `❌ Tampering Detected!\n\nStatus: ${data.status}\nDetail: ${data.error_detail}`);
       } catch (e) {
-        alert('Verification failed: ' + e);
+        alert('Verification request failed: ' + e);
       }
     }
 
@@ -2239,7 +2352,7 @@
       if (isLiveCallActive) {
         stopLiveCallMonitor();
       }
-      switchView('home');
+      goBack();
     }
 
     function handleLiveCallTelemetry(telemetry) {
@@ -2580,8 +2693,21 @@
       draw();
     }
 
-    // Initialize home frequency bars on boot
-    initHomeFreqBars();
+    // Initialize home frequency bars & history router on boot
+    function bootApplication() {
+      initHomeFreqBars();
+      const hash = window.location.hash.replace('#', '');
+      const validViews = ['home', 'upload', 'call', 'record', 'analyzing', 'result', 'history'];
+      const initialView = validViews.includes(hash) ? hash : 'home';
+      history.replaceState({ view: initialView }, '', `#${initialView}`);
+      switchView(initialView, false);
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', bootApplication);
+    } else {
+      bootApplication();
+    }
   </script>
 </body>
 </html>

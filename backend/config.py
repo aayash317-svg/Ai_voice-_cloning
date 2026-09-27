@@ -80,6 +80,8 @@ RISK_THRESHOLD_CRITICAL = 95
 AUDIO_BUFFER_MAX_SECONDS = 5.0
 ENCRYPTION_KEY_ENV = "VOICE_ENCRYPTION_KEY"
 AUDIT_CHAIN_FILE = LOGS_DIR / "audit_chain.json"
+AUDIT_CHECKPOINT_FILE = LOGS_DIR / "audit_checkpoint.json"
+ADMIN_API_KEY = os.getenv("VOICE_SHIELD_ADMIN_KEY", "voiceshield-admin-secret-key-2026")
 
 # Ensure all runtime directories exist
 for directory in [

@@ -46,6 +46,7 @@ test-clean.tar.gz
 testing video/
 testing voice samples/*.mp4
 testing voice samples/*.m4v
+testing voice samples/*.pdf
 
 # Binaries & Executables
 *.exe
