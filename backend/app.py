@@ -121,6 +121,10 @@ def favicon():
 # Global Framework State
 preprocessor = AudioPreprocessor()
 feature_extractor = FeatureExtractor()
+try:
+    feature_extractor.warmup()
+except Exception:
+    pass
 risk_engine = RiskEngine()
 audit_chain = AuditChain()
 classifier: Optional[AntiSpoofClassifier] = None
@@ -366,22 +370,26 @@ async def analyze_audio_file(
         vec = feature_extractor.to_vector(features, active_clf.feature_names)
         global_rf = float(active_clf.predict_spoof_risk(vec))
 
-        # For recordings longer than 3.5s, evaluate sliding windows to prevent dilution of synthetic markers
+        # For recordings longer than 3.5s, evaluate strategic windows to prevent dilution of synthetic markers
         win_samples = int(3.0 * SAMPLE_RATE)
         if len(eval_audio) >= int(3.5 * SAMPLE_RATE):
-            # Dynamic hop: 1.5s for shorter clips, 2.5s for longer files to maintain fast response
-            hop_samples = int(2.5 * SAMPLE_RATE) if len(eval_audio) > int(20.0 * SAMPLE_RATE) else int(1.5 * SAMPLE_RATE)
+            max_windows = 5
+            max_start = len(eval_audio) - win_samples
+            if max_start > 0:
+                step = max(1, max_start // max(1, max_windows - 1))
+                starts = list(range(0, max_start + 1, step))[:max_windows]
+            else:
+                starts = [0]
+
             window_probs = []
-            for start in range(0, len(eval_audio) - win_samples + 1, hop_samples):
+            for start in starts:
                 chunk = eval_audio[start:start+win_samples]
-                voiced_chunk = preprocessor.apply_vad(chunk, top_db=26.0)
-                if len(voiced_chunk) < int(0.5 * SAMPLE_RATE):
+                w_rms = float(np.sqrt(np.mean(chunk**2))) if len(chunk) > 0 else 0.0
+                if w_rms < 0.003:
                     continue
-                w_feats = feature_extractor.extract_all(preprocessor.normalize_audio(voiced_chunk))
+                w_feats = feature_extractor.extract_all(preprocessor.normalize_audio(chunk))
                 w_vec = feature_extractor.to_vector(w_feats, active_clf.feature_names)
                 window_probs.append(float(active_clf.predict_spoof_risk(w_vec)))
-                if len(window_probs) >= 25:
-                    break
 
             if window_probs:
                 p75 = float(np.percentile(window_probs, 75))

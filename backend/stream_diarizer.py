@@ -265,9 +265,8 @@ class StreamingCallMonitor:
                         self.speaker_b_voiced_frames.extend(pcm_data)
                     self.speaker_b_frames.extend(pcm_data)
 
-                    current_b_len = len(self.speaker_b_voiced_frames)
-                    # Evaluate rapidly once sufficient voiced speech accumulated (>= 0.5s, update every 0.25s)
-                    if current_b_len >= int(self.sample_rate * 0.5) and (current_b_len - self.last_eval_samples_b >= int(self.sample_rate * 0.25)):
+                    # Evaluate smoothly once sufficient voiced speech accumulated (>= 0.5s, update every 0.5s)
+                    if current_b_len >= int(self.sample_rate * 0.5) and (current_b_len - self.last_eval_samples_b >= int(self.sample_rate * 0.5)):
                         self.last_eval_samples_b = current_b_len
                         accum_samples = np.array(self.speaker_b_voiced_frames, dtype=np.float32)
                         eval_len = min(len(accum_samples), int(self.sample_rate * 4.0))
@@ -302,7 +301,7 @@ class StreamingCallMonitor:
                     self.speaker_a_frames.extend(pcm_data)
 
                     current_a_len = len(self.speaker_a_voiced_frames)
-                    if current_a_len >= int(self.sample_rate * 0.5) and (current_a_len - self.last_eval_samples_a >= int(self.sample_rate * 0.25)):
+                    if current_a_len >= int(self.sample_rate * 0.5) and (current_a_len - self.last_eval_samples_a >= int(self.sample_rate * 0.5)):
                         self.last_eval_samples_a = current_a_len
                         accum_samples = np.array(self.speaker_a_voiced_frames, dtype=np.float32)
                         eval_len = min(len(accum_samples), int(self.sample_rate * 4.0))
