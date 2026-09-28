@@ -61,43 +61,7 @@
       font-size: 16px;
       color: var(--text-muted);
       max-width: 720px;
-      margin: 0 auto 24px auto;
-    }
-    .quick-actions {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
-      font-size: 14px;
-      font-weight: 600;
-      border-radius: 8px;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border: none;
-    }
-    .btn-primary {
-      background: var(--accent);
-      color: white;
-    }
-    .btn-primary:hover {
-      background: var(--accent-hover);
-      transform: translateY(-1px);
-    }
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--card-border);
-      color: var(--text);
-    }
-    .btn-outline:hover {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: #374151;
+      margin: 0 auto;
     }
     .container {
       max-width: 1200px;
@@ -148,27 +112,6 @@
       font-weight: 700;
       color: #fff;
     }
-    .card-priority {
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 6px;
-    }
-    .priority-must {
-      background: rgba(239, 68, 68, 0.15);
-      color: #f87171;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-    .priority-imp {
-      background: rgba(245, 158, 11, 0.15);
-      color: #fbbf24;
-      border: 1px solid rgba(245, 158, 11, 0.3);
-    }
-    .priority-use {
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
     .desc-text {
       color: var(--text-muted);
       font-size: 14px;
@@ -191,38 +134,6 @@
       object-fit: contain;
       filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08));
     }
-    .card-actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 18px;
-      justify-content: flex-end;
-    }
-    .action-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 6px;
-      background: #1f2937;
-      color: #e5e7eb;
-      text-decoration: none;
-      border: 1px solid #374151;
-      transition: all 0.15s ease;
-    }
-    .action-btn:hover {
-      background: #374151;
-      color: #fff;
-    }
-    .action-btn.primary {
-      background: #2563eb;
-      border-color: #3b82f6;
-      color: white;
-    }
-    .action-btn.primary:hover {
-      background: #1d4ed8;
-    }
   </style>
 </head>
 <body>
@@ -242,15 +153,10 @@
           <div class="diagram-num">1</div>
           <div class="card-title">Problem → Solution Diagram</div>
         </div>
-        <span class="card-priority priority-must">🔴 Must For Jury</span>
       </div>
       <p class="desc-text">Instantly establishes the high threat of Generative Voice Cloning (ElevenLabs, Chatterbox, Vishing) vs. Voice Shield AI's real-time defensive architecture.</p>
       <div class="image-preview-box">
         <img src="images/ppt/01_problem_solution.png" alt="Problem to Solution Diagram" />
-      </div>
-      <div class="card-actions">
-        <a href="images/ppt/01_problem_solution.png" download class="action-btn primary">⬇ Download PNG for PPT</a>
-        <a href="images/ppt/01_problem_solution.svg" target="_blank" class="action-btn">🔍 View Vector SVG</a>
       </div>
     </div>
 
@@ -261,15 +167,10 @@
           <div class="diagram-num">2</div>
           <div class="card-title">Technical Architecture</div>
         </div>
-        <span class="card-priority priority-must">🔴 Must For Jury</span>
       </div>
       <p class="desc-text">Complete 6-layer production blueprint: WebAudio client layer, ephemeral RAM ring, VAD diarizer, dual ML ensemble, dynamic risk engine, and SHA-256 audit ledger.</p>
       <div class="image-preview-box">
         <img src="images/ppt/02_technical_architecture.png" alt="Technical Architecture" />
-      </div>
-      <div class="card-actions">
-        <a href="images/ppt/02_technical_architecture.png" download class="action-btn primary">⬇ Download PNG for PPT</a>
-        <a href="images/ppt/02_technical_architecture.svg" target="_blank" class="action-btn">🔍 View Vector SVG</a>
       </div>
     </div>
 
@@ -280,15 +181,10 @@
           <div class="diagram-num">3</div>
           <div class="card-title">End-to-End Workflow</div>
         </div>
-        <span class="card-priority priority-must">🔴 Must For Jury</span>
       </div>
       <p class="desc-text">Sequence diagram tracking live call audio from browser capture, 250ms streaming, ephemeral RAM buffering, dual neural inference, to instant UI defense alert.</p>
       <div class="image-preview-box">
         <img src="images/ppt/03_end_to_end_workflow.png" alt="End-to-End Workflow" />
-      </div>
-      <div class="card-actions">
-        <a href="images/ppt/03_end_to_end_workflow.png" download class="action-btn primary">⬇ Download PNG for PPT</a>
-        <a href="images/ppt/03_end_to_end_workflow.svg" target="_blank" class="action-btn">🔍 View Vector SVG</a>
       </div>
     </div>
 
@@ -299,15 +195,10 @@
           <div class="diagram-num">4</div>
           <div class="card-title">Real-Time Call / Two-Speaker Workflow</div>
         </div>
-        <span class="card-priority priority-must">🔴 Must For Jury</span>
       </div>
       <p class="desc-text">Highlights conversational diarization: segregates Speaker A (genuine local user) from Speaker B (remote suspect) and quarantines overlapping cross-talk.</p>
       <div class="image-preview-box">
         <img src="images/ppt/04_real_time_two_speaker.png" alt="Two-Speaker Workflow" />
-      </div>
-      <div class="card-actions">
-        <a href="images/ppt/04_real_time_two_speaker.png" download class="action-btn primary">⬇ Download PNG for PPT</a>
-        <a href="images/ppt/04_real_time_two_speaker.svg" target="_blank" class="action-btn">🔍 View Vector SVG</a>
       </div>
     </div>
 
@@ -318,15 +209,10 @@
           <div class="diagram-num">5</div>
           <div class="card-title">AI Detection Pipeline (RF + SincNet + Ensemble)</div>
         </div>
-        <span class="card-priority priority-must">🔴 Must For Jury</span>
       </div>
       <p class="desc-text">Deep-dives into the physics features (Hilbert phase variance, 4kHz cutoff, micro-jitter) + SincNet raw waveform filters + consensus late fusion.</p>
       <div class="image-preview-box">
         <img src="images/ppt/05_ai_detection_pipeline.png" alt="AI Detection Pipeline" />
-      </div>
-      <div class="card-actions">
-        <a href="images/ppt/05_ai_detection_pipeline.png" download class="action-btn primary">⬇ Download PNG for PPT</a>
-        <a href="images/ppt/05_ai_detection_pipeline.svg" target="_blank" class="action-btn">🔍 View Vector SVG</a>
       </div>
     </div>
 
@@ -337,15 +223,10 @@
           <div class="diagram-num">6</div>
           <div class="card-title">Security & Privacy Architecture</div>
         </div>
-        <span class="card-priority priority-must">🔴 Must For Jury</span>
       </div>
       <p class="desc-text">Shows GDPR Art 9 & HIPAA zero disk audio retention policy, ephemeral RAM ring memory-shredding, Fernet encrypted voice vault, and SHA-256 tamper-evident audit ledger.</p>
       <div class="image-preview-box">
         <img src="images/ppt/06_security_privacy.png" alt="Security and Privacy Architecture" />
-      </div>
-      <div class="card-actions">
-        <a href="images/ppt/06_security_privacy.png" download class="action-btn primary">⬇ Download PNG for PPT</a>
-        <a href="images/ppt/06_security_privacy.svg" target="_blank" class="action-btn">🔍 View Vector SVG</a>
       </div>
     </div>
 
@@ -356,15 +237,10 @@
           <div class="diagram-num">7</div>
           <div class="card-title">Dataset & Anti-Leakage Training Pipeline</div>
         </div>
-        <span class="card-priority priority-imp">🟠 Important</span>
       </div>
       <p class="desc-text">Details the 38,239 multi-generator corpora (LibriSpeech, ASVspoof 2019, ChatterboxTTS), disjoint speaker splitting, 1:1 balance, and EER threshold calibration (tau* = 0.3985).</p>
       <div class="image-preview-box">
         <img src="images/ppt/07_dataset_training.png" alt="Dataset and Training Pipeline" />
-      </div>
-      <div class="card-actions">
-        <a href="images/ppt/07_dataset_training.png" download class="action-btn primary">⬇ Download PNG for PPT</a>
-        <a href="images/ppt/07_dataset_training.svg" target="_blank" class="action-btn">🔍 View Vector SVG</a>
       </div>
     </div>
 
@@ -375,15 +251,10 @@
           <div class="diagram-num">8</div>
           <div class="card-title">Progressive Risk Engine</div>
         </div>
-        <span class="card-priority priority-imp">🟠 Important</span>
       </div>
       <p class="desc-text">Visualizes the 3-stage temporal evaluation: Stage 0 (0-5s calibration), Stage 1 (5s rolling average), and Stage 2 (10s final verified verdict) with wire fraud context multipliers.</p>
       <div class="image-preview-box">
         <img src="images/ppt/08_progressive_risk_engine.png" alt="Progressive Risk Engine" />
-      </div>
-      <div class="card-actions">
-        <a href="images/ppt/08_progressive_risk_engine.png" download class="action-btn primary">⬇ Download PNG for PPT</a>
-        <a href="images/ppt/08_progressive_risk_engine.svg" target="_blank" class="action-btn">🔍 View Vector SVG</a>
       </div>
     </div>
 
@@ -394,15 +265,10 @@
           <div class="diagram-num">9</div>
           <div class="card-title">Results / Benchmark Visualization</div>
         </div>
-        <span class="card-priority priority-must">🔴 Must For Jury</span>
       </div>
       <p class="desc-text">Empirical proof: 0.9882 ROC-AUC, 93.45% accuracy, 6.12% EER, and 4.21% false alarm rate on 3,405 held-out test files, plus real sample verifications.</p>
       <div class="image-preview-box">
         <img src="images/ppt/09_results_benchmarks.png" alt="Benchmark Results" />
-      </div>
-      <div class="card-actions">
-        <a href="images/ppt/09_results_benchmarks.png" download class="action-btn primary">⬇ Download PNG for PPT</a>
-        <a href="images/ppt/09_results_benchmarks.svg" target="_blank" class="action-btn">🔍 View Vector SVG</a>
       </div>
     </div>
 
@@ -413,15 +279,10 @@
           <div class="diagram-num">10</div>
           <div class="card-title">Deployment Architecture</div>
         </div>
-        <span class="card-priority priority-use">🟡 Useful</span>
       </div>
       <p class="desc-text">Production deployment model: Cloudflare CDN, Render load balancing, containerized FastAPI Docker instances with PyTorch/scikit-learn workers and WSS telemetry.</p>
       <div class="image-preview-box">
         <img src="images/ppt/10_deployment_architecture.png" alt="Deployment Architecture" />
-      </div>
-      <div class="card-actions">
-        <a href="images/ppt/10_deployment_architecture.png" download class="action-btn primary">⬇ Download PNG for PPT</a>
-        <a href="images/ppt/10_deployment_architecture.svg" target="_blank" class="action-btn">🔍 View Vector SVG</a>
       </div>
     </div>
 
@@ -432,15 +293,10 @@
           <div class="diagram-num">11</div>
           <div class="card-title">Enterprise Use-Case Diagram</div>
         </div>
-        <span class="card-priority priority-use">🟡 Useful</span>
       </div>
       <p class="desc-text">Enterprise actor mapping: Banking customers, call center agents, fraud bots, executive officers (CEO fraud protection), and compliance auditors.</p>
       <div class="image-preview-box">
         <img src="images/ppt/11_use_case_diagram.png" alt="Use Case Diagram" />
-      </div>
-      <div class="card-actions">
-        <a href="images/ppt/11_use_case_diagram.png" download class="action-btn primary">⬇ Download PNG for PPT</a>
-        <a href="images/ppt/11_use_case_diagram.svg" target="_blank" class="action-btn">🔍 View Vector SVG</a>
       </div>
     </div>
 
