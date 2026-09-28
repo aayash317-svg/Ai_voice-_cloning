@@ -85,9 +85,22 @@ if FRONTEND_DIR.exists():
     if (FRONTEND_DIR / "assets").exists():
         app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIR / "assets")), name="assets")
 
+DOCS_DIR = BASE_DIR / "docs"
+if (DOCS_DIR / "images").exists():
+    app.mount("/images", StaticFiles(directory=str(DOCS_DIR / "images")), name="docs-images")
+
 TEST_SAMPLES_DIR = BASE_DIR / "test_samples"
 if TEST_SAMPLES_DIR.exists():
     app.mount("/test_samples", StaticFiles(directory=str(TEST_SAMPLES_DIR)), name="test_samples")
+
+@app.get("/diagrams")
+def serve_jury_diagrams():
+    """Serve the 11 Jury & Presentation Diagrams Portfolio HTML page."""
+    diagrams_html = DOCS_DIR / "jury_diagrams_viewer.html"
+    if diagrams_html.exists():
+        return FileResponse(str(diagrams_html))
+    return {"message": "Diagrams viewer not found"}
+
 
 @app.get("/")
 def serve_dashboard():

@@ -27336,5 +27336,21 @@
     },
     "previous_hash": "6a1e05a42482fd08b57ea5eff2f8f4e71bb33335fc43daf016ec712be128403d",
     "current_hash": "3e52ec7b7cd0ac9a764bc481562109fd39dc915af6734453742e5ddd7302dcd7"
+  },
+  {
+    "index": 2221,
+    "timestamp": 1790489436.0094678,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "session_id": "bcd0c41f-00f8-4c1a-818f-c2117c64349e",
+      "audio_sha256": "949e58a6e7ff53da1dc533ab375312e48e94473bb0c4a24a1dbbf99cc758e999",
+      "filename": "clone 2.mp3",
+      "language": "auto",
+      "risk_score": 90.3,
+      "risk_level": "CRITICAL",
+      "alert_triggered": true
+    },
+    "previous_hash": "3e52ec7b7cd0ac9a764bc481562109fd39dc915af6734453742e5ddd7302dcd7",
+    "current_hash": "d37c35e82db4cb97d14e86aba43815e4b97fde6bf17340f7fbb2d4202f2cbf6a"
   }
 ]
