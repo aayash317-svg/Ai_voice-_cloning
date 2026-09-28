@@ -290,6 +290,9 @@ We use **[GitHub Issues](https://github.com/aayash317-svg/Ai_voice-_cloning/issu
 Voice Shield AI is engineered strictly for **defensive biometric verification, fraud prevention, and voice integrity security**. It is designed to safeguard individuals, banks, and enterprises from malicious voice cloning extortion, CEO fraud, and unauthorized audio impersonation. Do not misuse this technology for non-consensual surveillance or malicious exploitation.
 
 ---
+  ##Voice Shield AI — Presentation Diagrams
+     https://raw.githack.com/aayash317-svg/Ai_voice-_cloning/a1d507f/docs/jury_diagrams_viewer.html
+
 
 ## 📄 License
 
