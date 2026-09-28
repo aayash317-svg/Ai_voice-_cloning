@@ -27352,5 +27352,53 @@
     },
     "previous_hash": "3e52ec7b7cd0ac9a764bc481562109fd39dc915af6734453742e5ddd7302dcd7",
     "current_hash": "d37c35e82db4cb97d14e86aba43815e4b97fde6bf17340f7fbb2d4202f2cbf6a"
+  },
+  {
+    "index": 2222,
+    "timestamp": 1790613437.406088,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "session_id": "2ae37b84-36a8-43de-971b-167d108aa808",
+      "audio_sha256": "91437e6a4e5ba8e63d98a7f3a9f735da43177e53132370a7b368fd6b66bf45bd",
+      "filename": "genuine_sample.wav",
+      "language": "auto",
+      "risk_score": 51.8,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "d37c35e82db4cb97d14e86aba43815e4b97fde6bf17340f7fbb2d4202f2cbf6a",
+    "current_hash": "58380c7548dbc7ab98a176166bf488f25b6afd482d469abe09574fa9e9775493"
+  },
+  {
+    "index": 2223,
+    "timestamp": 1790613468.0364091,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "session_id": "2f39b520-bd23-42d6-b9ef-75382a853b0b",
+      "audio_sha256": "91437e6a4e5ba8e63d98a7f3a9f735da43177e53132370a7b368fd6b66bf45bd",
+      "filename": "genuine_sample.wav",
+      "language": "auto",
+      "risk_score": 51.8,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "58380c7548dbc7ab98a176166bf488f25b6afd482d469abe09574fa9e9775493",
+    "current_hash": "c1802d44281e8b92510277a510f1a595de07227c7b90d0adeedd4f4b507f0593"
+  },
+  {
+    "index": 2224,
+    "timestamp": 1790613468.8131866,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "session_id": "6093d3f1-5e5c-42db-8f24-971c4c53a352",
+      "audio_sha256": "eb97f655a8e21315edc895c20902f9f1ec5a2282218fcb5529a5840c0cd871ca",
+      "filename": "chatterbox_tts_sample.wav",
+      "language": "auto",
+      "risk_score": 43.1,
+      "risk_level": "MEDIUM",
+      "alert_triggered": false
+    },
+    "previous_hash": "c1802d44281e8b92510277a510f1a595de07227c7b90d0adeedd4f4b507f0593",
+    "current_hash": "57079e9fecac0a9757f1f6b2d74c65e5e692d81cc28b7f95c2dbe0d802a610bd"
   }
 ]
