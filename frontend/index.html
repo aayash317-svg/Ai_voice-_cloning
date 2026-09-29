@@ -1110,6 +1110,26 @@
     </div>
   </nav>
 
+  <!-- DYNAMIC IN-APP MODAL / ALERT DIALOG -->
+  <div id="app-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity duration-200">
+    <div class="relative w-full max-w-sm rounded-3xl bg-surface-container-high border border-surface-container-highest p-6 shadow-2xl flex flex-col items-center text-center">
+      <div id="app-modal-icon-bg" class="w-14 h-14 rounded-2xl bg-primary/15 text-primary flex items-center justify-center mb-4">
+        <span id="app-modal-icon" class="material-symbols-outlined text-[32px]">warning</span>
+      </div>
+      <h3 id="app-modal-title" class="text-lg font-bold text-on-surface mb-2">Notice</h3>
+      <p id="app-modal-message" class="text-xs text-on-surface-variant leading-relaxed mb-6 whitespace-pre-line"></p>
+      <div class="flex gap-2.5 w-full">
+        <button id="app-modal-cancel-btn" onclick="closeAppModal()" class="flex-1 py-2.5 px-4 rounded-xl bg-surface-container text-on-surface hover:bg-surface-container-highest text-xs font-semibold transition-all">
+          Dismiss
+        </button>
+        <button id="app-modal-retry-btn" class="hidden flex-1 py-2.5 px-4 rounded-xl bg-primary text-on-primary hover:brightness-110 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 shadow-lg">
+          <span class="material-symbols-outlined text-[16px]">refresh</span>
+          <span>Retry</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- JAVASCRIPT APP ENGINE -->
   <script>
     const isHttp = window.location.protocol === 'http:' || window.location.protocol === 'https:';
@@ -1126,6 +1146,49 @@
     let recordedChunks = [];
     let recordedPcmChunks = [];
     let activeLanguagePreset = 'auto';
+    let currentModalRetryCallback = null;
+
+    function showErrorModal(title, message, onRetry = null, icon = 'warning') {
+      const modal = document.getElementById('app-modal');
+      if (!modal) {
+        alert(`${title}\n\n${message}`);
+        return;
+      }
+      const titleEl = document.getElementById('app-modal-title');
+      const msgEl = document.getElementById('app-modal-message');
+      const iconEl = document.getElementById('app-modal-icon');
+      const iconBg = document.getElementById('app-modal-icon-bg');
+      const retryBtn = document.getElementById('app-modal-retry-btn');
+
+      if (titleEl) titleEl.innerText = title || 'Notice';
+      if (msgEl) msgEl.innerText = message || '';
+      if (iconEl) iconEl.innerText = icon;
+
+      if (icon === 'check_circle' || icon === 'verified') {
+        if (iconBg) iconBg.className = 'w-14 h-14 rounded-2xl bg-primary/15 text-primary flex items-center justify-center mb-4';
+      } else {
+        if (iconBg) iconBg.className = 'w-14 h-14 rounded-2xl bg-error/15 text-error flex items-center justify-center mb-4';
+      }
+
+      currentModalRetryCallback = onRetry;
+      if (onRetry && retryBtn) {
+        retryBtn.classList.remove('hidden');
+        retryBtn.onclick = () => {
+          closeAppModal();
+          onRetry();
+        };
+      } else if (retryBtn) {
+        retryBtn.classList.add('hidden');
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeAppModal() {
+      const modal = document.getElementById('app-modal');
+      if (modal) modal.classList.add('hidden');
+      currentModalRetryCallback = null;
+    }
 
     function setLanguagePreset(lang) {
       activeLanguagePreset = lang;
@@ -1326,34 +1389,128 @@
 
     // --- PIPELINE ANALYSIS RUNNER ---
     async function startAnalysis() {
-      if (!currentFile) return;
+      if (!currentFile) {
+        showErrorModal('No Audio Selected', 'Please upload an audio file or record speech using the Live Mic.');
+        return;
+      }
+
+      if (currentFile.size === 0) {
+        showErrorModal('Empty Audio File', 'The selected audio file is empty (0 bytes). Please upload or record a valid audio sample.');
+        return;
+      }
+
+      if (currentFile.size > 30 * 1024 * 1024) {
+        showErrorModal('File Too Large', `The selected file is ${(currentFile.size / (1024 * 1024)).toFixed(1)} MB. Please choose an audio file under 30 MB to prevent mobile upload timeouts.`);
+        return;
+      }
 
       switchView('analyzing');
-      runPipelineAnimation();
+      const animInterval = runPipelineAnimation();
 
-      const formData = new FormData();
-      formData.append('file', currentFile);
+      const stageLabel = document.getElementById('pipeline-stage-label');
+      let wakeUpTimer = setTimeout(() => {
+        if (stageLabel) stageLabel.innerText = 'Waking up cloud engine...';
+      }, 4500);
 
-      try {
-        const resp = await fetch(`${API_BASE}/analyze?language=${encodeURIComponent(activeLanguagePreset)}`, { method: 'POST', body: formData });
-        const result = await resp.json();
+      const maxAttempts = 2;
+      let attempt = 0;
+      let lastError = null;
 
-        if (!resp.ok) {
-          alert('Analysis failed: ' + (result.detail || JSON.stringify(result)));
-          switchView('upload');
+      while (attempt < maxAttempts) {
+        attempt++;
+        try {
+          const formData = new FormData();
+          formData.append('file', currentFile);
+
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 90000); // 90s timeout for Render free tier cold-start
+
+          const resp = await fetch(`${API_BASE}/analyze?language=${encodeURIComponent(activeLanguagePreset)}`, {
+            method: 'POST',
+            body: formData,
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+          clearTimeout(wakeUpTimer);
+
+          // Safely read body as text first to prevent JSON parse crashes on empty/HTML responses
+          const responseText = await resp.text();
+          let result = null;
+          try {
+            result = responseText ? JSON.parse(responseText) : null;
+          } catch (jsonErr) {
+            console.warn('Response parsing note: Non-JSON body:', responseText);
+          }
+
+          if (!resp.ok) {
+            // Render free tier spinning up or bad gateway
+            if ((resp.status === 502 || resp.status === 503 || resp.status === 504) && attempt < maxAttempts) {
+              if (stageLabel) stageLabel.innerText = `Connecting to cloud engine (attempt ${attempt + 1}/${maxAttempts})...`;
+              await new Promise(r => setTimeout(r, 4000));
+              continue;
+            }
+
+            if (animInterval) clearInterval(animInterval);
+            let title = 'Analysis Failed';
+            let msg = (result && (result.detail || result.error)) || '';
+
+            if (resp.status === 502 || resp.status === 503 || resp.status === 504) {
+              title = 'Cloud Server Warming Up';
+              msg = 'The cloud instance is spinning up from sleep mode (Render free tier takes ~30-60s to wake up). Please tap Retry to continue.';
+            } else if (!msg) {
+              msg = `Server returned status HTTP ${resp.status}. Please check your audio format and retry.`;
+            }
+
+            showErrorModal(title, msg, () => startAnalysis());
+            switchView('upload');
+            return;
+          }
+
+          if (!result || !result.assessment) {
+            if (animInterval) clearInterval(animInterval);
+            showErrorModal('Unexpected Response', 'The server responded without an assessment result. Please try another audio file or retry.', () => startAnalysis());
+            switchView('upload');
+            return;
+          }
+
+          const a = result.assessment;
+          setTimeout(() => {
+            if (animInterval) clearInterval(animInterval);
+            displayResult(a, currentFile.name);
+          }, 800);
           return;
+
+        } catch (err) {
+          lastError = err;
+          // Retry once on network disconnect or cold start timeout
+          if (attempt < maxAttempts) {
+            if (stageLabel) stageLabel.innerText = `Connecting to cloud engine (attempt ${attempt + 1}/${maxAttempts})...`;
+            await new Promise(r => setTimeout(r, 3000));
+            continue;
+          }
+          break;
         }
-
-        const a = result.assessment;
-        setTimeout(() => {
-          displayResult(a, currentFile.name);
-        }, 1200);
-
-      } catch (err) {
-        const currentOrigin = window.location.origin || 'http://localhost:8050';
-        alert('Analysis failed: ' + err + '\n\n⚠️ Please verify that the backend server is running:\n  python app.py\n(Server must be running on ' + currentOrigin + ')');
-        switchView('upload');
       }
+
+      // If loop exited without returning
+      clearTimeout(wakeUpTimer);
+      if (animInterval) clearInterval(animInterval);
+
+      let title = 'Connection Issue';
+      let msg = '';
+      if (lastError && (lastError.name === 'AbortError' || (lastError.message && lastError.message.includes('abort')))) {
+        title = 'Cloud Server Warming Up';
+        msg = 'The cloud backend is waking up from sleep mode (Render free tier spin-up takes ~30-60s). Please tap Retry.';
+      } else if (!navigator.onLine) {
+        title = 'No Internet Connection';
+        msg = 'Please check your mobile data or Wi-Fi connection and tap Retry.';
+      } else {
+        title = 'Cloud Engine Connecting';
+        msg = 'Could not establish connection to the analysis server. The backend may be booting up. Please tap Retry.';
+      }
+
+      showErrorModal(title, msg, () => startAnalysis());
+      switchView('upload');
     }
 
 
@@ -1365,19 +1522,21 @@
 
       let progress = 20;
       const interval = setInterval(() => {
-        progress += 18;
+        progress += 16;
         if (progress > 95) {
-          clearInterval(interval);
-          progress = 100;
+          progress = 95;
         }
         if (fill) fill.style.width = `${progress}%`;
         if (pct) pct.innerText = `${progress}%`;
         if (circle) circle.style.strokeDashoffset = `${540.35 - (540.35 * progress / 100)}`;
 
-        if (progress > 40 && stageLabel) stageLabel.innerText = 'Step 2 of 4';
-        if (progress > 70 && stageLabel) stageLabel.innerText = 'Step 3 of 4';
-        if (progress >= 95 && stageLabel) stageLabel.innerText = 'Step 4 of 4';
+        if (progress > 40 && progress <= 70 && stageLabel && !stageLabel.innerText.includes('Waking') && !stageLabel.innerText.includes('Connecting')) {
+          stageLabel.innerText = 'Step 2 of 4';
+        } else if (progress > 70 && stageLabel && !stageLabel.innerText.includes('Waking') && !stageLabel.innerText.includes('Connecting')) {
+          stageLabel.innerText = 'Step 3 of 4';
+        }
       }, 250);
+      return interval;
     }
 
     // --- RESULT DISPLAY ---
@@ -1634,7 +1793,7 @@
           }
 
         } catch (err) {
-          alert('Microphone access denied: ' + err);
+          showErrorModal('Microphone Access Denied', 'Please grant microphone permissions in your browser or device settings to stream or record audio.');
         }
       } else {
         // Stop Mic
@@ -1681,11 +1840,11 @@
             currentFile = file;
             startAnalysis();
           } else {
-            alert('Recording was too short. Please speak for at least 2 seconds.');
+            showErrorModal('Recording Too Short', 'Please speak for at least 2 seconds to capture vocal tract dynamics.');
             switchView('record');
           }
         } else {
-          alert('Recording was too short. Please speak for at least 2 seconds.');
+          showErrorModal('Recording Too Short', 'Please speak for at least 2 seconds to capture vocal tract dynamics.');
           switchView('record');
         }
       }
@@ -1751,11 +1910,15 @@
           if (list) list.innerHTML = `<div class="py-3 px-2 text-xs text-error font-mono">🔒 Audit Ledger Protected: Admin key required.</div>`;
           return;
         }
-        const data = await resp.json();
+        const text = await resp.text();
+        let data = null;
+        try { data = text ? JSON.parse(text) : null; } catch(e) {}
+        if (!data || !data.chain) return;
+
         const list = document.getElementById('history-chain-list');
         const count = document.getElementById('history-total-count');
         if (count) count.innerText = `${data.chain ? data.chain.length : 0} Blocks Verified`;
-        if (!list || !data.chain) return;
+        if (!list) return;
 
         list.innerHTML = '';
         data.chain.slice(-8).reverse().forEach(block => {
@@ -1794,15 +1957,26 @@
           }
         });
         if (resp.status === 401 || resp.status === 403) {
-          alert('🔒 Access Denied: Admin authentication required to trigger audit ledger verification.');
+          showErrorModal('Access Denied', 'Admin authentication required to trigger audit ledger verification.');
           return;
         }
-        const data = await resp.json();
-        alert(data.valid 
-          ? `✅ Cryptographic Audit Ledger Verified!\n\nStatus: ${data.status}\nAll ${data.blocks_verified} blocks are tamper-evident and SHA-256 intact.`
-          : `❌ Tampering Detected!\n\nStatus: ${data.status}\nDetail: ${data.error_detail}`);
+        const text = await resp.text();
+        let data = null;
+        try { data = text ? JSON.parse(text) : null; } catch(e) {}
+        if (!data) {
+          showErrorModal('Verification Error', 'Invalid response received from audit engine.');
+          return;
+        }
+        showErrorModal(
+          data.valid ? 'Audit Ledger Intact' : 'Tampering Detected',
+          data.valid 
+            ? `Cryptographic Audit Ledger Verified!\n\nStatus: ${data.status}\nAll ${data.blocks_verified} blocks are tamper-evident and SHA-256 intact.`
+            : `Tampering Detected!\n\nStatus: ${data.status}\nDetail: ${data.error_detail}`,
+          null,
+          data.valid ? 'verified' : 'warning'
+        );
       } catch (e) {
-        alert('Verification request failed: ' + e);
+        showErrorModal('Verification Error', 'Verification request failed: ' + (e.message || e));
       }
     }
 

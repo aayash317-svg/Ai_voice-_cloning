@@ -1,8 +1,8 @@
 {
-  "checkpoint_timestamp": 1790488637.5395937,
-  "blocks_count": 2221,
-  "last_block_index": 2220,
-  "last_block_hash": "3e52ec7b7cd0ac9a764bc481562109fd39dc915af6734453742e5ddd7302dcd7",
-  "cumulative_hash": "5e723de8a1c219e8add587e0122108d04b39e0445cc58d000e7b3287b9e22f61",
+  "checkpoint_timestamp": 1790688896.3122642,
+  "blocks_count": 2226,
+  "last_block_index": 2225,
+  "last_block_hash": "9e476cc316d7efec973f76210f3b58c9660e0e50277a7c21e08ddab2e5dd4e26",
+  "cumulative_hash": "c5383a8f2c0036af3b775fc14a1fd7de662fd2a09c109c13b16c260a2a59f857",
   "version": "2.0"
 }

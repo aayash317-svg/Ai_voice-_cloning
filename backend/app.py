@@ -18,7 +18,7 @@ from fastapi import FastAPI, UploadFile, File, Form, WebSocket, WebSocketDisconn
 from fastapi.security import APIKeyHeader, HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, JSONResponse
 from pydantic import BaseModel
 
 from backend.config import (
@@ -79,6 +79,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request, exc):
+    """Ensure all unhandled exceptions return structured JSON rather than empty/HTML errors."""
+    import traceback
+    traceback.print_exc()
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"Internal server error: {str(exc)}"}
+    )
+
 
 if FRONTEND_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
@@ -213,12 +225,19 @@ async def _decode_audio(audio_bytes: bytes, filename: str):
     Decode audio bytes to numpy float32 array + sample rate.
     Tries strategies in order:
       1. soundfile   — in-memory, fastest for WAV/FLAC/OGG/MP3
-      2. ffmpeg      — universally handles M4A/AAC/MP4/WebM/WMA via imageio-ffmpeg or PATH
-      3. afconvert   — macOS built-in fallback
+      2. pydub       — in-memory ffmpeg/libav wrapper, handles all audio formats (M4A/AAC/WebM/3GP/OPUS)
+      3. ffmpeg cli  — system/bundled ffmpeg binary with universal transcoding
+      4. afconvert   — macOS built-in fallback
     """
     import tempfile, os, subprocess
 
-    # --- Strategy 1: soundfile (in-memory, fastest) ---
+    if not audio_bytes or len(audio_bytes) == 0:
+        raise HTTPException(
+            status_code=400,
+            detail="The uploaded audio stream is empty (0 bytes). Please upload or record a valid audio sample."
+        )
+
+    # --- Strategy 1: soundfile (in-memory, fastest for standard headers) ---
     try:
         data, sr = sf.read(io.BytesIO(audio_bytes))
         if hasattr(data, "ndim") and data.ndim > 1:
@@ -227,17 +246,39 @@ async def _decode_audio(audio_bytes: bytes, filename: str):
     except Exception:
         pass
 
-    suffix = Path(filename).suffix.lower() or ".tmp"
+    # --- Strategy 2: pydub (in-memory, supports mobile M4A, AAC, WebM, 3GP, AMR, OPUS) ---
+    try:
+        from pydub import AudioSegment
+        seg = AudioSegment.from_file(io.BytesIO(audio_bytes))
+        seg = seg.set_channels(1).set_frame_rate(16000)
+        raw_samples = np.array(seg.get_array_of_samples(), dtype=np.float32)
+        if seg.sample_width == 2:
+            raw_samples = raw_samples / 32768.0
+        elif seg.sample_width == 4:
+            raw_samples = raw_samples / 2147483648.0
+        elif seg.sample_width == 1:
+            raw_samples = (raw_samples - 128.0) / 128.0
+        if len(raw_samples) > 0:
+            return raw_samples.astype(np.float32), 16000
+    except Exception:
+        pass
 
-    # Write raw bytes to a temp file for external decoders
-    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp_in:
-        tmp_in.write(audio_bytes)
-        tmp_in_path = tmp_in.name
+    suffix = Path(filename).suffix.lower() if filename else ""
+    if not suffix or len(suffix) > 6 or "%" in suffix:
+        suffix = ".audio"
 
-    tmp_wav_path = tmp_in_path + "_converted.wav"
+    tmp_in_path = None
+    tmp_wav_path = None
 
     try:
-        # --- Strategy 2: ffmpeg (universal for M4A, AAC, WebM, MP4, etc.) ---
+        # Write raw bytes to a temp file for external decoders
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp_in:
+            tmp_in.write(audio_bytes)
+            tmp_in_path = tmp_in.name
+
+        tmp_wav_path = tmp_in_path + "_converted.wav"
+
+        # --- Strategy 3: ffmpeg (universal for M4A, AAC, WebM, MP4, 3GP, etc.) ---
         ffmpeg_bin = get_ffmpeg_binary()
         if ffmpeg_bin:
             try:
@@ -255,7 +296,7 @@ async def _decode_audio(audio_bytes: bytes, filename: str):
             except Exception as e:
                 print(f"[!] FFmpeg execution error: {e}")
 
-        # --- Strategy 3: macOS afconvert (built-in fallback) ---
+        # --- Strategy 4: macOS afconvert (built-in fallback) ---
         try:
             result = subprocess.run(
                 ["afconvert", "-f", "WAVE", "-d", "LEF32@16000", tmp_in_path, tmp_wav_path],
@@ -271,15 +312,16 @@ async def _decode_audio(audio_bytes: bytes, filename: str):
 
         raise HTTPException(
             status_code=400,
-            detail=f"Unsupported audio format '{suffix}'. Could not decode audio stream. Please use WAV, FLAC, MP3, OGG, M4A, AAC, or WebM."
+            detail=f"Unsupported audio format '{suffix}'. Could not decode audio stream. Please use WAV, FLAC, MP3, OGG, M4A, AAC, 3GP, or WebM."
         )
     finally:
         for p in [tmp_in_path, tmp_wav_path]:
-            try:
-                if os.path.exists(p):
-                    os.unlink(p)
-            except Exception:
-                pass
+            if p:
+                try:
+                    if os.path.exists(p):
+                        os.unlink(p)
+                except Exception:
+                    pass
 
 
 
@@ -316,13 +358,23 @@ async def analyze_audio_file(
     Analyze uploaded audio file, extract 4-family feature vectors + raw audio,
     compute dual ensemble impersonation risk score, and log security audit event.
     """
-    audio_bytes = await file.read()
     try:
+        audio_bytes = await file.read()
+        if not audio_bytes or len(audio_bytes) == 0:
+            raise HTTPException(
+                status_code=400,
+                detail="The uploaded audio file is empty (0 bytes). Please upload or record a valid audio sample."
+            )
         data, sr = await _decode_audio(audio_bytes, file.filename or "audio.tmp")
         audio = preprocessor.load_audio(data, sr=sr)
         audio = preprocessor.normalize_audio(audio)
     except HTTPException:
         raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Could not process audio: {str(e)}"
+        )
     # Extract features with silence protection & VAD speech segmentation
     raw_rms = float(np.sqrt(np.mean(audio**2))) if len(audio) > 0 else 0.0
     raw_peak = float(np.max(np.abs(audio))) if len(audio) > 0 else 0.0

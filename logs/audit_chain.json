@@ -27400,5 +27400,53 @@
     },
     "previous_hash": "c1802d44281e8b92510277a510f1a595de07227c7b90d0adeedd4f4b507f0593",
     "current_hash": "57079e9fecac0a9757f1f6b2d74c65e5e692d81cc28b7f95c2dbe0d802a610bd"
+  },
+  {
+    "index": 2225,
+    "timestamp": 1790613781.035221,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "session_id": "895c9d46-5fc9-47e7-804d-fabed401d231",
+      "audio_sha256": "b3241947fe15ea09856b8bb855a91007748a88d0129c78bee70a923da399703a",
+      "filename": "live_recording_1790613764847.wav",
+      "language": "auto",
+      "risk_score": 24.0,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "57079e9fecac0a9757f1f6b2d74c65e5e692d81cc28b7f95c2dbe0d802a610bd",
+    "current_hash": "9e476cc316d7efec973f76210f3b58c9660e0e50277a7c21e08ddab2e5dd4e26"
+  },
+  {
+    "index": 2226,
+    "timestamp": 1790688925.2219675,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "session_id": "bbe204d9-691b-4aa1-8aaf-d9a9b92b1b5c",
+      "audio_sha256": "91437e6a4e5ba8e63d98a7f3a9f735da43177e53132370a7b368fd6b66bf45bd",
+      "filename": "genuine.wav",
+      "language": "english",
+      "risk_score": 16.8,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "9e476cc316d7efec973f76210f3b58c9660e0e50277a7c21e08ddab2e5dd4e26",
+    "current_hash": "b82efdfc85c3fbd9c6cc86b4d026d46261a61645761d41d639305c41a313324e"
+  },
+  {
+    "index": 2227,
+    "timestamp": 1790688925.652393,
+    "event_type": "BATCH_ANALYSIS",
+    "event_data": {
+      "session_id": "633b1fbb-656e-4f8e-983e-101769686dfb",
+      "audio_sha256": "d1a1ec9e1391026d19a97fab99920989a3ba2ac311a1e4c02b75a46154f80402",
+      "filename": "audio_recording.m4a",
+      "language": "english",
+      "risk_score": 12.6,
+      "risk_level": "LOW",
+      "alert_triggered": false
+    },
+    "previous_hash": "b82efdfc85c3fbd9c6cc86b4d026d46261a61645761d41d639305c41a313324e",
+    "current_hash": "3ca0a772e0b0b963610b3e854bed876889777e7ea3e68c38c65d954447166f5f"
   }
 ]

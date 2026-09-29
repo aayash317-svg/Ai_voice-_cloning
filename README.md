@@ -88,9 +88,10 @@ Voice Shield AI processes real-time two-way audio through a 6-stage defensive pi
   - *Spectral Contrast Standard Deviation*: Evaluates formant peak vs valley dynamics across 6 octave bands.
 - [x] **Zero-Retention Ephemeral Privacy Buffer**: Audio lives exclusively in a 3.0-second circular RAM ring buffer and is shredded immediately after feature extraction.
 - [x] **SHA-256 Cryptographic Audit Ledger (`AuditChain`)**: Seals every completed call inspection into an append-only hash chain with block verification.
-- [x] **Glassmorphic Cyber UI**: 60 FPS HTML5 canvas oscilloscope, dynamic per-speaker forensic cards, and color-coded alert banners.
-- [x] **Mobile Optimization & Cloud Tunnels**: Audio keep-alive feedback loop (`0.00001` gain) and integrated Cloudflare tunnel (`cloudflared`) for live cellular phone testing.
-- [x] **Batch Audio Forensic Upload**: Drag-and-drop analysis for `.wav`, `.mp3`, `.m4a`, and `.flac` files.
+- [x] **Glassmorphic Cyber UI**: 60 FPS HTML5 canvas oscilloscope, dynamic per-speaker forensic cards, in-app error handling modals, and color-coded alert banners.
+- [x] **Mobile Optimization & Cloud Tunnels**: Audio keep-alive feedback loop (`0.00001` gain), universal audio decoding (`pydub`/FFmpeg/soundfile for WAV, M4A, AAC, WebM, 3GP, OPUS), and integrated Cloudflare tunnel (`cloudflared`) for cellular phone testing.
+- [x] **Batch Audio Forensic Upload**: Drag-and-drop analysis for `.wav`, `.mp3`, `.m4a`, `.webm`, `.aac`, and `.flac` files with universal transcoding and zero-crash JSON parsing.
+- [x] **Universal Cloud Resilience**: Automatic cold-start wake-up retry engine for Render free tier, fail-safe JSON response contract, and in-app retry dialogs.
 - [x] **1-Click Cloud Deployment**: Pre-configured `Dockerfile`, `Procfile`, and `render.yaml` for Render, Hugging Face Spaces, and Railway.
 
 ### Planned Roadmap
@@ -289,9 +290,11 @@ We use **[GitHub Issues](https://github.com/aayash317-svg/Ai_voice-_cloning/issu
 
 Voice Shield AI is engineered strictly for **defensive biometric verification, fraud prevention, and voice integrity security**. It is designed to safeguard individuals, banks, and enterprises from malicious voice cloning extortion, CEO fraud, and unauthorized audio impersonation. Do not misuse this technology for non-consensual surveillance or malicious exploitation.
 
----
-  ##Voice Shield AI — Presentation Diagrams
-     https://raw.githack.com/aayash317-svg/Ai_voice-_cloning/a1d507f/docs/jury_diagrams_viewer.html
+## 📊 Voice Shield AI — Presentation Diagrams
+
+Interactive visual architecture and jury presentation diagrams portfolio viewer:  
+🔗 [https://raw.githack.com/aayash317-svg/Ai_voice-_cloning/a1d507f/docs/jury_diagrams_viewer.html](https://raw.githack.com/aayash317-svg/Ai_voice-_cloning/a1d507f/docs/jury_diagrams_viewer.html)
+
 
 
 ## 📄 License

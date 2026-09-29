@@ -315,3 +315,6 @@ Copy and paste these exact slide outlines directly into your PowerPoint / Canva 
    - *Answer*: The online diarizer extracts 40-D timbre embeddings and clusters the voices into Speaker A (Local user) and Speaker B (Remote contact). If both speak simultaneously, the segment is tagged as `OVERLAP` and quarantined so cross-talk does not contaminate the threat score.
 4. **Why combine SincNet with Random Forest?**
    - *Answer*: SincNet learns directly on the uncompressed 1D time-domain waveform to catch vocoder quantization noise, while the Random Forest evaluates 63 physical acoustic equations (Phase, Jitter, Shimmer, High-Frequency ratio). Blending both (50/50) prevents attackers from evading one representation.
+5. **How does the system handle mobile web browsers and cloud cold-starts?**
+   - *Answer*: Free-tier cloud instances (such as Render) spin down during periods of inactivity and require 30–60 seconds to spin back up. The frontend client incorporates an asynchronous connection retry loop with backoff and safe response text buffering, preventing `Unexpected end of JSON input` parse crashes. On the server side, multi-engine audio decoding (`soundfile`, `pydub`, `ffmpeg`) natively accepts mobile audio files in `.m4a`, `.aac`, `.webm`, `.3gp`, and `.opus` formats.
+
