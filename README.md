@@ -94,18 +94,71 @@ Voice Shield AI processes real-time two-way audio through a 6-stage defensive pi
 - [x] **Universal Cloud Resilience**: Automatic cold-start wake-up retry engine for Render free tier, fail-safe JSON response contract, and in-app retry dialogs.
 - [x] **1-Click Cloud Deployment**: Pre-configured `Dockerfile`, `Procfile`, and `render.yaml` for Render, Hugging Face Spaces, and Railway.
 
-### Planned Roadmap
-- [ ] **Native Mobile Call Screening**: Android `CallScreeningService` background telephony dialer hook.
-- [ ] **On-Device Keyword Fraud Spotter**: Real-time keyword spotting for high-risk fraud trigger phrases (*"OTP"*, *"urgent wire transfer"*, *"police warrant"*).
-- [ ] **Enterprise SIP / PBX Proxy**: Hardware-accelerated SIP trunk inspection for corporate banking call centers.
-- [ ] **Adversarial Codec Data Augmentation**: Fine-tuning against low-bitrate WhatsApp VoIP and AMR-WB mobile codecs.
+---
+
+## 🗺️ Strategic Product & Engineering Roadmap
+
+Voice Shield AI follows a structured multi-phase product roadmap aimed at moving from browser-based verification to deep operating system telephony integration and enterprise banking infrastructure.
+
+| Milestone | Target | Status | Focus Areas | Key Deliverables |
+| :--- | :--- | :--- | :--- | :--- |
+| **v1.0 (Foundation)** | Q3 2026 | ✅ **Shipped** | Core Detection & Web Streaming | Dual Ensemble (SincNet + RF), Progressive 3-Stage Scoring, SHA-256 Ledger, 0-Retention RAM |
+| **v1.2 (Resilience)** | Q3 2026 | ✅ **Shipped** | Mobile Web & Cloud Reliability | Universal decoders (M4A/AAC/WebM/3GP/Opus), Cold-start retry engine, In-app error dialogs |
+| **v1.5 (Mobile OS)** | Q4 2026 | 🔄 **In Progress** | Native Smartphone Telephony | Android `CallScreeningService` dialer hook, iOS CallKit VoIP extension, On-device ONNX/TFLite models |
+| **v2.0 (Enterprise)** | Q1 2027 | 📋 **Planned** | Telephony Infrastructure & PBX | Hardware-accelerated SIP trunk inspection, Banking SIEM webhooks (Splunk/Datadog), Multi-tenant RBAC |
+| **v2.5 (Adversarial)** | Q2 2027 | 📋 **Planned** | Next-Gen AI Model Hardening | Diffusion vocoder defenses, Low-bitrate codec training (AMR-WB 6.6kbps), 22+ Indic languages |
 
 ---
 
-## 🗺️ Roadmap
+### Detailed Engineering Deliverables
 
-Track ongoing engineering tasks, sprint items, and upcoming milestones on our live issue board:
-👉 **[GitHub Issues & Milestones](https://github.com/aayash317-svg/Ai_voice-_cloning/issues)**
+```mermaid
+timeline
+    title Voice Shield AI Development Roadmap
+    section v1.0 Shipped
+        Dual AI Ensemble : SincNet 1D + 63-D Random Forest
+        Real-Time Diarization : Cosine Timbre Online Clustering
+        Audit Ledger : SHA-256 Append-Only Blockchain
+    section v1.2 Shipped
+        Universal Decoding : pydub + FFmpeg (M4A, WebM, 3GP, Opus)
+        Cloud Resilience : Render spin-up auto-retry & safe JSON
+    section v1.5 In Progress
+        Native Android Hook : CallScreeningService background dialer
+        Fraud Keyword Spotter : Real-time detection of OTP/Wire transfer phrases
+        On-Device Inference : Quantized INT8 ONNX/TFLite engine (<25MB)
+    section v2.0 Planned
+        Enterprise PBX Proxy : High-throughput SIP trunk inspection
+        SIEM Integrations : Real-time webhook dispatch to Splunk & Datadog
+        Zero-Knowledge Proofs : Cryptographic privacy verification
+```
+
+#### Phase 1: Core Detection & Cloud Resilience (v1.0 – v1.2) — *Completed*
+- [x] **Dual AI Ensemble**: Late fusion of 1D raw-waveform SincNet neural filters and 63-D calibrated Random Forest.
+- [x] **Live Two-Speaker Diarization**: Online cosine timbre clustering separating local caller from remote party with cross-talk overlap quarantine.
+- [x] **Progressive 3-Stage Scoring**: 0–5s ambient calibration $\to$ 5–6s preliminary average $\to$ 10–12s guaranteed final verdict.
+- [x] **Zero-Retention Ephemeral Buffer**: Circular RAM ring buffer discarding audio immediately post-feature extraction.
+- [x] **SHA-256 Audit Ledger**: Immutable cryptographic event chain with multi-phase tampering detection.
+- [x] **Universal Audio Transcoding**: In-memory `pydub` and FFmpeg pipelines for WAV, FLAC, MP3, M4A, AAC, WebM, 3GP, and OPUS.
+- [x] **Cloud Cold-Start Tolerance**: Resilient retry loops and fail-safe JSON contracts for Render and cloud deployments.
+
+#### Phase 2: Native Smartphone Ecosystem & On-Device Dialers (v1.5) — *In Progress (Q4 2026)*
+- [ ] **Android `CallScreeningService` Dialer Hook**: Automatic background inspection of incoming carrier telephone calls without requiring the user to open a browser.
+- [ ] **On-Device Keyword Fraud Spotter**: Compact, real-time keyword spotting model listening specifically for social engineering coercion phrases (*"OTP transfer"*, *"urgent wire payment"*, *"police arrest warrant"*).
+- [ ] **Quantized Neural Engine (INT8 ONNX / TFLite)**: Compressing SincNet and acoustic pipelines under 25 MB to run entirely offline on smartphone NPUs (Apple Neural Engine / Qualcomm Hexagon).
+- [ ] **iOS CallKit Audio Bridge**: Native iOS VoIP audio tap module adhering to Apple security sandboxing guidelines.
+
+#### Phase 3: Enterprise Telephony & Banking Infrastructure (v2.0) — *Planned (Q1 2027)*
+- [ ] **Hardware-Accelerated SIP / PBX Proxy**: In-line telecom inspection proxy capable of screening 1,000+ simultaneous SIP banking call streams.
+- [ ] **SIEM Security Webhooks**: Instant alerts and cryptographic ledger block transmission to enterprise SOC systems (Splunk, Datadog, AWS CloudWatch).
+- [ ] **Zero-Knowledge Biometric Proofs (ZK-SNARKs)**: Enabling users to cryptographically verify their genuine vocal tract physics without revealing their voice identity.
+- [ ] **Caller ID Reputation Cross-Referencing**: Correlating carrier spoof metadata and STIR/SHAKEN call attestation with acoustic risk scores.
+
+#### Phase 4: Next-Gen Adversarial AI Defense (v2.5) — *Planned (Q2 2027)*
+- [ ] **Diffusion Vocoder Defense**: Training against emerging non-autoregressive latent diffusion vocoders and flow-matching speech synthesis models.
+- [ ] **Adversarial Codec Robustness**: Synthetic training and data augmentation across low-bitrate compression codecs (AMR-NB 4.75kbps, WhatsApp Opus 6kbps).
+- [ ] **Zero-Shot Cross-Lingual Defense**: Expanding validated multi-lingual calibrated baselines across all 22 scheduled Indic languages and global dialects.
+
+> 💡 **Track Active Sprints**: To view real-time task boards, contribute code, or report issues, visit **[GitHub Issues & Milestones](https://github.com/aayash317-svg/Ai_voice-_cloning/issues)**.
 
 ---
 
